@@ -1,3 +1,4 @@
+//The code for this toggle component is from LevelUpTuts. Video can be found here: https://www.youtube.com/watch?v=NJBzUZW0jcE&t=
 import React from 'react';
 
 export class Toggle extends React.Component {

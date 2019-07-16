@@ -7,15 +7,14 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Toggle } from '../toggle/toggle';
 
-//Default map starting point, OSLO
-let center = [59.911491, 10.757933];
-
 export class Main extends React.Component {
     constructor(props){
         super(props);
         this.state = { 
             value: 3
         };
+        //Default map starting point, OSLO
+        this.center = [59.911491, 10.757933];
     }
 
     async transport(points){
@@ -42,6 +41,7 @@ export class Main extends React.Component {
     }
 
     display = () => {
+        //Goes through the popup array and displays each popup on the map
         this.popups = new Array(this.hikes.length);
         for(let i = 0; i < this.hikes.length; i++){
             this.popups[i] = L.popup().setLatLng([this.hikes[i].lat, this.hikes[i].lng]).setContent('<p>Hike</p>').addTo(this.map);
@@ -50,6 +50,7 @@ export class Main extends React.Component {
 
 
     enter = () => {
+        //Gets the edgepoints of the circle
         let points = this.circle.getBounds();
 
         let data = {
@@ -63,8 +64,10 @@ export class Main extends React.Component {
     }
 
     select = (e) => {
-        //The marker is off from the selected position for some unknown reason
+        //Converts the (x,y) coordinates of the window to latitude and longitude
         let event = this.map.mouseEventToLatLng(e);
+
+        //Checks to see if there already is a circle on the map. If there is, it is replaced with a new one.
         if(!this.circle){
             this.circle = L.circle([event.lat, event.lng], {radius: (this.state.value *1000)}).addTo(this.map);
             //Should find a better way of opening the distance slider
@@ -77,8 +80,10 @@ export class Main extends React.Component {
     }
 
     remove = () => {
+        //Removes the circle from the map
         this.map.removeLayer(this.circle);
 
+        //Loop through the popup array and removes them
         if(this.popups){
             for(let i = 0; i < this.popups.length; i++){
                 this.map.removeLayer(this.popups[i]);
@@ -95,13 +100,14 @@ export class Main extends React.Component {
     }
 
     update = (value) => {
+        //Updates the slider value and the circle radius for a responsive user experience
         this.setState({ value });
         this.circle.setRadius(value *1000);
     }
  
     componentDidMount(){
         this.map = L.map('map', {
-            center: center,
+            center: this.center,
             zoom: 8
         });
         
