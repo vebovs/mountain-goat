@@ -3,18 +3,20 @@ import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';
 import Fade from 'react-reveal/Fade';
 import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Toggle } from '../toggle/toggle';
 
 export class Main extends React.Component {
-    constructor(props){
-        super(props);
+    constructor(){
+        super();
         this.state = { 
             value: 3
         };
         //Default map starting point, OSLO
         this.center = [59.911491, 10.757933];
+        this.toggle = false;
+        this.onAlert = false;
     }
 
     async transport(points){
@@ -41,11 +43,19 @@ export class Main extends React.Component {
     }
 
     display = () => {
+        //If no hikes are returned the user gets a popup letting them know
+        if(!this.hikes.length) {
+            console.log(this.hikes.length);
+            this.onAlert = true;
+        }
+
         //Goes through the popup array and displays each popup on the map
         this.popups = new Array(this.hikes.length);
         for(let i = 0; i < this.hikes.length; i++){
             this.popups[i] = L.popup().setLatLng([this.hikes[i].lat, this.hikes[i].lng]).setContent('<p>Hike</p>').addTo(this.map);
         }
+
+        this.setState({ state: this.state});
     }
 
 
@@ -64,14 +74,14 @@ export class Main extends React.Component {
     }
 
     select = (e) => {
+        this.toggle = true;
+
         //Converts the (x,y) coordinates of the window to latitude and longitude
         let event = this.map.mouseEventToLatLng(e);
 
         //Checks to see if there already is a circle on the map. If there is, it is replaced with a new one.
         if(!this.circle){
             this.circle = L.circle([event.lat, event.lng], {radius: (this.state.value *1000)}).addTo(this.map);
-            //Should find a better way of opening the distance slider
-            document.getElementById('hiddenbtn').click();
         } else {
             this.map.removeLayer(this.circle);
             this.circle = L.circle([event.lat, event.lng], {radius: (this.state.value *1000)}).addTo(this.map);
@@ -80,6 +90,9 @@ export class Main extends React.Component {
     }
 
     remove = () => {
+        this.toggle = false;
+        this.onAlert = false;
+
         //Removes the circle from the map
         this.map.removeLayer(this.circle);
 
@@ -94,8 +107,6 @@ export class Main extends React.Component {
         this.popups = undefined;
         this.hikes  = undefined;
 
-        //Should find a better way of closing the distance slider
-        document.getElementById('hiddenbtn').click();
         this.setState({ state: this.state });
     }
 
@@ -121,30 +132,28 @@ export class Main extends React.Component {
 
     render(){
         return (
-            <div id="container">  
+            <div id="container">
                 <div id="map" onClick={this.select}></div>
-                <Toggle>
-                    {({ on, toggle }) => (
-                            <div>
-                                <button id="hiddenbtn" onClick={toggle}>Show/Hide</button>
-                                {on && <Fade bottom>
-                                    <div id="slider">
-                                    <Button id="enterbtn" variant="success" onClick={this.enter}>Enter</Button>
-                                    <Button id="closebtn" variant="danger" onClick={this.remove}>Close</Button>
-                                        <div id="distance">{ 'Avstand: ' + this.state.value + ' km' }</div>
-                                        <InputRange
-                                            axis="x"
-                                            xstep={1}
-                                            maxValue={20}
-                                            minValue={1}
-                                            value={this.state.value}
-                                            onChange={value => this.update(value)}
-                                        />
-                                    </div>
-                                </Fade>}
-                            </div>
-                        )}
-                </Toggle>
+                {this.onAlert && <Alert id="alert" variant="danger">
+                    <Alert.Heading>No hikes found</Alert.Heading>
+                </Alert>}
+                {this.toggle && <Fade bottom>
+                    <div id="popup">
+                        <Button id="enterbtn" variant="success" onClick={this.enter}>Enter</Button>
+                        <Button id="closebtn" variant="danger" onClick={this.remove}>Close</Button>
+                            <div id="distance">{ 'Distance: ' + this.state.value + ' kilometer(s)' }</div>
+                            <div id="slider">
+                                <InputRange
+                                    axis="x"
+                                    xstep={1}
+                                    maxValue={20}
+                                    minValue={1}
+                                    value={this.state.value}
+                                    onChange={value => this.update(value)}
+                                />
+                        </div>
+                    </div>
+                </Fade>}
             </div>
         );
     }
