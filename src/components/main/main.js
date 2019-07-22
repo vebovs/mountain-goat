@@ -47,12 +47,13 @@ export class Main extends React.Component {
         if(!this.hikes.length) {
             console.log(this.hikes.length);
             this.onAlert = true;
-        }
-
-        //Goes through the popup array and displays each popup on the map
-        this.popups = new Array(this.hikes.length);
-        for(let i = 0; i < this.hikes.length; i++){
-            this.popups[i] = L.popup().setLatLng([this.hikes[i].lat, this.hikes[i].lng]).setContent('<p>Hike</p>').addTo(this.map);
+        } else {
+            this.onAlert = false;
+            //Goes through the popup array and displays each popup on the map
+            this.popups = new Array(this.hikes.length);
+            for(let i = 0; i < this.hikes.length; i++){
+                this.popups[i] = L.popup().setLatLng([this.hikes[i].lat, this.hikes[i].lng]).setContent('<p>Hike</p>').addTo(this.map);
+            }
         }
 
         this.setState({ state: this.state});
