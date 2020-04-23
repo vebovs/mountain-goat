@@ -1,16 +1,12 @@
 const Dao = require('./Dao.js');
 
 module.exports = class HikeDao extends Dao {
+    constructor(collection) {
+        super();
+        this.collection = collection
+    }
 
-    getHikes(data, callback) {
-        let values = [data.bottom, data.top, data.left, data.right];
-        super.query(
-            'SELECT * FROM hike'
-            + ' WHERE'
-            + ' lat BETWEEN ? AND ?'
-            + ' AND'
-            + ' lng BETWEEN ? AND ?'
-            , values, callback
-        );
+    getHike() {
+        return this.db.collection(this.collection).find({}).limit(1).toArray();
     }
 }

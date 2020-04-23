@@ -1,28 +1,15 @@
+require('dotenv').config();
+const mongodb = require('mongodb');
+const assert = require('assert');
+
 module.exports = class Dao {
-    constructor(pool) {
-      this.pool = pool;
-    }
-  
-    query(sql, params, callback) {
-      this.pool.getConnection((err, connection) => {
-        console.log("dao: connected to database");
-        if (err) {
-          console.log("dao: error connecting");
-          callback(500, { error: "error connecting to database" });
-        } else {
-          console.log("dao: running sql: " + sql);
-          connection.query(sql, params, (err, rows) => {
-            connection.release();
-            if (err) {
-              console.log(err);
-              callback(500, { error: "error querying" });
-            } else {
-              console.log("dao: returning rows");
-              callback(200, rows);
-            }
-          });
-        }
-      });
-    }
-  };
-  
+  constructor() {
+    mongodb.MongoClient.connect(process.env.MONGODB_CONNECTION_STRING, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    }, (error, client) => {
+      assert.equal(null, error);
+      this.db = client.db(process.env.DATABASE);
+    });
+  }
+}
