@@ -5,8 +5,41 @@ module.exports = class HikeDao extends Dao {
         super();
         this.collection = collection
     }
-
-    getHike() {
-        return this.db.collection(this.collection).find({}).limit(1).toArray();
+    
+    getHikes(points) {
+        return this.db.collection(this.collection).find({
+            "geometry": {
+                "$geoWithin": {
+                        "$geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        points.bottom,  //lat
+                                        points.left     //lon
+                                    ],
+                                    [
+                                        points.top,
+                                        points.left
+                                    ],
+                                    [
+                                        points.top,
+                                        points.right
+                                    ],
+                                    [
+                                        points.bottom,
+                                        points.right
+                                    ],
+                                    [
+                                        points.bottom,
+                                        points.left
+                                    ]
+                                ]
+                            ]
+                        }
+                    }
+                }
+            }
+        ).toArray();
     }
 }

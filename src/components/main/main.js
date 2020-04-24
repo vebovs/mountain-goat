@@ -6,9 +6,10 @@ import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import axios from 'axios';
 
 export class Main extends React.Component {
-    constructor(){
+    constructor() {
         super();
         this.state = { 
             value: 3
@@ -19,42 +20,38 @@ export class Main extends React.Component {
         this.onAlert = false;
     }
 
-    async transport(points){
-        await fetch('http://localhost:8080/api', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json; charset=utf-8"
-              },
-              body: JSON.stringify({
-                    'top': points.top,
-                    'bottom': points.bottom,
-                    'left': points.left,
-                    'right': points.right
-                })
-              })
-              .then(res => res.json())
-              .then(data => {
-                  this.hikes = data;
-              })
-              .catch(error => console.error("Error " + error));
-        console.log(this.hikes);
+    async transport(points) {
+        await axios.post('http://localhost:5000/hikes', {
+            top: points.top,
+            bottom: points.bottom,
+            left: points.left,
+            right: points.right
+        })
+        .then(response => {
+            this.hikes = response.data
+            console.log(this.hikes);
+        })
+        .catch(error => console.log('Error: ' + error));
+
         this.setState({ state: this.state });
         this.display();
     }
 
+    //Draws the hikes on the map
     display = () => {
-        //If no hikes are returned the user gets a popup letting them know
-        if(!this.hikes.length) {
-            console.log(this.hikes.length);
-            this.onAlert = true;
-        } else {
-            this.onAlert = false;
-            //Goes through the popup array and displays each popup on the map
-            this.popups = new Array(this.hikes.length);
-            for(let i = 0; i < this.hikes.length; i++){
-                this.popups[i] = L.popup().setLatLng([this.hikes[i].lat, this.hikes[i].lng]).setContent('<p>Hike</p>').addTo(this.map);
+        this.geoJSONlayer = L.geoJSON(this.hikes, {
+            style: (feature) => {
+                return {
+                    stroke: true,
+                    color: 'grey',
+                    weight: 5,
+                    opacity: 0.75
+                };
+            },
+            coordsToLatLng: (coords) => {
+                return new L.LatLng(coords[0], coords[1]); //Reverse the coordinates to suit leaflet drawing
             }
-        }
+        }).addTo(this.map);
 
         this.setState({ state: this.state});
     }
@@ -94,18 +91,11 @@ export class Main extends React.Component {
         this.toggle = false;
         this.onAlert = false;
 
-        //Removes the circle from the map
+        //Removes the circle and traced hikes from the map
         this.map.removeLayer(this.circle);
-
-        //Loop through the popup array and removes them
-        if(this.popups){
-            for(let i = 0; i < this.popups.length; i++){
-                this.map.removeLayer(this.popups[i]);
-            }
-        }
+        this.map.removeLayer(this.geoJSONlayer);
 
         this.circle = undefined;
-        this.popups = undefined;
         this.hikes  = undefined;
 
         this.setState({ state: this.state });
@@ -117,7 +107,7 @@ export class Main extends React.Component {
         this.circle.setRadius(value *1000);
     }
  
-    componentDidMount(){
+    componentDidMount() {
         this.map = L.map('map', {
             center: this.center,
             zoom: 8
@@ -131,7 +121,7 @@ export class Main extends React.Component {
         }).addTo(this.map);
     }
 
-    render(){
+    render() {
         return (
             <div id="container">
                 <div id="map" onClick={this.select}></div>
