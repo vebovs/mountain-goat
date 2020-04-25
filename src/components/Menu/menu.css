@@ -1,0 +1,22 @@
+.container {
+    position: absolute;
+    z-index: 500;
+    height: 100%;
+    width: 20%;
+    margin: 0;
+    padding: 0;
+    right: 0;
+}
+
+.menu {
+    background-color: white;
+    height: 100%;
+    width: 0;
+    overflow-x: hidden;
+    transition: .5s;
+}
+
+.menu h1 {
+    color: red;
+    float: right;
+}

@@ -7,6 +7,7 @@ import Alert from 'react-bootstrap/Alert';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
+import Menu from '../Menu/menu';
 
 export class Main extends React.Component {
     constructor() {
@@ -93,8 +94,9 @@ export class Main extends React.Component {
 
         //Removes the circle and traced hikes from the map
         this.map.removeLayer(this.circle);
-        this.map.removeLayer(this.geoJSONlayer);
+        if(this.geoJSONlayer) this.map.removeLayer(this.geoJSONlayer);
 
+        this.geoJSONlayer = undefined;
         this.circle = undefined;
         this.hikes  = undefined;
 
@@ -124,6 +126,7 @@ export class Main extends React.Component {
     render() {
         return (
             <div id="container">
+                <Menu></Menu>
                 <div id="map" onClick={this.select}></div>
                 {this.onAlert && <Alert id="alert" variant="danger">
                     <Alert.Heading>No hikes found</Alert.Heading>
