@@ -7,7 +7,9 @@ import Alert from 'react-bootstrap/Alert';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
+
 import Menu from '../Menu/menu';
+import { Profile, Close } from '../Buttons';
 
 export class Main extends React.Component {
     constructor() {
@@ -126,7 +128,11 @@ export class Main extends React.Component {
     render() {
         return (
             <div id="container">
-                <Menu></Menu>
+                <Menu title='Mountain Goat' openbtn={Profile} closebtn={Close} variant="right">
+                    <div>
+                        
+                    </div>
+                </Menu>
                 <div id="map" onClick={this.select}></div>
                 {this.onAlert && <Alert id="alert" variant="danger">
                     <Alert.Heading>No hikes found</Alert.Heading>

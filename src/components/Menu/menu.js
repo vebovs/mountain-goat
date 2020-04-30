@@ -1,29 +1,35 @@
 import React from 'react';
 import './menu.css';
 
-import { Profile, Close } from '../Buttons';
-
 export default class Menu extends React.Component {
     constructor() {
         super();
         this.state = {
-            visibility: false
+            visibility: false,
+            size: '0%'
         };
     }
 
     toggle = () => {
         this.setState(state => ({
-            visibility: !state.visibility
+            visibility: !state.visibility,
+            size: !state.visibility ? '100%' : '0%'
         }));
     }
  
     render() {
         return (
-            <div className='container'>
-                <Profile onClick={this.toggle}></Profile>
+            <div className={`container-${this.props.variant}`} style={{height: this.state.size}}>
+                <this.props.openbtn onClick={this.toggle}></this.props.openbtn>
                 {this.state.visibility &&
                     <div className='menu'>
-                        <Close onClick={this.toggle}></Close>
+                        <div className="header">
+                            <h3 class="title">{this.props.title}</h3>
+                            <this.props.closebtn onClick={this.toggle}></this.props.closebtn>
+                        </div>
+                        <div className="content">
+                            { this.props.children }
+                        </div>
                     </div>
                 }
             </div>
