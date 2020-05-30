@@ -9,6 +9,7 @@ import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 
 import Menu from '../Menu/menu';
+import Auth from '../Auth/auth'
 import { Profile, Close } from '../Buttons';
 
 export class Main extends React.Component {
@@ -128,10 +129,8 @@ export class Main extends React.Component {
     render() {
         return (
             <div id="container">
-                <Menu title='Mountain Goat' openbtn={Profile} closebtn={Close} variant="right">
-                    <div>
-                        
-                    </div>
+                <Menu title='Mountain Goat' openbtn={Profile} closebtn={Close}>
+                    <Auth/>
                 </Menu>
                 <div id="map" onClick={this.select}></div>
                 {this.onAlert && <Alert id="alert" variant="danger">
