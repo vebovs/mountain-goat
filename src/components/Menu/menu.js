@@ -7,7 +7,7 @@ export default class Menu extends React.Component {
         this.state = {
             visibility: false,
             isMobile: false,
-            size: '80%'
+            size: '50%'
         };
     }
 

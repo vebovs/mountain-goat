@@ -1,7 +1,7 @@
 import React from 'react';
-import './auth.css';
+import './authForm.css';
 
-export default class Auth extends React.Component {
+export default class AuthForm extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -26,8 +26,12 @@ export default class Auth extends React.Component {
       }));
     }
 
-    handleSubmit = () => {
-      this.props.onAuthenticateInput(this.state.username, this.state.password);
+    handleLogin = () => {
+      this.props.onLoginInput(this.state.username, this.state.password);
+    }
+
+    handleRegister = () => {
+      this.props.onRegisterInput(this.state.username, this.state.password);
     }
     
     render() {
@@ -43,18 +47,18 @@ export default class Auth extends React.Component {
             <div className='field'>
               <label className='label'>Username</label>
               <div>
-                <input className='input' value={this.state.username} onChange={(e) => this.setState({username: e.target.value})}  type='text' placeholder='Username'/>
+                <input className='input' onChange={(e) => this.setState({username: e.target.value})}  type='text' placeholder='Username'/>
               </div>
             </div>
             <div className='field'>
               <label className='label'>Password</label>
               <div>
-                <input className='input' value={this.state.password}onChange={(e) => this.setState({password: e.target.value})} type='password' placeholder='Password'/>
+                <input className='input' onChange={(e) => this.setState({password: e.target.value})} type='password' placeholder='Password'/>
               </div>
             </div>
             <div className='field'>
               <p className='control'>
-                <button onClick={this.handleSubmit} className='button is-info is-outlined'>
+                <button onClick={this.handleLogin} className='button is-info is-outlined'>
                   Login
                 </button>
               </p>
@@ -65,18 +69,18 @@ export default class Auth extends React.Component {
             <div className='field'>
               <label className='label'>Username</label>
               <div>
-                <input className='input' value={this.state.username} onChange={(e) => this.setState({username: e.target.value})} type='text' placeholder='Username'/>
+                <input className='input' onChange={(e) => this.setState({username: e.target.value})} type='text' placeholder='Username'/>
               </div>
             </div>
             <div className='field'>
               <label className='label'>Password</label>
               <div>
-                <input className='input' value={this.state.password}onChange={(e) => this.setState({password: e.target.value})} type='password' placeholder='Password'/>
+                <input className='input' onChange={(e) => this.setState({password: e.target.value})} type='password' placeholder='Password'/>
               </div>
             </div>
             <div className='field'>
               <p className='control'>
-                <button className='button is-info is-outlined'>
+                <button onClick={this.handleRegister} className='button is-info is-outlined'>
                   Register
                 </button>
               </p>

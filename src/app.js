@@ -36,7 +36,7 @@ app.post('/hikes', async (req, res) => {
         res.json(hikes);
     } catch(error) {
         res.status(500);
-        res.json('An error has occurred');
+        res.json('An internal server error has occurred');
     }
     
 });
@@ -53,18 +53,37 @@ app.post('/register', async (req, res) => {
         }
     } catch(error) {
         res.status(500);
-        res.json('An error occurred');
+        res.json('An internal server error occurred');
     }
 });
 
 app.post('/login', async (req, res, next) => {
-    passport.authenticate('local')(req, res, next);
-    res.json('Logged in');
+    try {
+        passport.authenticate('local', (err, user, info) => {
+            if(err) { return next(err);}
+            if(user) { 
+                res.status(200);
+                res.json(user);
+            } else {
+                res.status(401);
+                res.json('Wrong username or password');
+            }
+        })(req, res, next);
+    } catch(error) {
+        res.status(500);
+        res.json('An internal server error occurred');
+    }
 });
 
-app.get('/logout', (req, res) => {
-    req.logout();
-    res.json('Logged out');
+app.get('/logout', async (req, res) => {
+    try {
+        req.logout();
+        res.status(200);
+        res.json('Logout successful');
+    } catch(error) {
+        res.status(500);
+        res.json('An internal server error occurred');
+    }
 });
 
 app.listen(5000, () => console.log('Server started at port 5000'));

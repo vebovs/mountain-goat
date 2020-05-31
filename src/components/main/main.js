@@ -6,18 +6,23 @@ import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import axios from 'axios';
 import 'bulma/css/bulma.css';
 
+// Services
+import HikesService from '../../services/HikesService/hikesService';
+import AuthService from '../../services/AuthService/authService';
+
+// Components
 import Menu from '../Menu/menu';
-import Auth from '../Auth/auth'
+import AuthForm from '../AuthForm/authForm'
 import { Profile, Close } from '../Buttons';
 
 export class Main extends React.Component {
     constructor() {
         super();
         this.state = { 
-            value: 3
+            value: 3,
+            status: false
         };
         //Default map starting point, OSLO
         this.center = [59.911491, 10.757933];
@@ -25,25 +30,14 @@ export class Main extends React.Component {
         this.onAlert = false;
     }
 
-    async transport(points) {
-        await axios.post('http://localhost:5000/hikes', {
-            top: points.top,
-            bottom: points.bottom,
-            left: points.left,
-            right: points.right
-        })
-        .then(response => {
-            this.hikes = response.data
-            console.log(this.hikes);
-        })
-        .catch(error => console.log('Error: ' + error));
-
-        this.setState({ state: this.state });
-        this.display();
+    async findHikes(points) {
+        this.hikes = await HikesService.findHikesWithinArea(points);
+        //this.setState({ state: this.state });
+        this.drawHikes(); //Needed?
     }
 
     //Draws the hikes on the map
-    display = () => {
+    drawHikes = () => {
         this.geoJSONlayer = L.geoJSON(this.hikes, {
             style: (feature) => {
                 return {
@@ -58,11 +52,15 @@ export class Main extends React.Component {
             }
         }).addTo(this.map);
 
-        this.setState({ state: this.state});
+        //this.setState({ state: this.state});
     }
 
 
     enter = () => {
+
+        //Remove existing traced hikes before drawing new ones
+        if(this.geoJSONlayer) this.map.removeLayer(this.geoJSONlayer);
+        
         //Gets the edgepoints of the circle
         let points = this.circle.getBounds();
 
@@ -73,7 +71,7 @@ export class Main extends React.Component {
             right: points._northEast.lng
         }
 
-        this.transport(data);
+        this.findHikes(data);
     }
 
     select = (e) => {
@@ -112,6 +110,32 @@ export class Main extends React.Component {
         this.setState({ value });
         this.circle.setRadius(value *1000);
     }
+
+    async register(username, password) {
+        const res = await AuthService.register(username, password);
+        console.log(res);
+    }
+
+    async login(username, password) {
+        const res = await AuthService.login(username, password);
+        if(res) {
+            console.log(res);
+            this.user = res;
+            this.setState(() => ({
+                status: true
+            }));
+        }
+    }
+
+    async logout() {
+        const res = await AuthService.logout();
+        if(res) {
+            this.user = undefined;
+            this.setState(() => ({
+                status: false
+            }));
+        }
+    }
  
     componentDidMount() {
         this.map = L.map('map', {
@@ -127,15 +151,22 @@ export class Main extends React.Component {
         }).addTo(this.map);
     }
 
-    auth = (username, password) => {
-        console.log('Username: ' + username + ', Password: ' + password);
-    }
-
     render() {
         return (
             <div id="container">
                 <Menu title='Mountain Goat' openbtn={Profile} closebtn={Close}>
-                    <Auth onAuthenticateInput={this.auth}/>
+                    {
+                        !this.state.status && <AuthForm onLoginInput={this.login.bind(this)} onRegisterInput={this.register.bind(this)}/>
+                    }
+                    {
+                        this.state.status && <div className='field'>
+                            <p className='control'>
+                            <button onClick={this.logout.bind(this)} className='button is-info is-outlined'>
+                                Logout
+                            </button>
+                            </p>
+                         </div>
+                    }
                 </Menu>
                 <div id="map" onClick={this.select}></div>
                 {this.onAlert && <Alert id="alert" variant="danger">
