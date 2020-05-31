@@ -6,6 +6,7 @@ export default class Menu extends React.Component {
         super();
         this.state = {
             visibility: false,
+            isMobile: false,
             size: '80%'
         };
     }
@@ -16,17 +17,37 @@ export default class Menu extends React.Component {
             size: !state.visibility ? '50%' : '0%'
         }));
     }
+
+    componentDidMount() {
+        window.addEventListener('resize', () => {
+            this.setState({
+                isMobile: window.innerWidth < 768
+            });
+        });
+    }
  
     render() {
         return (
-            <div className='container' style={{width: this.state.size}}>
-                <this.props.openbtn onClick={this.toggle}></this.props.openbtn>
+            <div className='wrapper' style={{width: this.state.size}}>
+                <div className='menubtn'>
+                    <this.props.openbtn onClick={this.toggle}></this.props.openbtn>
+                </div>
                 <div className='menu'>
-                    <div className="header">
-                        <h3 className="title">{this.props.title}</h3>
-                        <this.props.closebtn onClick={this.toggle}></this.props.closebtn>
+                    <div className='container'>
+                        <nav className='level'>
+                            {!this.state.isMobile && <div className='level-left'>
+                                <div className='level-item'>
+                                    <h3 className='title is-3'>{this.props.title}</h3>
+                                </div>
+                            </div>}
+                            <div className='level-right'>
+                                <div className='level-item'>
+                                    <this.props.closebtn className='menubtn' onClick={this.toggle}></this.props.closebtn>
+                                </div>
+                            </div>
+                        </nav>
                     </div>
-                    <div className="content">
+                    <div>
                         { this.props.children }
                     </div>
                 </div>

@@ -1,20 +1,11 @@
-.tab-list {
-    border-bottom: 1px solid lightgray;
-    padding-left: 0;
-  }
-  
-  .tab-list-item {
-    display: inline-block;
-    list-style: none;
-    margin-bottom: -1px;
-    padding: 0.5rem 0.75rem;
-  }
+a:hover {
+  text-decoration: none;
+}
 
-  .tab-list-item:hover {
-      cursor: pointer;
-      background-color: lightgray;
-  }
-  
-  .tab-list-active {
-    background-color: lightgray;
-  }
+.tabs ul {
+  margin-left: 0;
+}
+
+.field button {
+  float: left;
+}

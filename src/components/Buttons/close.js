@@ -5,7 +5,11 @@ export default class Close extends React.Component {
 
     render() {
         return (
-            <button className='fa fa-times close' onClick={this.props.onClick}></button>
+            <button className='button' onClick={this.props.onClick}>
+                <span className='icon'>
+                    <i className='fa fa-times'></i>
+                </span>
+            </button>
         );
     }
 }

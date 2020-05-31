@@ -5,7 +5,11 @@ export default class Profile extends React.Component {
 
     render() {
         return (
-            <button className='fa fa-user profile' onClick={this.props.onClick}></button>
+            <button className='button' onClick={this.props.onClick}>
+                <span className='icon'>
+                    <i className='fa fa-user'></i>
+                </span>
+            </button>
         );
     }
 }

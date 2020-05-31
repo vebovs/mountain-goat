@@ -7,6 +7,7 @@ import Alert from 'react-bootstrap/Alert';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
+import 'bulma/css/bulma.css';
 
 import Menu from '../Menu/menu';
 import Auth from '../Auth/auth'
@@ -107,7 +108,7 @@ export class Main extends React.Component {
     }
 
     update = (value) => {
-        //Updates the slider value and the circle radius for a responsive user experience
+        //Updates the slider value and the circle radius
         this.setState({ value });
         this.circle.setRadius(value *1000);
     }
@@ -126,11 +127,15 @@ export class Main extends React.Component {
         }).addTo(this.map);
     }
 
+    auth = (username, password) => {
+        console.log('Username: ' + username + ', Password: ' + password);
+    }
+
     render() {
         return (
             <div id="container">
                 <Menu title='Mountain Goat' openbtn={Profile} closebtn={Close}>
-                    <Auth/>
+                    <Auth onAuthenticateInput={this.auth}/>
                 </Menu>
                 <div id="map" onClick={this.select}></div>
                 {this.onAlert && <Alert id="alert" variant="danger">

@@ -1,117 +1,89 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import './auth.css';
 
 export default class Auth extends React.Component {
     constructor() {
         super();
+        this.state = {
+          toggleLogin: true,
+          toggleRegister: false,
+          username: '',
+          password: ''
+        }
+    }
+
+    toggleLogin = () => {
+      this.setState(() => ({
+          toggleLogin: true,
+          toggleRegister: false
+      }));
+    }
+
+    toggleRegister = () => {
+      this.setState(() => ({
+          toggleLogin: false,
+          toggleRegister: true
+      }));
+    }
+
+    handleSubmit = () => {
+      this.props.onAuthenticateInput(this.state.username, this.state.password);
     }
     
     render() {
         return (
-            <div>
-                <Tabs>
-                    <div label="Login">
-                        This is the login screen
-                    </div>
-                    <div label='Register'>
-                        This is the register screen
-                    </div>
-                </Tabs>
+          <div className='container'>
+            <div className='tabs'>
+            <ul>
+              <li className={this.state.toggleLogin ? 'is-active' : null}><a href='#' onClick={this.toggleLogin}>Login</a></li>
+              <li className={this.state.toggleRegister ? 'is-active' : null}><a href='#' onClick={this.toggleRegister}>Register</a></li>
+          </ul>
+          </div>
+          { this.state.toggleLogin && <div>
+            <div className='field'>
+              <label className='label'>Username</label>
+              <div>
+                <input className='input' value={this.state.username} onChange={(e) => this.setState({username: e.target.value})}  type='text' placeholder='Username'/>
+              </div>
             </div>
+            <div className='field'>
+              <label className='label'>Password</label>
+              <div>
+                <input className='input' value={this.state.password}onChange={(e) => this.setState({password: e.target.value})} type='password' placeholder='Password'/>
+              </div>
+            </div>
+            <div className='field'>
+              <p className='control'>
+                <button onClick={this.handleSubmit} className='button is-info is-outlined'>
+                  Login
+                </button>
+              </p>
+          </div>
+          </div>
+          }
+          { this.state.toggleRegister && <div>
+            <div className='field'>
+              <label className='label'>Username</label>
+              <div>
+                <input className='input' value={this.state.username} onChange={(e) => this.setState({username: e.target.value})} type='text' placeholder='Username'/>
+              </div>
+            </div>
+            <div className='field'>
+              <label className='label'>Password</label>
+              <div>
+                <input className='input' value={this.state.password}onChange={(e) => this.setState({password: e.target.value})} type='password' placeholder='Password'/>
+              </div>
+            </div>
+            <div className='field'>
+              <p className='control'>
+                <button className='button is-info is-outlined'>
+                  Register
+                </button>
+              </p>
+          </div>
+          </div>
+          }
+        </div>
         );
     }
 }
-
-class Tabs extends React.Component {
-  static propTypes = {
-    children: PropTypes.instanceOf(Array).isRequired,
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      activeTab: this.props.children[0].props.label,
-    };
-  }
-
-  onClickTabItem = (tab) => {
-    this.setState({ activeTab: tab });
-  }
-
-  render() {
-    const {
-      onClickTabItem,
-      props: {
-        children,
-      },
-      state: {
-        activeTab,
-      }
-    } = this;
-
-    return (
-      <div className="tabs">
-        <ol className="tab-list">
-          {children.map((child) => {
-            const { label } = child.props;
-
-            return (
-              <Tab
-                activeTab={activeTab}
-                key={label}
-                label={label}
-                onClick={onClickTabItem}
-              />
-            );
-          })}
-        </ol>
-        <div className="tab-content">
-          {children.map((child) => {
-            if (child.props.label !== activeTab) return undefined;
-            return child.props.children;
-          })}
-        </div>
-      </div>
-    );
-  }
-}
-
-class Tab extends React.Component {
-    static propTypes = {
-      activeTab: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      onClick: PropTypes.func.isRequired,
-    };
-  
-    onClick = () => {
-      const { label, onClick } = this.props;
-      onClick(label);
-    }
-  
-    render() {
-      const {
-        onClick,
-        props: {
-          activeTab,
-          label,
-        },
-      } = this;
-  
-      let className = 'tab-list-item';
-  
-      if (activeTab === label) {
-        className += ' tab-list-active';
-      }
-  
-      return (
-        <li
-          className={className}
-          onClick={onClick}
-        >
-          {label}
-        </li>
-      );
-    }
-  }
