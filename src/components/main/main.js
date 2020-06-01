@@ -11,6 +11,7 @@ import 'bulma/css/bulma.css';
 // Services
 import HikesService from '../../services/HikesService/hikesService';
 import AuthService from '../../services/AuthService/authService';
+import UserService from '../../services/UserService/userService';
 
 // Components
 import Menu from '../Menu/menu';
@@ -25,7 +26,8 @@ export class Main extends React.Component {
             status: false
         };
         //Default map starting point, OSLO
-        this.center = [59.911491, 10.757933];
+        //this.center = [59.911491, 10.757933];
+        this.center = [59.861023, 5.782079]; //Husnes
         this.toggle = false;
         this.onAlert = false;
     }
@@ -33,7 +35,25 @@ export class Main extends React.Component {
     async findHikes(points) {
         this.hikes = await HikesService.findHikesWithinArea(points);
         //this.setState({ state: this.state });
-        this.drawHikes(); //Needed?
+        this.drawHikes(); // Seperate function needed?
+    }
+
+    displayPopup = (event) => {
+        const path = event.target;
+        console.log(path);
+        //console.log(path.feature._id);
+        const content = '<button id="favourite-btn" class="button">\
+                            <span class="icon">\
+                            <i class="fa fa-heart"></i>\
+                            </span>\
+                            </button>';
+                            
+        path.bindPopup(content).openPopup(); //Places a popup on a path
+
+        const button = L.DomUtil.get('favourite-btn');
+        L.DomEvent.addListener(button, 'click', (e) => {
+            path.closePopup();
+        });
     }
 
     //Draws the hikes on the map
@@ -49,9 +69,11 @@ export class Main extends React.Component {
             },
             coordsToLatLng: (coords) => {
                 return new L.LatLng(coords[0], coords[1]); //Reverse the coordinates to suit leaflet drawing
+            },
+            onEachFeature: (feature, layer) => {
+                layer.on('click', this.displayPopup);
             }
         }).addTo(this.map);
-
         //this.setState({ state: this.state});
     }
 
@@ -119,7 +141,6 @@ export class Main extends React.Component {
     async login(username, password) {
         const res = await AuthService.login(username, password);
         if(res) {
-            console.log(res);
             this.user = res;
             this.setState(() => ({
                 status: true
@@ -140,8 +161,12 @@ export class Main extends React.Component {
     componentDidMount() {
         this.map = L.map('map', {
             center: this.center,
-            zoom: 8
+            zoom: 14 // Starting zoom value
         });
+
+        //zoom: 5
+
+        this.map.doubleClickZoom.disable(); // Disables zoom when double clicking
         
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors',
@@ -168,7 +193,7 @@ export class Main extends React.Component {
                          </div>
                     }
                 </Menu>
-                <div id="map" onClick={this.select}></div>
+                <div id="map" onDoubleClick={this.select} ></div>
                 {this.onAlert && <Alert id="alert" variant="danger">
                     <Alert.Heading>No hikes found</Alert.Heading>
                 </Alert>}

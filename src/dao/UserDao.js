@@ -15,7 +15,8 @@ module.exports = class UserDao extends Dao {
         const hash = await bcrypt.hash(password, salt);
         const new_user = {
             username: username,
-            password: hash
+            password: hash,
+            favourties: []
         };
         return (await this.db.collection(this.collection).insertOne(new_user)).result.ok;
     }
@@ -26,5 +27,30 @@ module.exports = class UserDao extends Dao {
 
     find_user_by_id(id) {
         return this.db.collection(this.collection).findOne({_id: new mongo.ObjectID(id)});
+    }
+
+    async save_hike(user_id, hike_id) {
+        //Checks if user already has favourited the hike
+        const present = await this.db.collection(this.collection).findOne({
+            _id: new mongo.ObjectID(user_id),
+            favourties: {
+                $in: [new mongo.ObjectID(hike_id)]
+            }
+        });
+
+        if(present) return false; //Return is already favourited
+
+        const res = await this.db.collection(this.collection).updateOne(
+            { 
+                _id: new mongo.ObjectID(user_id) 
+            },
+            {
+                $push: {
+                    favourties: new mongo.ObjectID(hike_id)
+                }
+            }
+        );
+        console.log(res);
+        return res;
     }
 }
