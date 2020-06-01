@@ -118,4 +118,20 @@ app.post('/user/hike/save', async (req, res) => {
     }
 });
 
+app.delete('/user/hike/delete', async (req, res) => {
+    try {
+        const success = await userdao.delete_hike(req.body.user_id, req.body.hike_id);
+        if(success) {
+            res.status(200)
+            res.json('success');
+        } else {
+            res.status(400);
+            res.json('Nothing to delete');
+        }
+    } catch(error) {
+        res.status(500);
+        res.json('An internal server error occurred');
+    }
+});
+
 app.listen(5000, () => console.log('Server started at port 5000'));

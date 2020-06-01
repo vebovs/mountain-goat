@@ -17,11 +17,15 @@ import UserService from '../../services/UserService/userService';
 import Menu from '../Menu/menu';
 import AuthForm from '../AuthForm/authForm'
 import { Profile, Close } from '../Buttons';
+import Card from '../Card/card';
 
 export class Main extends React.Component {
     constructor() {
         super();
-        this.state = { 
+        this.state = {
+            user: '', 
+            userHikes: [],
+            favourites: '',
             value: 3,
             status: false
         };
@@ -38,6 +42,12 @@ export class Main extends React.Component {
         this.drawHikes(); // Seperate function needed?
     }
 
+    async saveHike(id) {
+        console.log('saving...');
+        const res = await UserService.addHikeToFavourites(this.state.user._id, id);
+        if(res) console.log(res);
+    }
+
     displayPopup = (event) => {
         const path = event.target;
         console.log(path);
@@ -52,7 +62,7 @@ export class Main extends React.Component {
 
         const button = L.DomUtil.get('favourite-btn');
         L.DomEvent.addListener(button, 'click', (e) => {
-            path.closePopup();
+            this.saveHike(path.feature._id);
         });
     }
 
@@ -141,10 +151,8 @@ export class Main extends React.Component {
     async login(username, password) {
         const res = await AuthService.login(username, password);
         if(res) {
-            this.user = res;
-            console.log(this.user);
-            this.favourites = await UserService.getFavouriteHikes(this.user.favourites);
-            console.log(this.favourites);
+            this.state.user = res;
+            this.state.favourites = await UserService.getFavouriteHikes(this.state.user.favourites);
             this.setState(() => ({
                 status: true
             }));
@@ -154,7 +162,7 @@ export class Main extends React.Component {
     async logout() {
         const res = await AuthService.logout();
         if(res) {
-            this.user = undefined;
+            this.state.user = undefined;
             this.setState(() => ({
                 status: false
             }));
@@ -177,6 +185,55 @@ export class Main extends React.Component {
             maxZoom: 20,
             maxNativeZoom: 17
         }).addTo(this.map);
+
+        this.login('test', 'test');
+    }
+
+    showHike = (id) => {
+        const hike = this.state.favourites.filter(e => e._id === id);
+        //this.drawHikes(hike);
+
+        const hikeLayer = L.geoJSON(hike, {
+            style: (feature) => {
+                return {
+                    stroke: true,
+                    color: 'grey',
+                    weight: 5,
+                    opacity: 0.75
+                };
+            },
+            coordsToLatLng: (coords) => {
+                return new L.LatLng(coords[0], coords[1]);
+            },
+            onEachFeature: (feature, layer) => {
+                layer.on('click', this.displayPopup);
+            }
+        }).addTo(this.map);
+
+        this.state.userHikes.push([hikeLayer, hike]);
+
+        const moveToCords = hike[0].geometry.coordinates[0];
+        this.map.setView(moveToCords);
+    }
+
+    clearHike = (id) => {
+        if(this.state.userHikes.length > 0) {
+            const hikeToRemove = this.state.userHikes.filter(e => e[1][0]._id === id)[0][0];
+            this.map.removeLayer(hikeToRemove);
+        }
+        
+    }
+
+    async removeHike(id) {
+        this.clearHike(id);
+        const favouriteId = this.state.user.favourites.filter(e => e === id)[0];
+        const favourites = this.state.favourites.filter(e => e._id !== favouriteId);
+        const res = await UserService.removeHike(this.state.user._id, id);
+        if(res) {
+            this.setState({
+                favourites: favourites
+            });
+        }
     }
 
     render() {
@@ -191,26 +248,11 @@ export class Main extends React.Component {
 
                             <div>
                                 {
-                                    this.favourites.map((e) => 
-                                        <p key={e._id}>{e._id}</p>
+                                    this.state.favourites.map((e) => 
+                                        <Card key={e._id} name={e._id} show={() => this.showHike(e._id)} remove={() => this.removeHike(e._id)} clear={() => this.clearHike(e._id)}/>
                                     )
                                 }
                             </div>
-
-                            <nav className='level is-mobile'>
-                                <div className='level-left'>
-                                    <button className='button is-link is-light'>Hello World!</button>
-                                </div>
-                                <div className='level-right'>
-                                    <div className='level-item'>
-                                        <button className='button'>
-                                            <span className='icon'>
-                                                <i className='fa fa-trash'></i>
-                                            </span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </nav>
 
                             <div className='field'>
                                 <p className='control'>

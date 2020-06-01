@@ -40,7 +40,7 @@ module.exports = class UserDao extends Dao {
 
         if(present) return false; //Return is already favourited
 
-        const res = await this.db.collection(this.collection).updateOne(
+        return await this.db.collection(this.collection).updateOne(
             { 
                 _id: new mongo.ObjectID(user_id) 
             },
@@ -50,7 +50,18 @@ module.exports = class UserDao extends Dao {
                 }
             }
         );
-        console.log(res);
-        return res;
     }
+
+    async delete_hike(user_id, hike_id) {
+        return await this.db.collection(this.collection).updateOne(
+            {
+                _id: new mongo.ObjectID(user_id)
+            },
+            {
+                $pull: {
+                    favourites: new mongo.ObjectID(hike_id)
+                }
+            }
+        );
+    }    
 }

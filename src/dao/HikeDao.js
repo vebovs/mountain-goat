@@ -46,7 +46,6 @@ module.exports = class HikeDao extends Dao {
 
     findHikesByIds(data) {
         const ids  = data.map(e => e = new mongo.ObjectID(e));
-        console.log(ids);
         return this.db.collection(this.collection).find({
             _id: {
                 $in: ids
