@@ -47,7 +47,7 @@ export class Main extends React.Component {
                             <i class="fa fa-heart"></i>\
                             </span>\
                             </button>';
-                            
+
         path.bindPopup(content).openPopup(); //Places a popup on a path
 
         const button = L.DomUtil.get('favourite-btn');
@@ -142,6 +142,9 @@ export class Main extends React.Component {
         const res = await AuthService.login(username, password);
         if(res) {
             this.user = res;
+            console.log(this.user);
+            this.favourites = await UserService.getFavouriteHikes(this.user.favourites);
+            console.log(this.favourites);
             this.setState(() => ({
                 status: true
             }));
@@ -184,12 +187,40 @@ export class Main extends React.Component {
                         !this.state.status && <AuthForm onLoginInput={this.login.bind(this)} onRegisterInput={this.register.bind(this)}/>
                     }
                     {
-                        this.state.status && <div className='field'>
-                            <p className='control'>
-                            <button onClick={this.logout.bind(this)} className='button is-info is-outlined'>
-                                Logout
-                            </button>
-                            </p>
+                        this.state.status && <div className="container">
+
+                            <div>
+                                {
+                                    this.favourites.map((e) => 
+                                        <p key={e._id}>{e._id}</p>
+                                    )
+                                }
+                            </div>
+
+                            <nav className='level is-mobile'>
+                                <div className='level-left'>
+                                    <button className='button is-link is-light'>Hello World!</button>
+                                </div>
+                                <div className='level-right'>
+                                    <div className='level-item'>
+                                        <button className='button'>
+                                            <span className='icon'>
+                                                <i className='fa fa-trash'></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </nav>
+
+                            <div className='field'>
+                                <p className='control'>
+                                <button onClick={this.logout.bind(this)} className='button is-info is-outlined'>
+                                    Logout
+                                </button>
+                                </p>
+                            </div>
+
+                            
                          </div>
                     }
                 </Menu>

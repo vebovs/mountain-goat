@@ -16,7 +16,7 @@ module.exports = class UserDao extends Dao {
         const new_user = {
             username: username,
             password: hash,
-            favourties: []
+            favourites: []
         };
         return (await this.db.collection(this.collection).insertOne(new_user)).result.ok;
     }
@@ -33,7 +33,7 @@ module.exports = class UserDao extends Dao {
         //Checks if user already has favourited the hike
         const present = await this.db.collection(this.collection).findOne({
             _id: new mongo.ObjectID(user_id),
-            favourties: {
+            favourites: {
                 $in: [new mongo.ObjectID(hike_id)]
             }
         });
@@ -46,7 +46,7 @@ module.exports = class UserDao extends Dao {
             },
             {
                 $push: {
-                    favourties: new mongo.ObjectID(hike_id)
+                    favourites: new mongo.ObjectID(hike_id)
                 }
             }
         );

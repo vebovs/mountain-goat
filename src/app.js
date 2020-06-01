@@ -86,9 +86,16 @@ app.get('/logout', async (req, res) => {
     }
 });
 
-app.get('/user/hike/all', async (req, res) => {
+app.post('/user/hikes', async (req, res) => {
     try {
-        
+        const success = await hikedao.findHikesByIds(req.body.data);
+        if(success) {
+            res.status(200)
+            res.json(success);
+        } else {
+            res.status(404);
+            res.json('Nothing found');
+        }
     } catch(error) {
         res.status(500);
         res.json('An internal server error occurred');

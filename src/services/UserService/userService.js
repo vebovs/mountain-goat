@@ -4,12 +4,17 @@ const API_URL = 'http://localhost:5000/';
 
 class UserService {
 
-    async getFavouriteHikes(user_id) {
-        console.log(user_id);
+    async getFavouriteHikes(hike_ids) {
+        return await axios.post(API_URL + 'user/hikes', {
+            data: hike_ids
+        }).then(response => {
+            return response.data
+        }).catch(error => console.log(error));
     }
 
-    async addHikeToFavourites(hike_id) {
-        console.log(hike_id);
+    async addHikeToFavourites(user_id, hike_id) {
+        console.log('USER: ' + user_id);
+        console.log('HIKE: ' + hike_id);
     }
 }
 

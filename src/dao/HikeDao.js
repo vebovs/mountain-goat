@@ -1,4 +1,5 @@
 const Dao = require('./Dao.js');
+const mongo = require('mongodb');
 
 module.exports = class HikeDao extends Dao {
     constructor(collection) {
@@ -41,5 +42,15 @@ module.exports = class HikeDao extends Dao {
                 }
             }
         ).toArray();
+    }
+
+    findHikesByIds(data) {
+        const ids  = data.map(e => e = new mongo.ObjectID(e));
+        console.log(ids);
+        return this.db.collection(this.collection).find({
+            _id: {
+                $in: ids
+            }
+        }).toArray();
     }
 }
