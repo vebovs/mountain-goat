@@ -7,14 +7,13 @@ export default class Menu extends React.Component {
         this.state = {
             visibility: false,
             isMobile: false,
-            size: '0%'
+            size: '50%'
         };
     }
 
     toggle = () => {
         this.setState(state => ({
-            visibility: !state.visibility,
-            size: !state.visibility ? '50%' : '0%'
+            visibility: !state.visibility
         }));
     }
 
@@ -28,7 +27,7 @@ export default class Menu extends React.Component {
  
     render() {
         return (
-            <div className='wrapper' style={{width: this.state.size}}>
+            <div className={this.state.visibility ? 'wrapper' : 'wrapper responsive'}>
                 <div className='menubtn'>
                     <this.props.openbtn onClick={this.toggle}></this.props.openbtn>
                 </div>

@@ -52,4 +52,10 @@ module.exports = class HikeDao extends Dao {
             }
         }).toArray();
     }
+
+    async getHike(id) {
+        return await this.db.collection(this.collection).findOne({
+            _id: new mongo.ObjectID(id)
+        });
+    }
 }

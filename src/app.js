@@ -32,13 +32,34 @@ app.get('/', async (req, res) => {
 app.post('/hikes', async (req, res) => {
     try {
         const hikes = await hikedao.getHikes(req.body);
-        res.status(200);
-        res.json(hikes);
+        if(hikes) {
+            res.status(200);
+            res.json(hikes);
+        } else {
+            res.status(400);
+            res.json('Nothing found');
+        }
     } catch(error) {
         res.status(500);
         res.json('An internal server error has occurred');
     }
     
+});
+
+app.get('/hike/:id', async (req, res) => {
+    try {
+        const success = await hikedao.getHike(req.params.id);
+        if(success) {
+            res.status(200);
+            res.json(success);
+        } else {
+            res.status(400);
+            res.json('Nothing found');
+        }
+    } catch(error) {
+        res.status(500);
+        res.json('An internal server error has occurred');
+    }
 });
 
 app.post('/register', async (req, res) => {

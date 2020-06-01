@@ -13,9 +13,6 @@ class UserService {
     }
 
     async addHikeToFavourites(user_id, hike_id) {
-        console.log('USER: ' + user_id);
-        console.log('HIKE: ' + hike_id);
-
         return await axios.post(API_URL + 'user/hike/save', {
             user_id: user_id,
             hike_id: hike_id

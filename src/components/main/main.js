@@ -42,16 +42,8 @@ export class Main extends React.Component {
         this.drawHikes(); // Seperate function needed?
     }
 
-    async saveHike(id) {
-        console.log('saving...');
-        const res = await UserService.addHikeToFavourites(this.state.user._id, id);
-        if(res) console.log(res);
-    }
-
     displayPopup = (event) => {
         const path = event.target;
-        console.log(path);
-        //console.log(path.feature._id);
         const content = '<button id="favourite-btn" class="button">\
                             <span class="icon">\
                             <i class="fa fa-heart"></i>\
@@ -63,6 +55,7 @@ export class Main extends React.Component {
         const button = L.DomUtil.get('favourite-btn');
         L.DomEvent.addListener(button, 'click', (e) => {
             this.saveHike(path.feature._id);
+            path.closePopup();
         });
     }
 
@@ -145,7 +138,7 @@ export class Main extends React.Component {
 
     async register(username, password) {
         const res = await AuthService.register(username, password);
-        console.log(res);
+        if(res) console.log(res);
     }
 
     async login(username, password) {
@@ -167,26 +160,6 @@ export class Main extends React.Component {
                 status: false
             }));
         }
-    }
- 
-    componentDidMount() {
-        this.map = L.map('map', {
-            center: this.center,
-            zoom: 14 // Starting zoom value
-        });
-
-        //zoom: 5
-
-        this.map.doubleClickZoom.disable(); // Disables zoom when double clicking
-        
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors',
-            detectRetina: true,    
-            maxZoom: 20,
-            maxNativeZoom: 17
-        }).addTo(this.map);
-
-        this.login('test', 'test');
     }
 
     showHike = (id) => {
@@ -216,6 +189,23 @@ export class Main extends React.Component {
         this.map.setView(moveToCords);
     }
 
+    async saveHike(id) {
+        if(this.state.status) {
+            const res = await UserService.addHikeToFavourites(this.state.user._id, id);
+            if(res) {
+                const data = await HikesService.getHike(id);
+                this.state.favourites.push(data);
+                if(data) {
+                    this.setState(state => ({
+                        favourites: state.favourites
+                    }));
+                }
+            }
+        } else {
+            alert('You need to be logged in for this action');
+        }
+    }
+
     clearHike = (id) => {
         if(this.state.userHikes.length > 0) {
             const hikeToRemove = this.state.userHikes.filter(e => e[1][0]._id === id)[0][0];
@@ -234,6 +224,26 @@ export class Main extends React.Component {
                 favourites: favourites
             });
         }
+    }
+
+    componentDidMount() {
+        this.map = L.map('map', {
+            center: this.center,
+            zoom: 14 // Starting zoom value
+        });
+
+        //zoom: 5
+
+        this.map.doubleClickZoom.disable(); // Disables zoom when double clicking
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors',
+            detectRetina: true,    
+            maxZoom: 20,
+            maxNativeZoom: 17
+        }).addTo(this.map);
+
+        this.login('test', 'test');
     }
 
     render() {
