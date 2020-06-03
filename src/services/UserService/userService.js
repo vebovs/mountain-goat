@@ -12,10 +12,11 @@ class UserService {
         }).catch(error => console.log(error));
     }
 
-    async addHikeToFavourites(user_id, hike_id) {
+    async addHikeToFavourites(user_id, hike_id, nickname) {
         return await axios.post(API_URL + 'user/hike/save', {
             user_id: user_id,
-            hike_id: hike_id
+            hike_id: hike_id,
+            nickname: nickname
         }).then(response => {
             return response.data;
         }).catch(error => console.log(error));

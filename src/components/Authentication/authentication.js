@@ -1,7 +1,7 @@
 import React from 'react';
-import './authForm.css';
+import './authentication.css';
 
-export default class AuthForm extends React.Component {
+export default class Authentication extends React.Component {
     constructor() {
         super();
         this.state = {

@@ -29,7 +29,7 @@ module.exports = class UserDao extends Dao {
         return this.db.collection(this.collection).findOne({_id: new mongo.ObjectID(id)});
     }
 
-    async save_hike(user_id, hike_id) {
+    async save_hike(user_id, hike_id, nickname) {
         //Checks if user already has favourited the hike
         const present = await this.db.collection(this.collection).findOne({
             _id: new mongo.ObjectID(user_id),
@@ -46,7 +46,10 @@ module.exports = class UserDao extends Dao {
             },
             {
                 $push: {
-                    favourites: new mongo.ObjectID(hike_id)
+                    favourites: {
+                        id: new mongo.ObjectID(hike_id),
+                        nickname: nickname
+                    }
                 }
             }
         );
@@ -59,7 +62,9 @@ module.exports = class UserDao extends Dao {
             },
             {
                 $pull: {
-                    favourites: new mongo.ObjectID(hike_id)
+                    favourites: {
+                        id: new mongo.ObjectID(hike_id)
+                    }
                 }
             }
         );

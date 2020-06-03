@@ -15,7 +15,8 @@ import UserService from '../../services/UserService/userService';
 
 // Components
 import Menu from '../Menu/menu';
-import AuthForm from '../AuthForm/authForm'
+import Authentication from '../Authentication/authentication';
+import Dashboard from '../Dashboard/dashboard';
 import { Profile, Close } from '../Buttons';
 import Card from '../Card/card';
 
@@ -44,18 +45,33 @@ export class Main extends React.Component {
 
     displayPopup = (event) => {
         const path = event.target;
-        const content = '<button id="favourite-btn" class="button">\
-                            <span class="icon">\
-                            <i class="fa fa-heart"></i>\
-                            </span>\
-                            </button>';
 
-        path.bindPopup(content).openPopup(); //Places a popup on a path
+        const content = '<div class="container">' +
+                            '<div class="field">' +
+                                '<div class="control">' +
+                                    '<input id="nickname" class="input is info" type="text" placeholder="Nickname"></input>' +
+                                '</div>' +
+                            '</div>' +
+                            '<button id="favourite-btn" class="button">' +
+                                '<span class="icon">' +
+                                    '<i class="fa fa-heart"></i>' +
+                                '</span>' +
+                            '</button>' +
+                        '</div>';
+
+        path.bindPopup(content, {
+            minWidth: 128
+        }).openPopup(); //Places a popup on a path
 
         const button = L.DomUtil.get('favourite-btn');
         L.DomEvent.addListener(button, 'click', (e) => {
-            this.saveHike(path.feature._id);
-            path.closePopup();
+            const nickname = L.DomUtil.get('nickname').value;
+            if(nickname) {
+                this.saveHike(path.feature._id, nickname);
+                path.closePopup();
+            } else {
+                console.log('no nickname');
+            }
         });
     }
 
@@ -145,7 +161,8 @@ export class Main extends React.Component {
         const res = await AuthService.login(username, password);
         if(res) {
             this.state.user = res;
-            this.state.favourites = await UserService.getFavouriteHikes(this.state.user.favourites);
+            const ids = this.state.user.favourites.map(e => e.id);
+            this.state.favourites = await UserService.getFavouriteHikes(ids);
             this.setState(() => ({
                 status: true
             }));
@@ -183,19 +200,27 @@ export class Main extends React.Component {
             }
         }).addTo(this.map);
 
-        this.state.userHikes.push([hikeLayer, hike]);
+        const hikeId = hike.map(e => e._id)[0];
+        this.state.userHikes.push({
+            id: hikeId,
+            layer: hikeLayer
+        });
 
         const moveToCords = hike[0].geometry.coordinates[0];
         this.map.setView(moveToCords);
     }
 
-    async saveHike(id) {
+    async saveHike(id, nickname) {
         if(this.state.status) {
-            const res = await UserService.addHikeToFavourites(this.state.user._id, id);
+            const res = await UserService.addHikeToFavourites(this.state.user._id, id, nickname);
             if(res) {
                 const data = await HikesService.getHike(id);
-                this.state.favourites.push(data);
                 if(data) {
+                    this.state.user.favourites.push({
+                        id: id,
+                        nickname: nickname
+                    });
+                    this.state.favourites.push(data);
                     this.setState(state => ({
                         favourites: state.favourites
                     }));
@@ -207,21 +232,24 @@ export class Main extends React.Component {
     }
 
     clearHike = (id) => {
-        if(this.state.userHikes.length > 0) {
-            const hikeToRemove = this.state.userHikes.filter(e => e[1][0]._id === id)[0][0];
-            this.map.removeLayer(hikeToRemove);
+        const hikeToRemove = this.state.userHikes.filter(e => e.id === id);
+        if(hikeToRemove.length) {
+            const layerToRemove = hikeToRemove.map(e => e.layer)[0];
+            this.map.removeLayer(layerToRemove);
+            this.state.userHikes = this.state.userHikes.filter(e => e.id !== id);
         }
         
     }
 
     async removeHike(id) {
         this.clearHike(id);
-        const favouriteId = this.state.user.favourites.filter(e => e === id)[0];
-        const favourites = this.state.favourites.filter(e => e._id !== favouriteId);
+        const favourite = this.state.user.favourites.filter(e => e.id === id)[0];
+        const favourites = this.state.favourites.filter(e => e._id !== favourite.id);
         const res = await UserService.removeHike(this.state.user._id, id);
         if(res) {
+            this.state.user.favourites = this.state.user.favourites.filter(e => e.id !== id);
             this.setState({
-                favourites: favourites
+                favourite: favourites
             });
         }
     }
@@ -243,7 +271,7 @@ export class Main extends React.Component {
             maxNativeZoom: 17
         }).addTo(this.map);
 
-        this.login('test', 'test');
+        //this.login('test', 'test');
     }
 
     render() {
@@ -251,28 +279,19 @@ export class Main extends React.Component {
             <div id="container">
                 <Menu title='Mountain Goat' openbtn={Profile} closebtn={Close}>
                     {
-                        !this.state.status && <AuthForm onLoginInput={this.login.bind(this)} onRegisterInput={this.register.bind(this)}/>
+                        !this.state.status && <Authentication onLoginInput={this.login.bind(this)} onRegisterInput={this.register.bind(this)}/>
                     }
                     {
-                        this.state.status && <div className="container">
-
-                            <div>
-                                {
-                                    this.state.favourites.map((e) => 
-                                        <Card key={e._id} name={e._id} show={() => this.showHike(e._id)} remove={() => this.removeHike(e._id)} clear={() => this.clearHike(e._id)}/>
-                                    )
-                                }
-                            </div>
-
-                            <div className='field'>
-                                <p className='control'>
-                                <button onClick={this.logout.bind(this)} className='button is-info is-outlined'>
-                                    Logout
-                                </button>
-                                </p>
-                            </div>
-
-                            
+                        this.state.status && <div>
+                            <Dashboard onClick={this.logout.bind(this)}>
+                                <div>
+                                    {
+                                        this.state.user.favourites.map((e) => 
+                                            <Card key={e.id} name={e.nickname} show={() => this.showHike(e.id)} remove={() => this.removeHike(e.id)} clear={() => this.clearHike(e.id)}/>
+                                        )
+                                    }
+                                </div>
+                             </Dashboard>
                          </div>
                     }
                 </Menu>

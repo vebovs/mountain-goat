@@ -125,7 +125,7 @@ app.post('/user/hikes', async (req, res) => {
 
 app.post('/user/hike/save', async (req, res) => {
     try {
-        const success = await userdao.save_hike(req.body.user_id, req.body.hike_id);
+        const success = await userdao.save_hike(req.body.user_id, req.body.hike_id, req.body.nickname);
         if(success) {
             res.status(200)
             res.json('success');
