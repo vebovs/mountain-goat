@@ -1,6 +1,6 @@
 .slider-wrapper {
     position: absolute;
-    z-index: 100000000;
+    z-index: 10000;
     padding: 0;
     /*margin: 2em 1em 2em 0;*/
     width: 0%;

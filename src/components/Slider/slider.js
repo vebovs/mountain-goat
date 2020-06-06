@@ -5,40 +5,26 @@ export default class Card extends React.Component {
     constructor() {
         super();
         this.state = {
-            value: '3',
-            toggle: false
+            data: '3'
         }
     }
 
-    toggle = () => {
-        console.log('halp');
-        this.setState(state => ({
-            toggle: !state.toggle
-        }));
+    handleInput = (event) => {
+        this.setState({ data: event.target.value });
+        this.props.onRangeInput(event.target.value);
     }
 
-    sliderValue = (value) => {
-        console.log(value.target.value);
-        //this.state.value = value.target.value;
-        //console.log(this.state.value);
-        this.setState({ value: value.target.value });
-    }
-
-    componentDidMount() {
-        this.setState({toggle: this.props.toggle});
-    }
- 
     render() {
         return (
             <div className={!this.props.toggle ? 'slider-wrapper' : 'slider-wrapper visible'}>
                     <div className='slider-box'>
-                        <input className='slider-input is-fullwidth is-info' step='1' min='1' max='20' value={this.state.value} onChange={value => this.sliderValue(value)} type='range' orient='vertical' />
-                        <button className='button enter'>
+                        <input className='slider-input is-fullwidth is-info' step='1' min='1' max='9' value={this.state.data} onChange={data => this.handleInput(data)} type='range' orient='vertical' />
+                        <button className='button enter' onClick={this.props.enter}>
                             <span className='icon'>
                                 <i className='fa fa-search'></i>
                             </span>
                         </button>
-                        <button className='button remove'>
+                        <button className='button remove' onClick={this.props.remove}>
                             <span className='icon'>
                                 <i className='fa fa-times'></i>
                             </span>

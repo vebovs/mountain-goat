@@ -1,5 +1,4 @@
 import React from 'react';
-import Alert from 'react-bootstrap/Alert';
 import L from 'leaflet';
 
 // CSS
@@ -19,6 +18,7 @@ import Dashboard from '../Dashboard/dashboard';
 import { Profile, Close } from '../Buttons';
 import Card from '../Card/card';
 import Slider from '../Slider/slider';
+import Alert from '../Alert/alert';
 
 export class Main extends React.Component {
     constructor() {
@@ -35,6 +35,8 @@ export class Main extends React.Component {
         this.center = [59.861023, 5.782079]; //Husnes
         this.toggle = false;
         this.onAlert = false;
+        this.alert = false;
+        this.message = '';
     }
 
     async findHikes(points) {
@@ -70,7 +72,7 @@ export class Main extends React.Component {
                 this.saveHike(path.feature._id, nickname);
                 path.closePopup();
             } else {
-                console.log('no nickname');
+                this.displayAlert('A nickname is required');
             }
         });
     }
@@ -155,30 +157,48 @@ export class Main extends React.Component {
     }
 
     async register(username, password) {
-        const res = await AuthService.register(username, password);
-        if(res) console.log(res);
+        if(!username && !password) {
+            this.displayAlert('A username and password is required');
+        } else if(!username) {
+            this.displayAlert('A username is required');
+        } else if(!password) {
+            this.displayAlert('A password is required');
+        } else {
+            AuthService.register(username, password)
+            .catch(error => {
+                this.displayAlert(error.response.data);
+            });
+        }
     }
 
     async login(username, password) {
-        const res = await AuthService.login(username, password);
-        if(res) {
-            this.state.user = res;
-            const ids = this.state.user.favourites.map(e => e.id);
-            this.state.favourites = await UserService.getFavouriteHikes(ids);
-            this.setState(() => ({
-                status: true
-            }));
+        if(!username && !password) {
+            this.displayAlert('A username and password is required');
+        } else if(!username) {
+            this.displayAlert('A username is required');
+        } else if(!password) {
+            this.displayAlert('A password is required');
+        } else {
+            AuthService.login(username, password)
+            .then(async res => {
+                this.state.user = res;
+                const ids = this.state.user.favourites.map(e => e.id);
+                this.state.favourites = await UserService.getFavouriteHikes(ids);
+                this.setState(() => ({
+                    status: true
+                }));
+            })
+            .catch(error => {
+                this.displayAlert(error.response.data);
+            });
         }
     }
 
     async logout() {
-        const res = await AuthService.logout();
-        if(res) {
-            this.state.user = undefined;
-            this.setState(() => ({
-                status: false
-            }));
-        }
+        AuthService.logout()
+        .catch(error => {
+            this.displayAlert(error.response.data);
+        });
     }
 
     showHike = (id) => {
@@ -238,9 +258,11 @@ export class Main extends React.Component {
         if(hikeToRemove.length) {
             const layerToRemove = hikeToRemove.map(e => e.layer)[0];
             this.map.removeLayer(layerToRemove);
-            this.state.userHikes = this.state.userHikes.filter(e => e.id !== id);
+            //this.state.userHikes = this.state.userHikes.filter(e => e.id !== id);
+            this.setState(state => {
+                state.userHikes = state.userHikes.filter(e => e.id !== id);
+            })
         }
-        
     }
 
     async removeHike(id) {
@@ -273,12 +295,24 @@ export class Main extends React.Component {
             maxNativeZoom: 17
         }).addTo(this.map);
 
-        //this.login('test', 'test');
     }
 
+    displayAlert = (message) => {
+        this.alert = true;
+        this.message = message;
+        this.setState({ state: this.state});
+    }
+
+    dismiss = () => {
+        this.alert = false;
+        this.message = '';
+        this.setState({ state: this.state });
+    }
+ 
     render() {
         return (
             <div id="container">
+                <Alert alert={this.alert} onClick={this.dismiss}>{this.message}</Alert>
                 <Menu title='Mountain Goat' openbtn={Profile} closebtn={Close}>
                     {
                         !this.state.status && <Authentication onLoginInput={this.login.bind(this)} onRegisterInput={this.register.bind(this)}/>
@@ -297,11 +331,8 @@ export class Main extends React.Component {
                          </div>
                     }
                 </Menu>
-                <Slider toggle={this.toggle} />
+                <Slider toggle={this.toggle} onRangeInput={this.update.bind(this)} remove={this.remove} enter={this.enter} />
                 <div id="map" onDoubleClick={this.select} ></div>
-                {this.onAlert && <Alert id="alert" variant="danger">
-                    <Alert.Heading>No hikes found</Alert.Heading>
-                </Alert>}
             </div>
         );
     }

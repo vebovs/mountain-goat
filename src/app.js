@@ -3,7 +3,6 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const passport = require('passport');
-const flash = require('connect-flash');
 const session = require('express-session');
 
 require('./config/passport')(passport);

@@ -37,7 +37,9 @@ export default class Menu extends React.Component {
                         </nav>
                     </div>
                     <div>
-                        { this.props.children }
+                        {
+                            this.props.children
+                        }
                     </div>
                 </div>
             </div>
