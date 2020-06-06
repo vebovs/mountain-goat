@@ -5,40 +5,30 @@ export default class Menu extends React.Component {
     constructor() {
         super();
         this.state = {
-            visibility: false,
-            isMobile: false,
-            size: '0%'
+            toggle: false
         };
     }
 
     toggle = () => {
         this.setState(state => ({
-            visibility: !state.visibility
+            toggle: !state.toggle
         }));
     }
 
-    componentDidMount() {
-        window.addEventListener('resize', () => {
-            this.setState({
-                isMobile: window.innerWidth < 768
-            });
-        });
-    }
- 
     render() {
         return (
-            <div className={!this.state.visibility ? 'wrapper' : 'wrapper responsive'}>
+            <div className={!this.state.toggle ? 'wrapper' : 'wrapper responsive'}>
                 <div className='menubtn'>
                     <this.props.openbtn onClick={this.toggle}></this.props.openbtn>
                 </div>
                 <div className='menu'>
                     <div className='container'>
                         <nav className='level'>
-                            {!this.state.isMobile && <div className='level-left'>
+                            <div className='level-left'>
                                 <div className='level-item'>
                                     <h3 className='title is-3'>{this.props.title}</h3>
                                 </div>
-                            </div>}
+                            </div>
                             <div className='level-right'>
                                 <div className='level-item'>
                                     <this.props.closebtn className='menubtn' onClick={this.toggle}></this.props.closebtn>

@@ -1,12 +1,11 @@
 import React from 'react';
-import InputRange from 'react-input-range';
-import 'react-input-range/lib/css/index.css';
-import Fade from 'react-reveal/Fade';
-import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import L from 'leaflet';
+
+// CSS
 import 'leaflet/dist/leaflet.css';
 import 'bulma/css/bulma.css';
+import './main.css';
 
 // Services
 import HikesService from '../../services/HikesService/hikesService';
@@ -19,6 +18,7 @@ import Authentication from '../Authentication/authentication';
 import Dashboard from '../Dashboard/dashboard';
 import { Profile, Close } from '../Buttons';
 import Card from '../Card/card';
+import Slider from '../Slider/slider';
 
 export class Main extends React.Component {
     constructor() {
@@ -120,6 +120,8 @@ export class Main extends React.Component {
 
         //Converts the (x,y) coordinates of the window to latitude and longitude
         let event = this.map.mouseEventToLatLng(e);
+
+        //if(this.geoJSONlayer) this.map.removeLayer(this.geoJSONlayer);
 
         //Checks to see if there already is a circle on the map. If there is, it is replaced with a new one.
         if(!this.circle){
@@ -287,7 +289,7 @@ export class Main extends React.Component {
                                 <div>
                                     {
                                         this.state.user.favourites.map((e) => 
-                                            <Card key={e.id} name={e.nickname} show={() => this.showHike(e.id)} remove={() => this.removeHike(e.id)} clear={() => this.clearHike(e.id)}/>
+                                            <Card key={e.id} name={e.nickname} show={() => this.showHike(e.id)} remove={() => this.removeHike(e.id)} clear={() => this.clearHike(e.id)} />
                                         )
                                     }
                                 </div>
@@ -295,27 +297,11 @@ export class Main extends React.Component {
                          </div>
                     }
                 </Menu>
+                <Slider toggle={this.toggle} />
                 <div id="map" onDoubleClick={this.select} ></div>
                 {this.onAlert && <Alert id="alert" variant="danger">
                     <Alert.Heading>No hikes found</Alert.Heading>
                 </Alert>}
-                {this.toggle && <Fade bottom>
-                    <div id="popup">
-                        <Button id="enterbtn" variant="success" onClick={this.enter}>Enter</Button>
-                        <Button id="closebtn" variant="danger" onClick={this.remove}>Close</Button>
-                            <div id="distance">{ 'Distance: ' + this.state.value + ' kilometer(s)' }</div>
-                            <div id="slider">
-                                <InputRange
-                                    axis="x"
-                                    xstep={1}
-                                    maxValue={20}
-                                    minValue={1}
-                                    value={this.state.value}
-                                    onChange={value => this.update(value)}
-                                />
-                        </div>
-                    </div>
-                </Fade>}
             </div>
         );
     }
