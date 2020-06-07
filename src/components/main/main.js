@@ -120,6 +120,7 @@ export class Main extends React.Component {
         //Gets the edgepoints of the circle
         const points = this.circle.getBounds();
 
+        //Storing the boundries in a more accessible and readable manner
         const data = {
             top: points._northEast.lat,
             bottom: points._southWest.lat,
