@@ -4,6 +4,7 @@ const app = express();
 const cors = require('cors');
 const passport = require('passport');
 const session = require('express-session');
+const path = require('path');
 
 require('./config/passport')(passport);
 
@@ -153,5 +154,12 @@ app.delete('/user/hike/delete', async (req, res) => {
         res.json('An internal server error occurred');
     }
 });
+
+if(process.env.NODE_ENV === 'production') {
+    app.use(express.static('../build'));
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, '../', 'build', 'index.html'));
+    });
+}
 
 app.listen(5000, () => console.log('Server started at port 5000'));
