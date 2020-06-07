@@ -157,7 +157,7 @@ app.delete('/user/hike/delete', async (req, res) => {
 
 if(process.env.NODE_ENV === 'production') {
     console.log('Production environment');
-    app.use(express.static('build'));
+    app.use(express.static('../build'));
     app.get('*', (req, res) => {
         res.sendFile(path.resolve(__dirname, '../', 'build', 'index.html'));
     });
