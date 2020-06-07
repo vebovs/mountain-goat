@@ -349,6 +349,8 @@ export class Main extends React.Component {
             maxZoom: 20,
             maxNativeZoom: 17
         }).addTo(this.map);
+
+        this.login('test', 'test');
     }
  
     render() {

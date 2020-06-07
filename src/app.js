@@ -130,7 +130,7 @@ app.post('/user/hike/save', async (req, res) => {
             res.json('success');
         } else {
             res.status(400);
-            res.json('Already present');
+            res.json('Hike already favourited');
         }
     } catch(error) {
         res.status(500);

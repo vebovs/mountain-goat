@@ -31,10 +31,8 @@ module.exports = class UserDao extends Dao {
     async save_hike(user_id, hike_id, nickname) {
         //Checks if user already has favourited the hike
         const present = await this.collection.findOne({
-            _id: new mongo.ObjectID(user_id),
-            favourites: {
-                $in: [new mongo.ObjectID(hike_id)]
-            }
+            "_id": new mongo.ObjectID(user_id),
+            "favourites.id": new mongo.ObjectID(hike_id)
         });
 
         if(present) return false; //Return if already favourited
