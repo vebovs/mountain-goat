@@ -40,9 +40,14 @@ export class Main extends React.Component {
     }
 
     async findHikes(points) {
-        this.hikes = await HikesService.findHikesWithinArea(points);
-        //this.setState({ state: this.state });
-        this.drawHikes(); // Seperate function needed?
+        HikesService.findHikesWithinArea(points)
+        .then(res => {
+            this.hikes = res;
+            this.drawHikes();
+        })
+        .catch(error => {
+            this.displayAlert(error.response.data);
+        });
     }
 
     displayPopup = (event) => {
@@ -68,11 +73,15 @@ export class Main extends React.Component {
         const button = L.DomUtil.get('favourite-btn');
         L.DomEvent.addListener(button, 'click', (e) => {
             const nickname = L.DomUtil.get('nickname').value;
-            if(nickname) {
+            if(this.state.status && nickname) {
                 this.saveHike(path.feature._id, nickname);
                 path.closePopup();
             } else {
-                this.displayAlert('A nickname is required');
+                if(!this.state.status) {
+                    this.displayAlert('You need to be logged in for this action');
+                } else {
+                    this.displayAlert('A nickname is required');
+                }
             }
         });
     }
@@ -156,7 +165,7 @@ export class Main extends React.Component {
         this.circle.setRadius(value *1000);
     }
 
-    async register(username, password) {
+    register(username, password) {
         if(!username && !password) {
             this.displayAlert('A username and password is required');
         } else if(!username) {
@@ -171,7 +180,7 @@ export class Main extends React.Component {
         }
     }
 
-    async login(username, password) {
+    login(username, password) {
         if(!username && !password) {
             this.displayAlert('A username and password is required');
         } else if(!username) {
@@ -180,13 +189,21 @@ export class Main extends React.Component {
             this.displayAlert('A password is required');
         } else {
             AuthService.login(username, password)
-            .then(async res => {
-                this.state.user = res;
+            .then(res => {
+                this.setState({
+                    user: res
+                });
                 const ids = this.state.user.favourites.map(e => e.id);
-                this.state.favourites = await UserService.getFavouriteHikes(ids);
-                this.setState(() => ({
-                    status: true
-                }));
+                UserService.getFavouriteHikes(ids)
+                .then(res => {
+                    this.setState({
+                        status: true,
+                        favourites: res
+                    });
+                })
+                .catch(error => {
+                    this.displayAlert(error.response.data);
+                });
             })
             .catch(error => {
                 this.displayAlert(error.response.data);
@@ -194,8 +211,14 @@ export class Main extends React.Component {
         }
     }
 
-    async logout() {
+    logout() {
         AuthService.logout()
+        .then(() => {
+            this.setState({
+                user: '',
+                status: false
+            });
+        })
         .catch(error => {
             this.displayAlert(error.response.data);
         });
@@ -232,25 +255,27 @@ export class Main extends React.Component {
         this.map.setView(moveToCords);
     }
 
-    async saveHike(id, nickname) {
-        if(this.state.status) {
-            const res = await UserService.addHikeToFavourites(this.state.user._id, id, nickname);
-            if(res) {
-                const data = await HikesService.getHike(id);
-                if(data) {
-                    this.state.user.favourites.push({
-                        id: id,
-                        nickname: nickname
-                    });
-                    this.state.favourites.push(data);
-                    this.setState(state => ({
-                        favourites: state.favourites
-                    }));
-                }
-            }
-        } else {
-            alert('You need to be logged in for this action');
-        }
+    saveHike(id, nickname) {
+        UserService.addHikeToFavourites(this.state.user._id, id, nickname)
+        .then(() => {
+            HikesService.getHike(id)
+            .then(data => {
+                this.state.user.favourites.push({
+                    id: id,
+                    nickname: nickname
+                });
+                this.state.favourites.push(data);
+                this.setState(state => ({
+                    favourites: state.favourites
+                }));
+            })
+            .catch(error => {
+                this.displayAlert(error.response.data);
+            })
+        })
+        .catch(error => {
+            this.displayAlert(error.response.data);
+        });
     }
 
     clearHike = (id) => {
@@ -258,24 +283,28 @@ export class Main extends React.Component {
         if(hikeToRemove.length) {
             const layerToRemove = hikeToRemove.map(e => e.layer)[0];
             this.map.removeLayer(layerToRemove);
-            //this.state.userHikes = this.state.userHikes.filter(e => e.id !== id);
             this.setState(state => {
                 state.userHikes = state.userHikes.filter(e => e.id !== id);
             })
         }
     }
 
-    async removeHike(id) {
+    removeHike(id) {
         this.clearHike(id);
         const favourite = this.state.user.favourites.filter(e => e.id === id)[0];
         const favourites = this.state.favourites.filter(e => e._id !== favourite.id);
-        const res = await UserService.removeHike(this.state.user._id, id);
-        if(res) {
-            this.state.user.favourites = this.state.user.favourites.filter(e => e.id !== id);
+        UserService.removeHike(this.state.user._id, id)
+        .then(() => {
+            const user = {...this.state.user};
+            user.favourites = this.state.user.favourites.filter(e => e.id !== id);
             this.setState({
-                favourite: favourites
+                user,
+                favourites
             });
-        }
+        })
+        .catch(error => {
+            this.displayAlert(error.response.data);
+        });
     }
 
     componentDidMount() {
@@ -294,6 +323,8 @@ export class Main extends React.Component {
             maxZoom: 20,
             maxNativeZoom: 17
         }).addTo(this.map);
+
+        this.login('test', 'test');
 
     }
 

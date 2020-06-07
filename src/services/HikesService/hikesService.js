@@ -13,16 +13,14 @@ class HikesService {
         })
         .then(response => {
             return response.data;
-        })
-        .catch(error => console.log('Error: ' + error));
+        });
     }
 
     async getHike(id) {
-        return await axios.get(API_URL + 'hike/' + `${id}`)
+        return await axios.get(API_URL + 'hike/' + id)
             .then(response => {
                 return response.data;
-            })
-            .catch(error => console.log(error));
+            });
     }
 
 }

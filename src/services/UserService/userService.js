@@ -9,7 +9,7 @@ class UserService {
             data: hike_ids
         }).then(response => {
             return response.data
-        }).catch(error => console.log(error));
+        });
     }
 
     async addHikeToFavourites(user_id, hike_id, nickname) {
@@ -19,7 +19,7 @@ class UserService {
             nickname: nickname
         }).then(response => {
             return response.data;
-        }).catch(error => console.log(error));
+        });
     }
 
     async removeHike(user_id, hike_id) {
@@ -30,7 +30,7 @@ class UserService {
                 }
         }).then(response => {
             return response.data;
-        }).catch(error => console.log(error));
+        });
     }
 }
 
