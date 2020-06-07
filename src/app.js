@@ -25,9 +25,9 @@ const hikedao = new HikeDao(process.env.HIKE_COLLECTION);
 const UserDao = require('./dao/UserDao');
 const userdao = new UserDao(process.env.USER_COLLECTION);
 
-app.get('/', async (req, res) => {
+/*app.get('/', async (req, res) => {
     res.json('Welcome to the Mountain Goat API');
-});
+});*/
 
 app.post('/hikes', async (req, res) => {
     try {
