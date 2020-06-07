@@ -4,12 +4,11 @@ const mongo = require('mongodb');
 
 module.exports = class UserDao extends Dao {
     constructor(collection) {
-        super();
-        this.collection = collection
+        super(collection);
     }
 
     async create_user(username, password) {
-        const taken = await this.db.collection(this.collection).findOne({ username: username });
+        const taken = await this.collection.findOne({ username: username });
         if(taken) return false;
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
@@ -18,29 +17,29 @@ module.exports = class UserDao extends Dao {
             password: hash,
             favourites: []
         };
-        return (await this.db.collection(this.collection).insertOne(new_user)).result.ok;
+        return (await this.collection.insertOne(new_user)).result.ok;
     }
 
     find_user_by_username(username) {
-        return this.db.collection(this.collection).findOne({ username: username });
+        return this.collection.findOne({ username: username });
     }
 
     find_user_by_id(id) {
-        return this.db.collection(this.collection).findOne({_id: new mongo.ObjectID(id)});
+        return this.collection.findOne({_id: new mongo.ObjectID(id)});
     }
 
     async save_hike(user_id, hike_id, nickname) {
         //Checks if user already has favourited the hike
-        const present = await this.db.collection(this.collection).findOne({
+        const present = await this.collection.findOne({
             _id: new mongo.ObjectID(user_id),
             favourites: {
                 $in: [new mongo.ObjectID(hike_id)]
             }
         });
 
-        if(present) return false; //Return is already favourited
+        if(present) return false; //Return if already favourited
 
-        return await this.db.collection(this.collection).updateOne(
+        return await this.collection.updateOne(
             { 
                 _id: new mongo.ObjectID(user_id) 
             },
@@ -56,7 +55,7 @@ module.exports = class UserDao extends Dao {
     }
 
     async delete_hike(user_id, hike_id) {
-        return await this.db.collection(this.collection).updateOne(
+        return await this.collection.updateOne(
             {
                 _id: new mongo.ObjectID(user_id)
             },

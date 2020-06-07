@@ -36,7 +36,7 @@ export default class Authentication extends React.Component {
     
     render() {
         return (
-          <div className='container'>
+          <div className='container is-fluid'>
             <div className='tabs'>
             <ul>
               <li className={this.state.toggleLogin ? 'is-active' : null}><a href='#' onClick={this.toggleLogin}>Login</a></li>

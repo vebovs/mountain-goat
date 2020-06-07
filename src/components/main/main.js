@@ -3,8 +3,8 @@ import L from 'leaflet';
 
 // CSS
 import 'leaflet/dist/leaflet.css';
+import 'font-awesome/css/font-awesome.css';
 import 'bulma/css/bulma.css';
-import './main.css';
 
 // Services
 import HikesService from '../../services/HikesService/hikesService';
@@ -15,7 +15,6 @@ import UserService from '../../services/UserService/userService';
 import Menu from '../Menu/menu';
 import Authentication from '../Authentication/authentication';
 import Dashboard from '../Dashboard/dashboard';
-import { Profile, Close } from '../Buttons';
 import Card from '../Card/card';
 import Slider from '../Slider/slider';
 import Alert from '../Alert/alert';
@@ -118,9 +117,9 @@ export class Main extends React.Component {
         if(this.geoJSONlayer) this.map.removeLayer(this.geoJSONlayer);
         
         //Gets the edgepoints of the circle
-        let points = this.circle.getBounds();
+        const points = this.circle.getBounds();
 
-        let data = {
+        const data = {
             top: points._northEast.lat,
             bottom: points._southWest.lat,
             left: points._southWest.lng,
@@ -157,9 +156,9 @@ export class Main extends React.Component {
         this.map.removeLayer(this.circle);
         if(this.geoJSONlayer) this.map.removeLayer(this.geoJSONlayer);
 
-        this.geoJSONlayer = undefined;
-        this.circle = undefined;
-        this.hikes  = undefined;
+        this.geoJSONlayer = '';
+        this.circle = '';
+        this.hikes  = '';
 
         this.setState({ state: this.state });
     }
@@ -356,7 +355,7 @@ export class Main extends React.Component {
         return (
             <div id="container">
                 <Alert alert={this.alert} onClick={this.dismissAlert}>{this.message}</Alert>
-                <Menu title='Mountain Goat' openbtn={Profile} closebtn={Close}>
+                <Menu title='Mountain Goat'>
                     {
                         !this.state.status && <Authentication onLoginInput={this.login.bind(this)} onRegisterInput={this.register.bind(this)}/>
                     }

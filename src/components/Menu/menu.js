@@ -19,10 +19,14 @@ export default class Menu extends React.Component {
         return (
             <div className={!this.state.toggle ? 'wrapper' : 'wrapper responsive'}>
                 <div className='menubtn'>
-                    <this.props.openbtn onClick={this.toggle}></this.props.openbtn>
+                    <button className='button' onClick={this.toggle}>
+                        <span className='icon'>
+                            <i className='fa fa-user'></i>
+                        </span>
+                    </button>
                 </div>
                 <div className='menu'>
-                    <div className='container'>
+                    <div className='container is-fluid'>
                         <nav className='level'>
                             <div className='level-left'>
                                 <div className='level-item'>
@@ -31,7 +35,11 @@ export default class Menu extends React.Component {
                             </div>
                             <div className='level-right'>
                                 <div className='level-item'>
-                                    <this.props.closebtn className='menubtn' onClick={this.toggle}></this.props.closebtn>
+                                    <button className='button' onClick={this.toggle}>
+                                        <span className='icon'>
+                                            <i className='fa fa-times'></i>
+                                        </span>
+                                    </button>
                                 </div>
                             </div>
                         </nav>

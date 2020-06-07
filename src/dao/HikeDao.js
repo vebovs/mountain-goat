@@ -3,12 +3,11 @@ const mongo = require('mongodb');
 
 module.exports = class HikeDao extends Dao {
     constructor(collection) {
-        super();
-        this.collection = collection
+        super(collection);
     }
     
     getHikes(points) {
-        return this.db.collection(this.collection).find({
+        return this.collection.find({
             "geometry": {
                 "$geoWithin": {
                         "$geometry": {
@@ -46,7 +45,7 @@ module.exports = class HikeDao extends Dao {
 
     findHikesByIds(data) {
         const ids  = data.map(e => e = new mongo.ObjectID(e));
-        return this.db.collection(this.collection).find({
+        return this.collection.find({
             _id: {
                 $in: ids
             }
@@ -54,7 +53,7 @@ module.exports = class HikeDao extends Dao {
     }
 
     async getHike(id) {
-        return await this.db.collection(this.collection).findOne({
+        return await this.collection.findOne({
             _id: new mongo.ObjectID(id)
         });
     }

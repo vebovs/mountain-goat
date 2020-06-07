@@ -27,7 +27,7 @@ export default class Dashboard extends React.Component {
     
     render() {
         return (
-          <div className='container'>
+          <div className='container is-fluid'>
             <div className='tabs'>
             <ul>
               <li className={this.state.togglePanel ? 'is-active' : null}><a href='#' onClick={this.togglePanel}>Panel</a></li>
