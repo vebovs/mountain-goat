@@ -29,7 +29,8 @@
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install && npm run build"
   },
   "engines": {
-    "node": "10.16.3"
+    "node": "10.16.3",
+    "npm": "6.9.0"
   },
   "eslintConfig": {
     "extends": "react-app"
