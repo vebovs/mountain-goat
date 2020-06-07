@@ -30,8 +30,8 @@ export default class Dashboard extends React.Component {
           <div className='container is-fluid'>
             <div className='tabs'>
             <ul>
-              <li className={this.state.togglePanel ? 'is-active' : null}><a href='#' onClick={this.togglePanel}>Panel</a></li>
-              <li className={this.state.toggleLogout ? 'is-active' : null}><a href='#' onClick={this.toggleLogout}>Logout</a></li>
+              <li className={this.state.togglePanel ? 'is-active' : null}><button className={this.state.togglePanel ? 'button is-link is-inverted' : 'button is-white'} onClick={this.togglePanel}>Panel</button></li>
+              <li className={this.state.toggleLogout ? 'is-active' : null}><button className={this.state.toggleLogout ? 'button is-link is-inverted' : 'button is-white'} onClick={this.toggleLogout}>Logout</button></li>
           </ul>
           </div>
           { this.state.togglePanel && <div>

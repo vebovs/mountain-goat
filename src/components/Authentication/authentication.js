@@ -39,8 +39,8 @@ export default class Authentication extends React.Component {
           <div className='container is-fluid'>
             <div className='tabs'>
             <ul>
-              <li className={this.state.toggleLogin ? 'is-active' : null}><a href='#' onClick={this.toggleLogin}>Login</a></li>
-              <li className={this.state.toggleRegister ? 'is-active' : null}><a href='#' onClick={this.toggleRegister}>Register</a></li>
+              <li className={this.state.toggleLogin ? 'is-active' : null}><button className={this.state.toggleLogin ? 'button is-link is-inverted' : 'button is-white'} onClick={this.toggleLogin}>Login</button></li>
+              <li className={this.state.toggleRegister ? 'is-active' : null}><button className={this.state.toggleRegister ? 'button is-link is-inverted' : 'button is-white'} onClick={this.toggleRegister}>Register</button></li>
           </ul>
           </div>
           { this.state.toggleLogin && <div>

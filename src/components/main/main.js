@@ -5,6 +5,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'font-awesome/css/font-awesome.css';
 import 'bulma/css/bulma.css';
+import './main.css';
 
 // Services
 import HikesService from '../../services/HikesService/hikesService';
@@ -50,8 +51,8 @@ export class Main extends React.Component {
                     style: (feature) => {
                         return {
                             stroke: true,
-                            color: 'blue',
-                            weight: 5,
+                            color: '#3273DC',
+                            weight: 10,
                             opacity: 0.75
                         };
                     },
@@ -349,8 +350,6 @@ export class Main extends React.Component {
             maxZoom: 20,
             maxNativeZoom: 17
         }).addTo(this.map);
-
-        this.login('test', 'test');
     }
  
     render() {
