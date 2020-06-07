@@ -24,35 +24,57 @@ export class Main extends React.Component {
     constructor() {
         super();
         this.state = {
-            user: '', 
-            userHikes: [],
-            favourites: '',
+            user: '', //User data
+            userHikes: [], //Favourite hikes layers
+            favourites: '', //Favourite hikes with all the data
             value: 3,
-            status: false
+            status: false //Authenticated status
         };
         //Default map starting point, OSLO
         //this.center = [59.911491, 10.757933];
         this.center = [59.861023, 5.782079]; //Husnes
-        this.toggle = false;
-        this.onAlert = false;
-        this.alert = false;
-        this.message = '';
+        this.toggle = false; //Toggles the slider
+        this.alert = false; //Toggles the alert
+        this.message = ''; //Alert message displayed 
     }
 
-    async findHikes(points) {
+    // Finds all the hikes within a given area and draws them on the map
+    findAndDrawHikes(points) {
         HikesService.findHikesWithinArea(points)
         .then(res => {
-            this.hikes = res;
-            this.drawHikes();
+            if(!res.length) {
+                this.displayAlert('No hikes found'); //Let the user know if nothing was found
+            } else {
+                this.hikes = res;
+                //Draws all the hikes found
+                this.geoJSONlayer = L.geoJSON(this.hikes, {
+                    style: (feature) => {
+                        return {
+                            stroke: true,
+                            color: 'blue',
+                            weight: 5,
+                            opacity: 0.75
+                        };
+                    },
+                    coordsToLatLng: (coords) => {
+                        return new L.LatLng(coords[0], coords[1]); //Reverse the coordinates to suit leaflet drawing
+                    },
+                    onEachFeature: (feature, layer) => {
+                        layer.on('click', this.displayPopup); //Adds all the popup functionality to a clickevent on a path
+                    }
+                }).addTo(this.map);
+            }
         })
         .catch(error => {
             this.displayAlert(error.response.data);
         });
     }
 
+    // Adds all the contents and events to the popups
     displayPopup = (event) => {
-        const path = event.target;
+        const path = event.target; //The specific hike the user clicked on
 
+        //The content to be placed in a popup
         const content = '<div class="container">' +
                             '<div class="field">' +
                                 '<div class="control">' +
@@ -68,10 +90,14 @@ export class Main extends React.Component {
 
         path.bindPopup(content, {
             minWidth: 128
-        }).openPopup(); //Places a popup on a path
+        }).openPopup(); //Places the popup on the path the user clicked on
 
+        /*
+            Check to see if the user is currently logged in and has given the hike to favourite a nickname.
+            If not then flash the relevant errors.
+        */
         const button = L.DomUtil.get('favourite-btn');
-        L.DomEvent.addListener(button, 'click', (e) => {
+        L.DomEvent.addListener(button, 'click', () => {
             const nickname = L.DomUtil.get('nickname').value;
             if(this.state.status && nickname) {
                 this.saveHike(path.feature._id, nickname);
@@ -86,30 +112,8 @@ export class Main extends React.Component {
         });
     }
 
-    //Draws the hikes on the map
-    drawHikes = () => {
-        this.geoJSONlayer = L.geoJSON(this.hikes, {
-            style: (feature) => {
-                return {
-                    stroke: true,
-                    color: 'grey',
-                    weight: 5,
-                    opacity: 0.75
-                };
-            },
-            coordsToLatLng: (coords) => {
-                return new L.LatLng(coords[0], coords[1]); //Reverse the coordinates to suit leaflet drawing
-            },
-            onEachFeature: (feature, layer) => {
-                layer.on('click', this.displayPopup);
-            }
-        }).addTo(this.map);
-        //this.setState({ state: this.state});
-    }
-
-
-    enter = () => {
-
+    // Stores the boundries of the circle in an object used to find hikes within said boundries
+    searchForHikes = () => {
         //Remove existing traced hikes before drawing new ones
         if(this.geoJSONlayer) this.map.removeLayer(this.geoJSONlayer);
         
@@ -123,10 +127,11 @@ export class Main extends React.Component {
             right: points._northEast.lng
         }
 
-        this.findHikes(data);
+        this.findAndDrawHikes(data);
     }
 
-    select = (e) => {
+    // Places a circle around the point the user clicked
+    selectPoint = (e) => {
         this.toggle = true;
 
         //Converts the (x,y) coordinates of the window to latitude and longitude
@@ -144,9 +149,9 @@ export class Main extends React.Component {
         this.setState({ state: this.state });
     }
 
-    remove = () => {
+    // Removes the circle and any general hikes currently drawn on the map
+    removeCircleAndHikes = () => {
         this.toggle = false;
-        this.onAlert = false;
 
         //Removes the circle and traced hikes from the map
         this.map.removeLayer(this.circle);
@@ -159,12 +164,13 @@ export class Main extends React.Component {
         this.setState({ state: this.state });
     }
 
-    update = (value) => {
-        //Updates the slider value and the circle radius
+    // Updates the circle size when slider values changes
+    updateCircle = (value) => {
         this.setState({ value });
-        this.circle.setRadius(value *1000);
+        this.circle.setRadius(value *1000); // Convert to kilometers
     }
 
+    // Registers a user
     register(username, password) {
         if(!username && !password) {
             this.displayAlert('A username and password is required');
@@ -180,6 +186,7 @@ export class Main extends React.Component {
         }
     }
 
+    // Logs a user in
     login(username, password) {
         if(!username && !password) {
             this.displayAlert('A username and password is required');
@@ -193,7 +200,7 @@ export class Main extends React.Component {
                 this.setState({
                     user: res
                 });
-                const ids = this.state.user.favourites.map(e => e.id);
+                const ids = this.state.user.favourites.map(e => e.id); //Gets all the ids from the user's favourtie hikes. Used to get all the specific data about the hikes.
                 UserService.getFavouriteHikes(ids)
                 .then(res => {
                     this.setState({
@@ -211,6 +218,7 @@ export class Main extends React.Component {
         }
     }
 
+    // Logs a user out
     logout() {
         AuthService.logout()
         .then(() => {
@@ -224,10 +232,9 @@ export class Main extends React.Component {
         });
     }
 
+    // Draws a specific favourited hike when the user clicks on it from their panel
     showHike = (id) => {
         const hike = this.state.favourites.filter(e => e._id === id);
-        //this.drawHikes(hike);
-
         const hikeLayer = L.geoJSON(hike, {
             style: (feature) => {
                 return {
@@ -245,16 +252,19 @@ export class Main extends React.Component {
             }
         }).addTo(this.map);
 
+        //Adds the id and layer to an array for easy clearing later
         const hikeId = hike.map(e => e._id)[0];
         this.state.userHikes.push({
             id: hikeId,
             layer: hikeLayer
         });
 
+        //Move the view to the hike the user clicked on
         const moveToCords = hike[0].geometry.coordinates[0];
         this.map.setView(moveToCords);
     }
 
+    // Lets the user favourite a hike with a custom nickname
     saveHike(id, nickname) {
         UserService.addHikeToFavourites(this.state.user._id, id, nickname)
         .then(() => {
@@ -278,21 +288,24 @@ export class Main extends React.Component {
         });
     }
 
+    // Clears a drawn hike in the favourites from the map
     clearHike = (id) => {
-        const hikeToRemove = this.state.userHikes.filter(e => e.id === id);
+        const hikeToRemove = this.state.userHikes.filter(e => e.id === id); //The hike to clear found from the id
         if(hikeToRemove.length) {
-            const layerToRemove = hikeToRemove.map(e => e.layer)[0];
-            this.map.removeLayer(layerToRemove);
+            const layerToRemove = hikeToRemove.map(e => e.layer)[0]; //Gets the layer
+            this.map.removeLayer(layerToRemove); //Clears the hike
             this.setState(state => {
                 state.userHikes = state.userHikes.filter(e => e.id !== id);
             })
         }
     }
 
+    // Deletes a hike from the user's favourties
     removeHike(id) {
         this.clearHike(id);
-        const favourite = this.state.user.favourites.filter(e => e.id === id)[0];
-        const favourites = this.state.favourites.filter(e => e._id !== favourite.id);
+        const favourite = this.state.user.favourites.filter(e => e.id === id)[0]; //Gets the hike to remove
+        const favourites = this.state.favourites.filter(e => e._id !== favourite.id); //Removes the hike from the local favourites
+        //If removal is successful the current state is updated with the hike removed
         UserService.removeHike(this.state.user._id, id)
         .then(() => {
             const user = {...this.state.user};
@@ -305,6 +318,20 @@ export class Main extends React.Component {
         .catch(error => {
             this.displayAlert(error.response.data);
         });
+    }
+
+    // Flashes an error message to the user
+    displayAlert = (message) => {
+        this.alert = true;
+        this.message = message;
+        this.setState({ state: this.state});
+    }
+
+    // Closes the error message
+    dismissAlert = () => {
+        this.alert = false;
+        this.message = '';
+        this.setState({ state: this.state });
     }
 
     componentDidMount() {
@@ -323,27 +350,12 @@ export class Main extends React.Component {
             maxZoom: 20,
             maxNativeZoom: 17
         }).addTo(this.map);
-
-        this.login('test', 'test');
-
-    }
-
-    displayAlert = (message) => {
-        this.alert = true;
-        this.message = message;
-        this.setState({ state: this.state});
-    }
-
-    dismiss = () => {
-        this.alert = false;
-        this.message = '';
-        this.setState({ state: this.state });
     }
  
     render() {
         return (
             <div id="container">
-                <Alert alert={this.alert} onClick={this.dismiss}>{this.message}</Alert>
+                <Alert alert={this.alert} onClick={this.dismissAlert}>{this.message}</Alert>
                 <Menu title='Mountain Goat' openbtn={Profile} closebtn={Close}>
                     {
                         !this.state.status && <Authentication onLoginInput={this.login.bind(this)} onRegisterInput={this.register.bind(this)}/>
@@ -362,8 +374,8 @@ export class Main extends React.Component {
                          </div>
                     }
                 </Menu>
-                <Slider toggle={this.toggle} onRangeInput={this.update.bind(this)} remove={this.remove} enter={this.enter} />
-                <div id="map" onDoubleClick={this.select} ></div>
+                <Slider toggle={this.toggle} onRangeInput={this.updateCircle.bind(this)} exit={this.removeCircleAndHikes} enter={this.searchForHikes} />
+                <div id="map" onDoubleClick={this.selectPoint} ></div>
             </div>
         );
     }

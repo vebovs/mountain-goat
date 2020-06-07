@@ -24,7 +24,7 @@ export default class Card extends React.Component {
                                 <i className='fa fa-search'></i>
                             </span>
                         </button>
-                        <button className='button remove' onClick={this.props.remove}>
+                        <button className='button remove' onClick={this.props.exit}>
                             <span className='icon'>
                                 <i className='fa fa-times'></i>
                             </span>
