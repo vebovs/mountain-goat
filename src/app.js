@@ -156,21 +156,11 @@ app.delete('/user/hike/delete', async (req, res) => {
 });
 
 if(process.env.NODE_ENV === 'production') {
-    console.log('Production environment');
-    console.log(__dirname, '../build');
-    console.log(path.join(__dirname, '../build'));
     app.use(express.static(path.join(__dirname, '../build')));
     app.get('*', (req, res) => {
-
-        /*res.sendFile('./build/index.html', {
-            root: __dirname
-        });*/
-        console.log(path.resolve(__dirname, '../', 'build', 'index.html'));
         res.sendFile(path.resolve(__dirname, '../', 'build', 'index.html'));
     });
-} else {
-    console.log('Development environment');
-}
+} 
 
 const port = process.env.PORT || 5000;
 
