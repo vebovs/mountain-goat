@@ -2,6 +2,7 @@
   "name": "mountain-goat",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://secret-cliffs-62463.herokuapp.com",
   "dependencies": {
     "assert": "^2.0.0",
     "axios": "^0.19.2",
