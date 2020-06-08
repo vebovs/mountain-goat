@@ -43,6 +43,7 @@ export class Main extends React.Component {
     findAndDrawHikes(points) {
         this.loading = true;
         this.setState({ state: this.state });
+
         HikesService.findHikesWithinArea(points)
         .then(res => {
             if(!res.length) {
@@ -66,6 +67,7 @@ export class Main extends React.Component {
                         layer.on('click', this.displayPopup); //Adds all the popup functionality to a clickevent on a path
                     }
                 }).addTo(this.map);
+
                 this.map.removeLayer(this.circle);
                 this.loading = false;
                 this.setState({ state: this.state });
@@ -355,11 +357,27 @@ export class Main extends React.Component {
             maxZoom: 20,
             maxNativeZoom: 17
         }).addTo(this.map);
+
+        let mouseisdown = false;
+        const map = document.getElementById('map');
+
+        map.addEventListener('mousedown', (e) => {
+            mouseisdown = true;
+            setTimeout(() => {
+                if(!mouseisdown) {
+                    this.selectPoint(e);
+                }
+            }, 100);
+        });
+
+        map.addEventListener('mouseup', () => {
+            mouseisdown = false;
+        });
     }
  
     render() {
         return (
-            <div id="container">
+            <div id="app-container">
                 <Alert alert={this.alert} onClick={this.dismissAlert}>{this.message}</Alert>
                 <Menu title='Mountain Goat'>
                     {
@@ -380,7 +398,7 @@ export class Main extends React.Component {
                     }
                 </Menu>
                 <Slider loading={this.loading} toggle={this.toggle} onRangeInput={this.updateCircle.bind(this)} exit={this.removeCircleAndHikes} enter={this.searchForHikes} />
-                <div id="map" onDoubleClick={this.selectPoint} ></div>
+                <div id="map" />
             </div>
         );
     }
