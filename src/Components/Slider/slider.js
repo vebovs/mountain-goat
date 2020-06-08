@@ -19,7 +19,7 @@ export default class Card extends React.Component {
             <div className={!this.props.toggle ? 'slider-wrapper' : 'slider-wrapper visible'}>
                     <div className='slider-box'>
                         <input className='slider-input is-fullwidth is-info' step='1' min='1' max='9' value={this.state.data} onChange={data => this.handleInput(data)} type='range' orient='vertical' />
-                        <button className='button enter' onClick={this.props.enter}>
+                        <button className={this.props.loading ? 'button is-link is-loading enter' : 'button enter'} onClick={this.props.enter}>
                             <span className='icon'>
                                 <i className='fa fa-search'></i>
                             </span>

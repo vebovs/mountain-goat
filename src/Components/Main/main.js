@@ -36,10 +36,13 @@ export class Main extends React.Component {
         this.toggle = false; //Toggles the slider
         this.alert = false; //Toggles the alert
         this.message = ''; //Alert message displayed 
+        this.loading = false;
     }
 
     // Finds all the hikes within a given area and draws them on the map
     findAndDrawHikes(points) {
+        this.loading = true;
+        this.setState({ state: this.state });
         HikesService.findHikesWithinArea(points)
         .then(res => {
             if(!res.length) {
@@ -63,6 +66,9 @@ export class Main extends React.Component {
                         layer.on('click', this.displayPopup); //Adds all the popup functionality to a clickevent on a path
                     }
                 }).addTo(this.map);
+                this.map.removeLayer(this.circle);
+                this.loading = false;
+                this.setState({ state: this.state });
             }
         })
         .catch(error => {
@@ -137,8 +143,6 @@ export class Main extends React.Component {
 
         //Converts the (x,y) coordinates of the window to latitude and longitude
         let event = this.map.mouseEventToLatLng(e);
-
-        //if(this.geoJSONlayer) this.map.removeLayer(this.geoJSONlayer);
 
         //Checks to see if there already is a circle on the map. If there is, it is replaced with a new one.
         if(!this.circle){
@@ -240,8 +244,8 @@ export class Main extends React.Component {
             style: (feature) => {
                 return {
                     stroke: true,
-                    color: 'grey',
-                    weight: 5,
+                    color: '#3273DC',
+                    weight: 10,
                     opacity: 0.75
                 };
             },
@@ -375,7 +379,7 @@ export class Main extends React.Component {
                          </div>
                     }
                 </Menu>
-                <Slider toggle={this.toggle} onRangeInput={this.updateCircle.bind(this)} exit={this.removeCircleAndHikes} enter={this.searchForHikes} />
+                <Slider loading={this.loading} toggle={this.toggle} onRangeInput={this.updateCircle.bind(this)} exit={this.removeCircleAndHikes} enter={this.searchForHikes} />
                 <div id="map" onDoubleClick={this.selectPoint} ></div>
             </div>
         );
