@@ -20,6 +20,8 @@ import Card from '../Card/card';
 import Slider from '../Slider/slider';
 import Alert from '../Alert/alert';
 
+delete L.Icon.Default.prototype._getIconUrl; //Removes markers from being drawn
+
 export class Main extends React.Component {
     constructor() {
         super();
@@ -36,8 +38,8 @@ export class Main extends React.Component {
         this.toggle = false; //Toggles the slider
         this.alert = false; //Toggles the alert
         this.message = ''; //Alert message displayed 
-        this.loading = false;
-        this.success = false;
+        this.loading = false; //Displays when gathering hikes from area
+        this.success = false; //Registration status
         this.popup = false; //To check if a popup is being drawn to stop a circle from overlapping
     }
 
