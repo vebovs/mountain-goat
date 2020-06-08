@@ -37,6 +37,8 @@ export class Main extends React.Component {
         this.alert = false; //Toggles the alert
         this.message = ''; //Alert message displayed 
         this.loading = false;
+        this.success = false;
+        this.popup = false; //To check if a popup is being drawn to stop a circle from overlapping
     }
 
     // Finds all the hikes within a given area and draws them on the map
@@ -80,6 +82,7 @@ export class Main extends React.Component {
 
     // Adds all the contents and events to the popups
     displayPopup = (event) => {
+        this.popup = true;
         const path = event.target; //The specific hike the user clicked on
 
         //The content to be placed in a popup
@@ -99,6 +102,13 @@ export class Main extends React.Component {
         path.bindPopup(content, {
             minWidth: 128
         }).openPopup(); //Places the popup on the path the user clicked on
+
+        //Allow circle to be drawn again
+        path.getPopup().on('remove', () => {
+            setTimeout(() => {
+                this.popup = false;
+            }, 100);
+        });
 
         /*
             Check to see if the user is currently logged in and has given the hike to favourite a nickname.
@@ -141,19 +151,22 @@ export class Main extends React.Component {
 
     // Places a circle around the point the user clicked
     selectPoint = (e) => {
-        this.toggle = true;
 
-        //Converts the (x,y) coordinates of the window to latitude and longitude
-        let event = this.map.mouseEventToLatLng(e);
+        if(!this.popup) {
+            this.toggle = true;
 
-        //Checks to see if there already is a circle on the map. If there is, it is replaced with a new one.
-        if(!this.circle){
-            this.circle = L.circle([event.lat, event.lng], {radius: (this.state.value *1000)}).addTo(this.map);
-        } else {
-            this.map.removeLayer(this.circle);
-            this.circle = L.circle([event.lat, event.lng], {radius: (this.state.value *1000)}).addTo(this.map);
+            //Converts the (x,y) coordinates of the window to latitude and longitude
+            let event = this.map.mouseEventToLatLng(e);
+
+            //Checks to see if there already is a circle on the map. If there is, it is replaced with a new one.
+            if(!this.circle){
+                this.circle = L.circle([event.lat, event.lng], {radius: (this.state.value *1000)}).addTo(this.map);
+            } else {
+                this.map.removeLayer(this.circle);
+                this.circle = L.circle([event.lat, event.lng], {radius: (this.state.value *1000)}).addTo(this.map);
+            }
+            this.setState({ state: this.state });
         }
-        this.setState({ state: this.state });
     }
 
     // Removes the circle and any general hikes currently drawn on the map
@@ -179,6 +192,13 @@ export class Main extends React.Component {
 
     // Registers a user
     register(username, password) {
+        
+        //Reset the success mark on consecutive registration
+        if(this.success) {
+            this.success = false;
+            this.setState({ state: this.state });
+        }
+
         if(!username && !password) {
             this.displayAlert('A username and password is required');
         } else if(!username) {
@@ -187,6 +207,10 @@ export class Main extends React.Component {
             this.displayAlert('A password is required');
         } else {
             AuthService.register(username, password)
+            .then(() => {
+                this.success = true;
+                this.setState({ state: this.state });
+            })
             .catch(error => {
                 this.displayAlert(error.response.data);
             });
@@ -241,6 +265,8 @@ export class Main extends React.Component {
 
     // Draws a specific favourited hike when the user clicks on it from their panel
     showHike = (id) => {
+        this.toggle = false; //Close menu before displaying selected hike
+        this.setState({ state: this.state });
         const hike = this.state.favourites.filter(e => e._id === id);
         const hikeLayer = L.geoJSON(hike, {
             style: (feature) => {
@@ -361,6 +387,7 @@ export class Main extends React.Component {
         let mouseisdown = false;
         const map = document.getElementById('map');
 
+        // Differentiating between clicking on the map and holding to move the view of the map
         map.addEventListener('mousedown', (e) => {
             mouseisdown = true;
             setTimeout(() => {
@@ -381,7 +408,7 @@ export class Main extends React.Component {
                 <Alert alert={this.alert} onClick={this.dismissAlert}>{this.message}</Alert>
                 <Menu title='Mountain Goat'>
                     {
-                        !this.state.status && <Authentication onLoginInput={this.login.bind(this)} onRegisterInput={this.register.bind(this)}/>
+                        !this.state.status && <Authentication success={this.success} onLoginInput={this.login.bind(this)} onRegisterInput={this.register.bind(this)}/>
                     }
                     {
                         this.state.status && <div>

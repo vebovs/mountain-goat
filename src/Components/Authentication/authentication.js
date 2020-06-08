@@ -83,6 +83,11 @@ export default class Authentication extends React.Component {
                 <button onClick={this.handleRegister} className='button is-info is-outlined'>
                   Register
                 </button>
+                { this.props.success &&
+                  <span className='icon has-text-success'>
+                    <i className='fa fa-check-square'></i>
+                  </span>
+                }
               </p>
           </div>
           </div>
