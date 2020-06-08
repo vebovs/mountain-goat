@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:5000/';
 class AuthService {
 
     async register(username, password) {
-        return await axios.post(API_URL + 'register', {
+        return await axios.post('/register', {
             username: username,
             password: password
         });
