@@ -159,7 +159,7 @@ if(process.env.NODE_ENV === 'production') {
     console.log('Production environment');
     console.log(__dirname, '../build');
     console.log(path.join(__dirname, '../build'));
-    app.use(express.static('../build'));
+    app.use(express.static(path.join(__dirname, '../build')));
     app.get('*', (req, res) => {
 
         /*res.sendFile('./build/index.html', {
