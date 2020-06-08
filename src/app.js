@@ -160,11 +160,11 @@ if(process.env.NODE_ENV === 'production') {
     //app.use(express.static('../'));
     app.get('*', (req, res) => {
 
-        res.sendFile('./build/index.html', {
+        /*res.sendFile('./build/index.html', {
             root: __dirname
-        });
-
-        //res.sendFile(path.resolve(__dirname, '../', 'build', 'index.html'));
+        });*/
+        console.log(path.resolve(__dirname, '../', 'build', 'index.html'));
+        res.sendFile(path.resolve(__dirname, '../', 'build', 'index.html'));
     });
 } else {
     console.log('Development environment');
