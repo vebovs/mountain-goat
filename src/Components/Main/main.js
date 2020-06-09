@@ -19,6 +19,7 @@ import Dashboard from '../Dashboard/dashboard';
 import Card from '../Card/card';
 import Slider from '../Slider/slider';
 import Alert from '../Alert/alert';
+import Dropdown from '../Dropdown/dropdown';
 
 delete L.Icon.Default.prototype._getIconUrl; //Removes markers from being drawn
 
@@ -68,7 +69,7 @@ export class Main extends React.Component {
                         return new L.LatLng(coords[0], coords[1]); //Reverse the coordinates to suit leaflet drawing
                     },
                     onEachFeature: (feature, layer) => {
-                        layer.on('click', this.displayPopup); //Adds all the popup functionality to a clickevent on a path
+                        layer.on('click', this.displayPopup);
                     }
                 }).addTo(this.map);
 
@@ -96,7 +97,7 @@ export class Main extends React.Component {
                             '</div>' +
                             '<button id="favourite-btn" class="button">' +
                                 '<span class="icon">' +
-                                    '<i class="fa fa-heart"></i>' +
+                                    '<i class="fa fa-map"></i>' +
                                 '</span>' +
                             '</button>' +
                         '</div>';
@@ -154,7 +155,7 @@ export class Main extends React.Component {
     // Places a circle around the point the user clicked
     selectPoint = (e) => {
 
-        if(!this.popup) {
+        if(!this.popup && !this.pathing) {
             this.toggle = true;
 
             //Converts the (x,y) coordinates of the window to latitude and longitude
@@ -407,6 +408,7 @@ export class Main extends React.Component {
     render() {
         return (
             <div id="app-container">
+                <Dropdown/>
                 <Alert alert={this.alert} onClick={this.dismissAlert}>{this.message}</Alert>
                 <Menu title='Mountain Goat'>
                     {
