@@ -106,7 +106,6 @@ export class Main extends React.Component {
 
     // Places a circle around the point the user clicked
     selectPoint = (e) => {
-
         if(!this.pathing) {
             this.toggle = true;
 
