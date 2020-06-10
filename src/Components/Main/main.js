@@ -199,9 +199,11 @@ export class Main extends React.Component {
     logout = () => {
         AuthService.logout()
         .then(() => {
+            this.state.userHikes.map(e =>this.map.removeLayer(e.layer)); //Clear paths upon logout
             this.setState({
                 user: '',
-                status: false
+                status: false,
+                userHikes: []
             });
         })
         .catch(error => {
@@ -384,7 +386,7 @@ export class Main extends React.Component {
                     }
                     {
                         this.state.status && <div>
-                            <Dashboard onClick={this.logout.bind(this)}>
+                            <Dashboard panel={this.state.user.username} onClick={this.logout.bind(this)}>
                                 <div>
                                     {
                                         this.state.user.favourites.map((e) => 
