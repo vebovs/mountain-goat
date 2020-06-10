@@ -371,8 +371,6 @@ export class Main extends React.Component {
         map.addEventListener('mouseup', () => {
             mouseisdown = false;
         });
-
-        this.login('test', 'test');
     }
  
     render() {
