@@ -16,10 +16,10 @@ class UserService {
         });
     }
 
-    async addHikeToFavourites(user_id, hike_id, nickname) {
+    async addHikeToFavourites(user_id, hike_ids, nickname) {
         return await axios.post(API_URL + 'user/hike/save', {
             user_id: user_id,
-            hike_id: hike_id,
+            hike_ids: hike_ids,
             nickname: nickname
         }).then(response => {
             return response.data;

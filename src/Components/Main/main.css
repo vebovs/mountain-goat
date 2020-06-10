@@ -7,7 +7,3 @@
 .button.is-link.is-inverted:focus {
   box-shadow: none;
 }
-
-#favourite-btn:hover {
-  color: #3273DC
-}

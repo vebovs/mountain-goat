@@ -125,13 +125,16 @@ app.post('/user/hikes', async (req, res) => {
 
 app.post('/user/hike/save', async (req, res) => {
     try {
-        const success = await userdao.save_hike(req.body.user_id, req.body.hike_id, req.body.nickname);
+        const success = await userdao.save_hike(req.body.user_id, req.body.hike_ids, req.body.nickname);
         if(success) {
             res.status(200)
-            res.json('success');
+            res.json({
+                status: 'success',
+                id: success
+            });
         } else {
             res.status(400);
-            res.json('Hike already favourited');
+            res.json('Nickname already in use');
         }
     } catch(error) {
         res.status(500);

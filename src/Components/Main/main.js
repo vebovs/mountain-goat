@@ -33,15 +33,15 @@ export class Main extends React.Component {
             value: 3,
             status: false //Authenticated status
         };
-        //Default map starting point, OSLO
-        //this.center = [59.911491, 10.757933];
-        this.center = [59.861023, 5.782079]; //Husnes
+
+        this.center = [59.861023, 5.782079]; //Default map starting point
         this.toggle = false; //Toggles the slider
         this.alert = false; //Toggles the alert
         this.message = ''; //Alert message displayed 
         this.loading = false; //Displays when gathering hikes from area
         this.success = false; //Registration status
-        this.popup = false; //To check if a popup is being drawn to stop a circle from overlapping
+        this.pathing = false; //Checks if user is creating a custom path
+        this.path = []; //Custom path
     }
 
     // Finds all the hikes within a given area and draws them on the map
@@ -52,6 +52,7 @@ export class Main extends React.Component {
         HikesService.findHikesWithinArea(points)
         .then(res => {
             if(!res.length) {
+                this.loading = false;
                 this.displayAlert('No hikes found'); //Let the user know if nothing was found
             } else {
                 this.hikes = res;
@@ -69,7 +70,7 @@ export class Main extends React.Component {
                         return new L.LatLng(coords[0], coords[1]); //Reverse the coordinates to suit leaflet drawing
                     },
                     onEachFeature: (feature, layer) => {
-                        layer.on('click', this.displayPopup);
+                        layer.on('click', this.definePathing);
                     }
                 }).addTo(this.map);
 
@@ -79,57 +80,8 @@ export class Main extends React.Component {
             }
         })
         .catch(error => {
+            this.loading = false;
             this.displayAlert(error.response.data);
-        });
-    }
-
-    // Adds all the contents and events to the popups
-    displayPopup = (event) => {
-        this.popup = true;
-        const path = event.target; //The specific hike the user clicked on
-
-        //The content to be placed in a popup
-        const content = '<div class="container">' +
-                            '<div class="field">' +
-                                '<div class="control">' +
-                                    '<input id="nickname" class="input is info" type="text" placeholder="Nickname"></input>' +
-                                '</div>' +
-                            '</div>' +
-                            '<button id="favourite-btn" class="button">' +
-                                '<span class="icon">' +
-                                    '<i class="fa fa-map"></i>' +
-                                '</span>' +
-                            '</button>' +
-                        '</div>';
-
-        path.bindPopup(content, {
-            minWidth: 128
-        }).openPopup(); //Places the popup on the path the user clicked on
-
-        //Allow circle to be drawn again
-        path.getPopup().on('remove', () => {
-            setTimeout(() => {
-                this.popup = false;
-            }, 100);
-        });
-
-        /*
-            Check to see if the user is currently logged in and has given the hike to favourite a nickname.
-            If not then flash the relevant errors.
-        */
-        const button = L.DomUtil.get('favourite-btn');
-        L.DomEvent.addListener(button, 'click', () => {
-            const nickname = L.DomUtil.get('nickname').value;
-            if(this.state.status && nickname) {
-                this.saveHike(path.feature._id, nickname);
-                path.closePopup();
-            } else {
-                if(!this.state.status) {
-                    this.displayAlert('You need to be logged in for this action');
-                } else {
-                    this.displayAlert('A nickname is required');
-                }
-            }
         });
     }
 
@@ -155,7 +107,7 @@ export class Main extends React.Component {
     // Places a circle around the point the user clicked
     selectPoint = (e) => {
 
-        if(!this.popup && !this.pathing) {
+        if(!this.pathing) {
             this.toggle = true;
 
             //Converts the (x,y) coordinates of the window to latitude and longitude
@@ -173,11 +125,12 @@ export class Main extends React.Component {
     }
 
     // Removes the circle and any general hikes currently drawn on the map
-    removeCircleAndHikes = () => {
+    removeCircleHikesAndDropdown = () => {
         this.toggle = false;
 
         //Removes the circle and traced hikes from the map
-        this.map.removeLayer(this.circle);
+        if(this.pathing) this.pathing = false;
+        if(this.circle) this.map.removeLayer(this.circle);
         if(this.geoJSONlayer) this.map.removeLayer(this.geoJSONlayer);
 
         this.geoJSONlayer = '';
@@ -194,9 +147,9 @@ export class Main extends React.Component {
     }
 
     // Registers a user
-    register(username, password) {
+    register = (username, password) => {
         
-        //Reset the success mark on consecutive registration
+        //Reset the success mark on a consecutive registration
         if(this.success) {
             this.success = false;
             this.setState({ state: this.state });
@@ -221,7 +174,7 @@ export class Main extends React.Component {
     }
 
     // Logs a user in
-    login(username, password) {
+    login = (username, password) => {
         if(!username && !password) {
             this.displayAlert('A username and password is required');
         } else if(!username) {
@@ -232,18 +185,8 @@ export class Main extends React.Component {
             AuthService.login(username, password)
             .then(res => {
                 this.setState({
-                    user: res
-                });
-                const ids = this.state.user.favourites.map(e => e.id); //Gets all the ids from the user's favourtie hikes. Used to get all the specific data about the hikes.
-                UserService.getFavouriteHikes(ids)
-                .then(res => {
-                    this.setState({
-                        status: true,
-                        favourites: res
-                    });
-                })
-                .catch(error => {
-                    this.displayAlert(error.response.data);
+                    user: res,
+                    status: true
                 });
             })
             .catch(error => {
@@ -253,7 +196,7 @@ export class Main extends React.Component {
     }
 
     // Logs a user out
-    logout() {
+    logout = () => {
         AuthService.logout()
         .then(() => {
             this.setState({
@@ -266,66 +209,96 @@ export class Main extends React.Component {
         });
     }
 
-    // Draws a specific favourited hike when the user clicks on it from their panel
-    showHike = (id) => {
-        this.toggle = false; //Close menu before displaying selected hike
+    // Closes the dropdown and removes path styling from favouriting a path 
+    closeDropdown = () => {
+        this.pathing = false; //Close creation mode
+        this.toggle = true; //Reopen the slider
+        this.path.map(e => e.setStyle({ color: '#3273DC' })); //Restyle the paths
         this.setState({ state: this.state });
-        const hike = this.state.favourites.filter(e => e._id === id);
-        const hikeLayer = L.geoJSON(hike, {
-            style: (feature) => {
-                return {
-                    stroke: true,
-                    color: '#3273DC',
-                    weight: 10,
-                    opacity: 0.75
-                };
-            },
-            coordsToLatLng: (coords) => {
-                return new L.LatLng(coords[0], coords[1]);
-            },
-            onEachFeature: (feature, layer) => {
-                layer.on('click', this.displayPopup);
-            }
-        }).addTo(this.map);
+    }
 
-        //Adds the id and layer to an array for easy clearing later
-        const hikeId = hike.map(e => e._id)[0];
-        this.state.userHikes.push({
-            id: hikeId,
-            layer: hikeLayer
-        });
-
-        //Move the view to the hike the user clicked on
-        const moveToCords = hike[0].geometry.coordinates[0];
-        this.map.setView(moveToCords);
+    // Creating a favourite hike
+    definePathing = (event) => {
+        if(this.circle) {
+            this.map.removeLayer(this.circle); //Remove circle when pathing
+            this.circle = '';
+        }
+        this.toggle = false; //Close slider when pathing
+        this.pathing = true; //Enable pathing mode
+        const path = event.target;
+        path.setStyle({color:'black'}); //Color selected paths
+        this.path.push(path);
+        this.setState({ state: this.state });
     }
 
     // Lets the user favourite a hike with a custom nickname
-    saveHike(id, nickname) {
-        UserService.addHikeToFavourites(this.state.user._id, id, nickname)
-        .then(() => {
-            HikesService.getHike(id)
-            .then(data => {
+    savePath = (nickname) => {
+        if(this.state.status && nickname) {
+            const ids = this.path.map(e => e.feature._id);
+            UserService.addHikeToFavourites(this.state.user._id, ids, nickname)
+            .then(res => {
                 this.state.user.favourites.push({
-                    id: id,
+                    id: res.id,
+                    hike_ids: ids,
                     nickname: nickname
                 });
-                this.state.favourites.push(data);
-                this.setState(state => ({
-                    favourites: state.favourites
-                }));
+                this.setState({state: this.state });
             })
             .catch(error => {
                 this.displayAlert(error.response.data);
+            });
+            this.closeDropdown();
+            this.pathing = false; //End pathing mode
+            this.path = [];
+        } else if(!this.state.status) {
+            this.displayAlert('You need to be logged in for this action');
+        } else {
+            this.displayAlert('A nickname is required');
+        }
+    }
+
+    // Draws a specific favourited hike when the user clicks on it from their panel
+    showPath = (favourite_id) => {
+        //this.toggle = false; //Close menu before displaying selected hike
+
+        const drawn = this.state.userHikes.filter(e => e.id === favourite_id); //Checks to see if custom hike has been drawn
+        if(!drawn.length) { //Only draw if it has not been drawn yet
+            const favourite_hike = this.state.user.favourites.filter(e => e.id === favourite_id);
+            UserService.getFavouriteHikes(favourite_hike[0].hike_ids)
+            .then(res => {
+                const hike = res;
+                const hikeLayer = L.geoJSON(hike, {
+                    style: (feature) => {
+                        return {
+                            stroke: true,
+                            color: 'black',
+                            weight: 10,
+                            opacity: 0.75
+                        };
+                    },
+                    coordsToLatLng: (coords) => {
+                        return new L.LatLng(coords[0], coords[1]);
+                    }
+                }).addTo(this.map);
+
+                //Adds the id and layer to an array for easy clearing later
+                this.state.userHikes.push({
+                    id: favourite_id,
+                    layer: hikeLayer
+                });
+
+                //Move the view to the hike the user clicked on
+                const moveToCords = hike[0].geometry.coordinates[0];
+                this.map.setView(moveToCords);
             })
-        })
-        .catch(error => {
-            this.displayAlert(error.response.data);
-        });
+            .catch(error => {
+                this.displayAlert(error.response.data);
+            });
+        }   
     }
 
     // Clears a drawn hike in the favourites from the map
-    clearHike = (id) => {
+    clearPath = (id) => {
         const hikeToRemove = this.state.userHikes.filter(e => e.id === id); //The hike to clear found from the id
         if(hikeToRemove.length) {
             const layerToRemove = hikeToRemove.map(e => e.layer)[0]; //Gets the layer
@@ -337,18 +310,15 @@ export class Main extends React.Component {
     }
 
     // Deletes a hike from the user's favourties
-    removeHike(id) {
-        this.clearHike(id);
-        const favourite = this.state.user.favourites.filter(e => e.id === id)[0]; //Gets the hike to remove
-        const favourites = this.state.favourites.filter(e => e._id !== favourite.id); //Removes the hike from the local favourites
+    removePath(id) {
+        this.clearPath(id);
         //If removal is successful the current state is updated with the hike removed
         UserService.removeHike(this.state.user._id, id)
         .then(() => {
             const user = {...this.state.user};
             user.favourites = this.state.user.favourites.filter(e => e.id !== id);
             this.setState({
-                user,
-                favourites
+                user
             });
         })
         .catch(error => {
@@ -373,10 +343,8 @@ export class Main extends React.Component {
     componentDidMount() {
         this.map = L.map('map', {
             center: this.center,
-            zoom: 14 // Starting zoom value
+            zoom: 12 // Starting zoom value
         });
-
-        //zoom: 5
 
         this.map.doubleClickZoom.disable(); // Disables zoom when double clicking
         
@@ -403,12 +371,14 @@ export class Main extends React.Component {
         map.addEventListener('mouseup', () => {
             mouseisdown = false;
         });
+
+        this.login('test', 'test');
     }
  
     render() {
         return (
             <div id="app-container">
-                <Dropdown/>
+                <Dropdown save={this.savePath.bind(this)} close={this.closeDropdown} visible={this.pathing} />
                 <Alert alert={this.alert} onClick={this.dismissAlert}>{this.message}</Alert>
                 <Menu title='Mountain Goat'>
                     {
@@ -420,7 +390,7 @@ export class Main extends React.Component {
                                 <div>
                                     {
                                         this.state.user.favourites.map((e) => 
-                                            <Card key={e.id} name={e.nickname} show={() => this.showHike(e.id)} remove={() => this.removeHike(e.id)} clear={() => this.clearHike(e.id)} />
+                                            <Card key={e.id} name={e.nickname} show={() => this.showPath(e.id)} remove={() => this.removePath(e.id)} clear={() => this.clearPath(e.id)} />
                                         )
                                     }
                                 </div>
@@ -428,7 +398,7 @@ export class Main extends React.Component {
                          </div>
                     }
                 </Menu>
-                <Slider loading={this.loading} toggle={this.toggle} onRangeInput={this.updateCircle.bind(this)} exit={this.removeCircleAndHikes} enter={this.searchForHikes} />
+                <Slider loading={this.loading} toggle={this.toggle} onRangeInput={this.updateCircle.bind(this)} exit={this.removeCircleHikesAndDropdown} enter={this.searchForHikes} />
                 <div id="map" />
             </div>
         );

@@ -8,8 +8,9 @@ module.exports = class UserDao extends Dao {
     }
 
     async create_user(username, password) {
-        const taken = await this.collection.findOne({ username: username });
+        const taken = await this.collection.findOne({ username: username }); // Checks to see if username is available
         if(taken) return false;
+        // Hash password before storing it
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
         const new_user = {
@@ -28,28 +29,35 @@ module.exports = class UserDao extends Dao {
         return this.collection.findOne({_id: new mongo.ObjectID(id)});
     }
 
-    async save_hike(user_id, hike_id, nickname) {
-        //Checks if user already has favourited the hike
+    async save_hike(user_id, hike_ids, nickname) {
+        // Check to see if nickname is already in use
         const present = await this.collection.findOne({
             "_id": new mongo.ObjectID(user_id),
-            "favourites.id": new mongo.ObjectID(hike_id)
+            "favourites.nickname": nickname
         });
 
-        if(present) return false; //Return if already favourited
+        if(present) return false; // Return error if already in use
 
-        return await this.collection.updateOne(
+        const res = await this.collection.findOne(new mongo.ObjectID(user_id));
+
+        const ids  = hike_ids.map(e => e = new mongo.ObjectID(e));
+
+        await this.collection.updateOne(
             { 
                 _id: new mongo.ObjectID(user_id) 
             },
             {
                 $push: {
                     favourites: {
-                        id: new mongo.ObjectID(hike_id),
+                        id: (res.favourites.length + 1),
+                        hike_ids: ids,
                         nickname: nickname
                     }
                 }
             }
         );
+
+        return res.favourites.length + 1;
     }
 
     async delete_hike(user_id, hike_id) {
@@ -60,7 +68,7 @@ module.exports = class UserDao extends Dao {
             {
                 $pull: {
                     favourites: {
-                        id: new mongo.ObjectID(hike_id)
+                        id: hike_id
                     }
                 }
             }

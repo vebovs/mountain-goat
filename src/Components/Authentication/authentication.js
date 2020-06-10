@@ -15,14 +15,18 @@ export default class Authentication extends React.Component {
     toggleLogin = () => {
       this.setState(() => ({
           toggleLogin: true,
-          toggleRegister: false
+          toggleRegister: false,
+          username: '',
+          password: ''
       }));
     }
 
     toggleRegister = () => {
       this.setState(() => ({
           toggleLogin: false,
-          toggleRegister: true
+          toggleRegister: true,
+          username: '',
+          password: ''
       }));
     }
 

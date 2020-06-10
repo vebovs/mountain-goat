@@ -5,7 +5,8 @@ export default class Dropdown extends React.Component {
     constructor() {
         super();
         this.state = {
-            toggle: false
+            toggle: true,
+            nickname: ''
         }
     }
 
@@ -14,10 +15,14 @@ export default class Dropdown extends React.Component {
             return state.toggle = !state.toggle;
         });
     }
+
+    handleInput = () => {
+        this.props.save(this.state.nickname);
+    }
  
     render() {
         return (
-            <div className='dropdown-wrapper'>
+            <div className={this.props.visible ? 'dropdown-wrapper-visible' : 'dropdown-wrapper'}>
                 <div className='container is-fluid'>
                     <button className={this.state.toggle ? 'button rotate-up' : 'button rotate-down'} onClick={this.handleToggle}>
                         <span className='icon'>
@@ -28,19 +33,19 @@ export default class Dropdown extends React.Component {
                         <div className='box'>
                             <div className='field'>
                                 <div className='control'>
-                                    <input id="nickname" className="input is info" type="text" placeholder="Nickname"></input>
+                                    <input onChange={(e) => this.setState({nickname: e.target.value})} className="input is info" type="text" placeholder="Nickname"></input>
                                 </div>
                             </div>
                             <div className='field is-grouped'>
                                 <p className='control'>
-                                <button className='button' onClick={this.toggle}>
+                                <button className='button' onClick={this.handleInput}>
                                     <span className='icon'>
                                         <i className='fa fa-heart'></i>
                                     </span>
                                 </button>
                                 </p>
                                 <p className='control'>
-                                <button className='button' onClick={this.toggle}>
+                                <button className='button' onClick={this.props.close}>
                                     <span className='icon'>
                                         <i className='fa fa-times'></i>
                                     </span>
