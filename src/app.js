@@ -4,9 +4,19 @@ const app = express();
 const cors = require('cors');
 const passport = require('passport');
 const session = require('express-session');
+const mongodbstore = require('connect-mongodb-session')(session);
 const path = require('path');
 
 require('./config/passport')(passport);
+
+const store = new mongodbstore({
+    uri: process.env.MONGODB_CONNECTION_STRING,
+    databaseName: process.env.DATABASE
+});
+
+store.on('error', () => {
+    console.log(error);
+});
 
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
@@ -14,7 +24,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: process.env.SECRET,
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+    store: store
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -24,10 +35,6 @@ const hikedao = new HikeDao(process.env.HIKE_COLLECTION);
 
 const UserDao = require('./dao/UserDao');
 const userdao = new UserDao(process.env.USER_COLLECTION);
-
-/*app.get('/', async (req, res) => {
-    res.json('Welcome to the Mountain Goat API');
-});*/
 
 app.post('/hikes', async (req, res) => {
     try {
