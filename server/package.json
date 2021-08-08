@@ -1,0 +1,23 @@
+{
+    "name": "mountain-goat-server",
+    "version": "1.0.0",
+    "private": true,
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "connect-mongodb-session": "^2.3.3",
+        "cors": "^2.8.5",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "express-session": "^1.17.1",
+        "mongodb": "^3.5.6",
+        "passport": "^0.4.1",
+        "passport-local": "^1.0.0"
+    },
+    "devDependencies": {
+        "nodemon": "^1.19.4"
+    },
+    "scripts": {
+        "start": "node app.js",
+        "serve": "nodemon app.js"
+    }
+}
