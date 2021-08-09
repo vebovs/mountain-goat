@@ -1,4 +1,10 @@
 import * as React from 'react';
-import { Box } from '@chakra-ui/react';
+import { Center } from '@chakra-ui/react';
 
-export const Logo = () => <Box></Box>;
+const Logo = () => (
+  <Center bg='blue.500' h={180} textAlign='center'>
+    Logo
+  </Center>
+);
+
+export default Logo;
