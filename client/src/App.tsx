@@ -21,7 +21,7 @@ export const App = () => (
             templateColumns='repeat(1, 1fr)'
           >
             <GridItem bg='blue.500'>
-              <Center h='full'>Logo</Center>
+              <Logo />
             </GridItem>
             <GridItem>
               <Center h='full'>Map</Center>
