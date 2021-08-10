@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
-import { Center, Link, Text } from '@chakra-ui/react';
+import { Center, Link } from '@chakra-ui/react';
 
 type PageButtonProps = {
   link: string;
