@@ -9,6 +9,7 @@ import {
   GridItem,
 } from '@chakra-ui/react';
 import Logo from './components/Logo';
+import PanelButton from './components/PanelButton';
 
 export const App = () => (
   <ChakraProvider theme={theme}>
@@ -24,7 +25,7 @@ export const App = () => (
               <Logo />
             </GridItem>
             <GridItem>
-              <Center h='full'>Map</Center>
+              <PanelButton />
             </GridItem>
             <GridItem>
               <Center h='full'>Profile</Center>
