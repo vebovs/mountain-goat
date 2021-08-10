@@ -5,7 +5,6 @@ import {
   theme,
   Box,
   Flex,
-  Center,
   Grid,
   GridItem,
 } from '@chakra-ui/react';
@@ -30,21 +29,21 @@ export const App = () => (
                 <Logo />
               </GridItem>
               <GridItem>
-                <PanelButton />
+                <PanelButton link='/' title='Map' />
               </GridItem>
               <GridItem>
-                <Center h='full'>Profile</Center>
+                <PanelButton link='/profile' title='Profile' />
               </GridItem>
               <GridItem>
-                <Center h='full'>Info</Center>
+                <PanelButton link='/info' title='Info' />
               </GridItem>
             </Grid>
           </Box>
-          <Box flex='1' bg='papayawhip'>
+          <Box flex='1' bg='yellow.400'>
             <Switch>
               <Route path='/' component={Map} exact />
               <Route path='/profile' component={Profile} />
-              <Route path='info' component={Info} />
+              <Route path='/info' component={Info} />
             </Switch>
           </Box>
         </Flex>
