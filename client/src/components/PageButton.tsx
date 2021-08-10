@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { Center, Link, Text } from '@chakra-ui/react';
 
-type PanelButtonProps = {
+type PageButtonProps = {
   link: string;
   title: string;
 };
 
-const PanelButton = ({ link, title }: PanelButtonProps) => (
+const PageButton = ({ link, title }: PageButtonProps) => (
   <Link as={ReactRouterLink} to={link} style={{ textDecoration: 'none' }}>
     <Center
       bg='green.500'
@@ -20,4 +20,4 @@ const PanelButton = ({ link, title }: PanelButtonProps) => (
   </Link>
 );
 
-export default PanelButton;
+export default PageButton;

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Center } from '@chakra-ui/react';
 
-const Panel = () => (
+const Page = () => (
   <Center bg='blue.500' h={180} textAlign='center'>
-    Panel
+    Page
   </Center>
 );
 
-export default Panel;
+export default Page;

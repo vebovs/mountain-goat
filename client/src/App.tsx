@@ -12,7 +12,7 @@ import Map from './pages/Map';
 import Profile from './pages/Profile';
 import Info from './pages/Info';
 import Logo from './components/Logo';
-import PanelButton from './components/PanelButton';
+import PageButton from './components/PageButton';
 
 export const App = () => (
   <ChakraProvider theme={theme}>
@@ -29,13 +29,13 @@ export const App = () => (
                 <Logo />
               </GridItem>
               <GridItem>
-                <PanelButton link='/' title='Map' />
+                <PageButton link='/' title='Map' />
               </GridItem>
               <GridItem>
-                <PanelButton link='/profile' title='Profile' />
+                <PageButton link='/profile' title='Profile' />
               </GridItem>
               <GridItem>
-                <PanelButton link='/info' title='Info' />
+                <PageButton link='/info' title='Info' />
               </GridItem>
             </Grid>
           </Box>
