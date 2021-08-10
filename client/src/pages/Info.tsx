@@ -1,6 +1,11 @@
 import * as React from 'react';
-import { Center } from '@chakra-ui/react';
+import { Text } from '@chakra-ui/react';
+import Page from '../components/Page';
 
-const Info = () => <Center h='full'>Info</Center>;
+const Info = () => (
+  <Page>
+    <Text>Info</Text>
+  </Page>
+);
 
 export default Info;
