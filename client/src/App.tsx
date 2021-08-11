@@ -12,6 +12,7 @@ import Map from './pages/Map';
 import Profile from './pages/Profile';
 import Info from './pages/Info';
 import Logo from './components/Logo';
+import { FaMapMarkedAlt, FaUserAlt, FaInfoCircle } from 'react-icons/fa';
 import PageButton from './components/PageButton';
 
 export const App = () => (
@@ -29,13 +30,17 @@ export const App = () => (
                 <Logo />
               </GridItem>
               <GridItem>
-                <PageButton link='/' title='Map' />
+                <PageButton link='/' title='Map' IconProp={FaMapMarkedAlt} />
               </GridItem>
               <GridItem>
-                <PageButton link='/profile' title='Profile' />
+                <PageButton
+                  link='/profile'
+                  title='Profile'
+                  IconProp={FaUserAlt}
+                />
               </GridItem>
               <GridItem>
-                <PageButton link='/info' title='Info' />
+                <PageButton link='/info' title='Info' IconProp={FaInfoCircle} />
               </GridItem>
             </Grid>
           </Box>
