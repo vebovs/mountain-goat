@@ -57,7 +57,7 @@ const InputSlider = ({ toggleSlider }: InputSliderProps) => {
           aria-label='Search database'
           icon={<FaRegWindowClose />}
           marginBottom='4'
-          onClick={() => toggleSlider(false)}
+          onClick={() => toggleSlider(false)} // Closes slider
         />
       </VStack>
     </Box>
@@ -74,16 +74,16 @@ const LocationCirle = ({ toggle, toggleSlider }: LocationCircleProps) => {
 
   useMapEvent('click', (event) => {
     setPoint([event.latlng.lat, event.latlng.lng]);
-    toggleSlider(true);
+    toggleSlider(true); // Opens slider
   });
 
-  if (!toggle) return null;
+  if (!toggle) return null; // If the slider is closed remove circle
 
   return <Circle center={point} radius={250} />;
 };
 
 const Map = () => {
-  const [toggleSlider, SetToggleSlider] = useState(false);
+  const [slider, SetSlider] = useState(false); // Opens and closes the input slider
   const zoom: number = 14;
 
   return (
@@ -101,9 +101,9 @@ const Map = () => {
             url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           />
           <ZoomControl position='topleft' />
-          <LocationCirle toggle={toggleSlider} toggleSlider={SetToggleSlider} />
+          <LocationCirle toggle={slider} toggleSlider={SetSlider} />
         </MapContainer>
-        {toggleSlider && <InputSlider toggleSlider={SetToggleSlider} />}
+        {slider && <InputSlider toggleSlider={SetSlider} />}
       </Box>
     </Page>
   );
