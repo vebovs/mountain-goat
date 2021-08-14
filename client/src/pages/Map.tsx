@@ -1,86 +1,10 @@
 import React, { useState } from 'react';
-import type { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import {
-  Circle,
-  MapContainer,
-  TileLayer,
-  useMapEvent,
-  ZoomControl,
-} from 'react-leaflet';
-import {
-  Box,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
-  IconButton,
-  VStack,
-} from '@chakra-ui/react';
+import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
+import { Box } from '@chakra-ui/react';
 import Page from '../components/Page';
-import { FaSearch, FaRegWindowClose } from 'react-icons/fa';
-
-type InputSliderProps = {
-  toggleSlider: (toggle: boolean) => void;
-};
-
-const InputSlider = ({ toggleSlider }: InputSliderProps) => {
-  return (
-    <Box
-      position='absolute'
-      zIndex='overlay'
-      bottom='0'
-      top='0'
-      right='0'
-      marginRight='6'
-      marginBottom='4'
-    >
-      <VStack h='full'>
-        <Slider
-          aria-label='slider-ex-3'
-          defaultValue={20}
-          orientation='vertical'
-          marginTop='4'
-        >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb />
-        </Slider>
-        <IconButton
-          colorScheme='blue'
-          aria-label='Search database'
-          icon={<FaSearch />}
-        />
-        <IconButton
-          colorScheme='red'
-          aria-label='Search database'
-          icon={<FaRegWindowClose />}
-          marginBottom='4'
-          onClick={() => toggleSlider(false)} // Closes slider
-        />
-      </VStack>
-    </Box>
-  );
-};
-
-type LocationCircleProps = {
-  toggle: boolean;
-  toggleSlider: (toggle: boolean) => void;
-};
-
-const LocationCirle = ({ toggle, toggleSlider }: LocationCircleProps) => {
-  const [point, setPoint] = useState<LatLngExpression>([59.858264, 5.783487]);
-
-  useMapEvent('click', (event) => {
-    setPoint([event.latlng.lat, event.latlng.lng]);
-    toggleSlider(true); // Opens slider
-  });
-
-  if (!toggle) return null; // If the slider is closed remove circle
-
-  return <Circle center={point} radius={250} />;
-};
+import LocationCircle from '../components/LocationCircle';
+import InputSlider from '../components/InputSlider';
 
 const Map = () => {
   const [slider, SetSlider] = useState(false); // Opens and closes the input slider
@@ -101,7 +25,7 @@ const Map = () => {
             url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           />
           <ZoomControl position='topleft' />
-          <LocationCirle toggle={slider} toggleSlider={SetSlider} />
+          <LocationCircle toggle={slider} toggleSlider={SetSlider} />
         </MapContainer>
         {slider && <InputSlider toggleSlider={SetSlider} />}
       </Box>
