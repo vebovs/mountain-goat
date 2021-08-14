@@ -12,7 +12,7 @@ import {
 
 const LocationCirle = () => {
   const [point, setPoint] = useState<LatLngExpression>([59.858264, 5.783487]);
-  const map = useMapEvent('click', (event) => {
+  useMapEvent('click', (event) => {
     setPoint([event.latlng.lat, event.latlng.lng]);
   });
   return <Circle center={point} radius={250} />;
