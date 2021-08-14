@@ -52,7 +52,7 @@ const Map = () => {
     <Page>
       <Box h='full'>
         <MapContainer
-          style={{ height: '100%', position: 'relative' }}
+          style={{ height: '100%' }}
           center={[59.858264, 5.783487]}
           zoom={zoom}
           zoomControl={false}
