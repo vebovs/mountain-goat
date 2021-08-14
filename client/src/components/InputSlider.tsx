@@ -44,12 +44,12 @@ const InputSlider = ({ toggleSlider, radius, setRadius }: InputSliderProps) => {
         </Slider>
         <IconButton
           colorScheme='blue'
-          aria-label='Search database'
+          aria-label='Search for hikes'
           icon={<FaSearch />}
         />
         <IconButton
           colorScheme='red'
-          aria-label='Search database'
+          aria-label='Close slider'
           icon={<FaRegWindowClose />}
           marginBottom='4'
           onClick={() => toggleSlider(false)} // Closes slider
