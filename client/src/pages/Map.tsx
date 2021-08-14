@@ -14,8 +14,11 @@ import {
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
+  IconButton,
+  VStack,
 } from '@chakra-ui/react';
 import Page from '../components/Page';
+import { FaSearch, FaRegWindowClose } from 'react-icons/fa';
 
 const InputSlider = () => {
   return (
@@ -26,13 +29,32 @@ const InputSlider = () => {
       top='0'
       right='0'
       marginRight='6'
+      marginBottom='4'
     >
-      <Slider aria-label='slider-ex-3' defaultValue={20} orientation='vertical'>
-        <SliderTrack>
-          <SliderFilledTrack />
-        </SliderTrack>
-        <SliderThumb />
-      </Slider>
+      <VStack h='full'>
+        <Slider
+          aria-label='slider-ex-3'
+          defaultValue={20}
+          orientation='vertical'
+          marginTop='4'
+        >
+          <SliderTrack>
+            <SliderFilledTrack />
+          </SliderTrack>
+          <SliderThumb />
+        </Slider>
+        <IconButton
+          colorScheme='blue'
+          aria-label='Search database'
+          icon={<FaSearch />}
+        />
+        <IconButton
+          colorScheme='red'
+          aria-label='Search database'
+          icon={<FaRegWindowClose />}
+          marginBottom='4'
+        />
+      </VStack>
     </Box>
   );
 };
