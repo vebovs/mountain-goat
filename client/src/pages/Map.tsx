@@ -20,7 +20,11 @@ import {
 import Page from '../components/Page';
 import { FaSearch, FaRegWindowClose } from 'react-icons/fa';
 
-const InputSlider = () => {
+type InputSliderProps = {
+  toggleSlider: (toggle: boolean) => void;
+};
+
+const InputSlider = ({ toggleSlider }: InputSliderProps) => {
   return (
     <Box
       position='absolute'
@@ -53,21 +57,33 @@ const InputSlider = () => {
           aria-label='Search database'
           icon={<FaRegWindowClose />}
           marginBottom='4'
+          onClick={() => toggleSlider(false)}
         />
       </VStack>
     </Box>
   );
 };
 
-const LocationCirle = () => {
+type LocationCircleProps = {
+  toggle: boolean;
+  toggleSlider: (toggle: boolean) => void;
+};
+
+const LocationCirle = ({ toggle, toggleSlider }: LocationCircleProps) => {
   const [point, setPoint] = useState<LatLngExpression>([59.858264, 5.783487]);
+
   useMapEvent('click', (event) => {
     setPoint([event.latlng.lat, event.latlng.lng]);
+    toggleSlider(true);
   });
+
+  if (!toggle) return null;
+
   return <Circle center={point} radius={250} />;
 };
 
 const Map = () => {
+  const [toggleSlider, SetToggleSlider] = useState(false);
   const zoom: number = 14;
 
   return (
@@ -85,9 +101,9 @@ const Map = () => {
             url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           />
           <ZoomControl position='topleft' />
-          <LocationCirle />
+          <LocationCirle toggle={toggleSlider} toggleSlider={SetToggleSlider} />
         </MapContainer>
-        <InputSlider />
+        {toggleSlider && <InputSlider toggleSlider={SetToggleSlider} />}
       </Box>
     </Page>
   );
