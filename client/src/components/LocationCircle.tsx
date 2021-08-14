@@ -5,9 +5,14 @@ import { Circle, useMapEvent } from 'react-leaflet';
 type LocationCircleProps = {
   toggle: boolean;
   toggleSlider: (toggle: boolean) => void;
+  radius: number;
 };
 
-const LocationCirle = ({ toggle, toggleSlider }: LocationCircleProps) => {
+const LocationCirle = ({
+  toggle,
+  toggleSlider,
+  radius,
+}: LocationCircleProps) => {
   const [point, setPoint] = useState<LatLngExpression>([59.858264, 5.783487]);
 
   useMapEvent('click', (event) => {
@@ -17,7 +22,7 @@ const LocationCirle = ({ toggle, toggleSlider }: LocationCircleProps) => {
 
   if (!toggle) return null; // If the slider is closed remove circle
 
-  return <Circle center={point} radius={250} />;
+  return <Circle center={point} radius={radius} />;
 };
 
 export default LocationCirle;

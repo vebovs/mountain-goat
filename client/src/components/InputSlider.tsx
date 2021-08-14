@@ -12,9 +12,11 @@ import { FaSearch, FaRegWindowClose } from 'react-icons/fa';
 
 type InputSliderProps = {
   toggleSlider: (toggle: boolean) => void;
+  radius: number;
+  setRadius: (radius: number) => void;
 };
 
-const InputSlider = ({ toggleSlider }: InputSliderProps) => {
+const InputSlider = ({ toggleSlider, radius, setRadius }: InputSliderProps) => {
   return (
     <Box
       position='absolute'
@@ -28,9 +30,12 @@ const InputSlider = ({ toggleSlider }: InputSliderProps) => {
       <VStack h='full'>
         <Slider
           aria-label='slider-ex-3'
-          defaultValue={20}
+          defaultValue={radius}
           orientation='vertical'
           marginTop='4'
+          onChange={(val) => setRadius(val)}
+          min={800}
+          max={2400}
         >
           <SliderTrack>
             <SliderFilledTrack />

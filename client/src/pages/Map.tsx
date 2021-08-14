@@ -8,6 +8,7 @@ import InputSlider from '../components/InputSlider';
 
 const Map = () => {
   const [slider, SetSlider] = useState(false); // Opens and closes the input slider
+  const [radius, SetRadius] = useState(1200); // Initial radius of circle
   const zoom: number = 14;
 
   return (
@@ -25,9 +26,19 @@ const Map = () => {
             url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           />
           <ZoomControl position='topleft' />
-          <LocationCircle toggle={slider} toggleSlider={SetSlider} />
+          <LocationCircle
+            toggle={slider}
+            toggleSlider={SetSlider}
+            radius={radius}
+          />
         </MapContainer>
-        {slider && <InputSlider toggleSlider={SetSlider} />}
+        {slider && (
+          <InputSlider
+            toggleSlider={SetSlider}
+            radius={radius}
+            setRadius={SetRadius}
+          />
+        )}
       </Box>
     </Page>
   );
