@@ -24,8 +24,9 @@ const InputSlider = ({ toggleSlider, radius, setRadius }: InputSliderProps) => {
       bottom='0'
       top='0'
       right='0'
-      marginRight='6'
+      marginRight='9'
       marginBottom='4'
+      marginTop='14'
     >
       <VStack h='full'>
         <Slider

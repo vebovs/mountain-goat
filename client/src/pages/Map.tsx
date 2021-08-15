@@ -10,6 +10,7 @@ import { Box } from '@chakra-ui/react';
 import Page from '../components/Page';
 import LocationCircle from '../components/LocationCircle';
 import InputSlider from '../components/InputSlider';
+import MapBoard from '../components/MapBoard';
 
 const Map = () => {
   const [slider, SetSlider] = useState(false); // Opens and closes the input slider
@@ -39,6 +40,7 @@ const Map = () => {
             radius={radius}
           />
         </MapContainer>
+        <MapBoard />
         {slider && (
           <InputSlider
             toggleSlider={SetSlider}
