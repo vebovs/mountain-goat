@@ -14,7 +14,7 @@ export const addHikeToFavourites = (userId: string, pathIds: string[], name: str
         user_id: userId,
         hike_ids: pathIds,
         nickname: name
-    }).then( res => res.data);
+    }).then(res => res.data);
 
 export const removeHikeFromFavorites = (userId: string, hikeId: string) => 
     api.delete('/user/hike/delete', {
