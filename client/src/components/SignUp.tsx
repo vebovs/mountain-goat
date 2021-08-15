@@ -8,6 +8,7 @@ import {
   Box,
   Button,
 } from '@chakra-ui/react';
+import { FaUserPlus } from 'react-icons/fa';
 
 const SignUp = () => {
   return (
@@ -24,7 +25,7 @@ const SignUp = () => {
         <FormHelperText></FormHelperText>
         <FormErrorMessage></FormErrorMessage>
       </FormControl>
-      <Button mt='2' w='100%' colorScheme='blue'>
+      <Button mt='2' w='100%' colorScheme='blue' leftIcon={<FaUserPlus />}>
         Sign up
       </Button>
     </Box>

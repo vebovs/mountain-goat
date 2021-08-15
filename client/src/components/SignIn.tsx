@@ -8,6 +8,7 @@ import {
   Box,
   Button,
 } from '@chakra-ui/react';
+import { FaDoorClosed } from 'react-icons/fa';
 
 const SignIn = () => {
   return (
@@ -24,7 +25,7 @@ const SignIn = () => {
         <FormHelperText></FormHelperText>
         <FormErrorMessage></FormErrorMessage>
       </FormControl>
-      <Button mt='2' w='100%' colorScheme='blue'>
+      <Button mt='2' w='100%' colorScheme='blue' leftIcon={<FaDoorClosed />}>
         Sign in
       </Button>
     </Box>
