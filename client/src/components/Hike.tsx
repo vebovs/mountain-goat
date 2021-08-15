@@ -13,12 +13,12 @@ const Hike = () => {
         <IconButton
           m='2'
           colorScheme='blue'
-          aria-label='Search for hikes'
+          aria-label='Map hike'
           icon={<FaMap />}
         />
         <IconButton
           colorScheme='red'
-          aria-label='Search for hikes'
+          aria-label='Delete hike'
           icon={<FaTrashAlt />}
         />
       </Box>
