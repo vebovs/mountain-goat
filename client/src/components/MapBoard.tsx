@@ -12,6 +12,7 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { FaClipboardList } from 'react-icons/fa';
+import Hike from './Hike';
 
 const MapBoard = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -31,8 +32,14 @@ const MapBoard = () => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Hikes</DrawerHeader>
-          <DrawerBody></DrawerBody>
+          <DrawerHeader borderBottomWidth='1px'>Hikes</DrawerHeader>
+          <DrawerBody marginTop='4'>
+            <Hike />
+            <Hike />
+            <Hike />
+            <Hike />
+            <Hike />
+          </DrawerBody>
           <DrawerFooter></DrawerFooter>
         </DrawerContent>
       </Drawer>
