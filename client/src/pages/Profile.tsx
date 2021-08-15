@@ -1,10 +1,13 @@
 import * as React from 'react';
-import { Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import Page from '../components/Page';
+import SignIn from '../components/SignIn';
 
 const Profile = () => (
   <Page>
-    <Text>Profile</Text>
+    <Box bg='white' color='black'>
+      <SignIn />
+    </Box>
   </Page>
 );
 
