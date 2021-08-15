@@ -6,11 +6,12 @@ import {
   FormHelperText,
   Input,
   Box,
+  Button,
 } from '@chakra-ui/react';
 
 const SignIn = () => {
   return (
-    <Box>
+    <Box mr='12' ml='12'>
       <FormControl>
         <FormLabel>Username</FormLabel>
         <Input />
@@ -23,6 +24,9 @@ const SignIn = () => {
         <FormHelperText></FormHelperText>
         <FormErrorMessage></FormErrorMessage>
       </FormControl>
+      <Button mt='2' w='100%' colorScheme='blue'>
+        Sign in
+      </Button>
     </Box>
   );
 };

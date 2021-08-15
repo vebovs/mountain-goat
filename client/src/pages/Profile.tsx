@@ -6,8 +6,8 @@ import SignUp from '../components/SignUp';
 
 const Profile = () => (
   <Page>
-    <Box bg='white' color='black'>
-      <Tabs isFitted variant='enclosed'>
+    <Box bg='white' color='black' h='full'>
+      <Tabs isFitted variant='enclosed' h='full'>
         <TabList mb='1em'>
           <Tab>Sign In</Tab>
           <Tab>Sign Up</Tab>
