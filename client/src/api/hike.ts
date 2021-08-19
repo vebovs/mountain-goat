@@ -1,15 +1,14 @@
 import axios from 'axios';
-import type {LatLngExpression} from 'leaflet';
 
 const api = axios.create({
     baseURL: 'http://localhost:5000'
 });
 
 type Points = {
-    top: LatLngExpression;
-    bottom: LatLngExpression;
-    left: LatLngExpression;
-    right: LatLngExpression;
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
 }
 
 export const findHikesWithinArea = (points: Points) => 

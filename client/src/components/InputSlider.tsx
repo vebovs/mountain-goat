@@ -14,14 +14,14 @@ type InputSliderProps = {
   toggleSlider: (toggle: boolean) => void;
   radius: number;
   setRadius: (radius: number) => void;
-  searchForHikes: () => void;
+  setEnabled: (searching: boolean) => void;
 };
 
 const InputSlider = ({
   toggleSlider,
   radius,
   setRadius,
-  searchForHikes,
+  setEnabled,
 }: InputSliderProps) => {
   return (
     <Box
@@ -53,7 +53,7 @@ const InputSlider = ({
           colorScheme='blue'
           aria-label='Search for hikes'
           icon={<FaSearch />}
-          onClick={() => searchForHikes()}
+          onClick={() => setEnabled(true)}
         />
         <IconButton
           colorScheme='red'

@@ -8,6 +8,8 @@ import {
   AttributionControl,
 } from 'react-leaflet';
 import { Box } from '@chakra-ui/react';
+import { useQuery } from 'react-query';
+import { findHikesWithinArea } from '../api/hike';
 import Page from '../components/Page';
 import InputSlider from '../components/InputSlider';
 import MapBoard from '../components/MapBoard';
@@ -29,25 +31,34 @@ const createPointsFromPoint = (point: LatLngExpression, radius: number) => {
   const dLon = de / (eRadius * Math.cos((Math.PI * lat) / 180));
 
   return {
-    point_top: lat + (dLat * 180) / Math.PI,
-    point_bottom: lat - (dLat * 180) / Math.PI,
-    point_right: lon + (dLon * 180) / Math.PI,
-    point_left: lon - (dLon * 180) / Math.PI,
+    top: lat + (dLat * 180) / Math.PI,
+    bottom: lat - (dLat * 180) / Math.PI,
+    right: lon + (dLon * 180) / Math.PI,
+    left: lon - (dLon * 180) / Math.PI,
   };
 };
 
 const Map = () => {
+  const zoom: number = 14;
+
   const [slider, SetSlider] = useState(true); // Opens and closes the input slider
   const [radius, SetRadius] = useState(1200); // Initial radius of circle
   const [point, SetPoint] = useState<LatLngExpression>([59.858264, 5.783487]);
-  const zoom: number = 14;
+  const [enabled, SetEnabled] = useState(false);
 
-  const SearchForHikes = () => {
-    console.log('searching...');
-    console.log(point);
-    const points = createPointsFromPoint(point, radius);
-    console.log(points);
-  };
+  const { data, error } = useQuery(
+    'hike',
+    () =>
+      findHikesWithinArea(createPointsFromPoint(point, radius)).finally(() =>
+        SetEnabled(false),
+      ),
+    {
+      enabled: enabled,
+    },
+  );
+
+  if (error) console.log(error);
+  if (data) console.log(data);
 
   return (
     <Page>
@@ -80,7 +91,7 @@ const Map = () => {
             toggleSlider={SetSlider}
             radius={radius}
             setRadius={SetRadius}
-            searchForHikes={SearchForHikes}
+            setEnabled={SetEnabled}
           />
         )}
       </Box>
