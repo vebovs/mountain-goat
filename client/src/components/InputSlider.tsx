@@ -15,6 +15,7 @@ type InputSliderProps = {
   radius: number;
   setRadius: (radius: number) => void;
   setEnabled: (searching: boolean) => void;
+  IsLoading: boolean;
 };
 
 const InputSlider = ({
@@ -22,6 +23,7 @@ const InputSlider = ({
   radius,
   setRadius,
   setEnabled,
+  IsLoading,
 }: InputSliderProps) => {
   return (
     <Box
@@ -54,6 +56,7 @@ const InputSlider = ({
           aria-label='Search for hikes'
           icon={<FaSearch />}
           onClick={() => setEnabled(true)}
+          isLoading={IsLoading}
         />
         <IconButton
           colorScheme='red'

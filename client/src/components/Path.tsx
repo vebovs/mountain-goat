@@ -1,22 +1,35 @@
 import React, { useEffect, useRef } from 'react';
-import { GeoJSON, GeoJSONProps } from 'react-leaflet';
+import { GeoJSON } from 'react-leaflet';
 import L, { GeoJSON as LeafletGeoJson } from 'leaflet';
+import { GeoJsonObject } from 'geojson';
 
-const Path = (props: GeoJSONProps) => {
+type PathProps = {
+  data: GeoJsonObject;
+  sliderStatus: boolean;
+  IsFetching: boolean;
+};
+
+const Path = ({ data, sliderStatus, IsFetching }: PathProps) => {
   const geoJsonLayerRef = useRef<LeafletGeoJson | null>(null);
 
+  // Removes previous drawn paths and replaces them with newly fetched paths
   useEffect(() => {
-    const layer = geoJsonLayerRef.current;
-    if (layer) {
-      layer.clearLayers().addData(props.data);
-      if (props.pathOptions) layer.setStyle(props.pathOptions);
-      if (props.style) layer.setStyle(props.style);
+    if (!IsFetching && sliderStatus) {
+      const layer = geoJsonLayerRef.current;
+      if (layer) layer.clearLayers().addData(data);
     }
-  }, [props.data, props.pathOptions, props.style]);
+  }, [IsFetching]);
+
+  if (!sliderStatus) {
+    const layer = geoJsonLayerRef.current;
+    if (layer) layer.clearLayers();
+  }
+
+  if (!data) return null;
 
   return (
     <GeoJSON
-      data={props.data}
+      data={data}
       ref={geoJsonLayerRef}
       style={() => {
         return {

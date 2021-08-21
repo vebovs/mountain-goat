@@ -41,13 +41,12 @@ const createPointsFromPoint = (point: LatLngExpression, radius: number) => {
 
 const Map = () => {
   const zoom: number = 14;
-
   const [slider, SetSlider] = useState(true); // Opens and closes the input slider
   const [radius, SetRadius] = useState(1200); // Initial radius of circle
   const [point, SetPoint] = useState<LatLngExpression>([59.858264, 5.783487]);
   const [enabled, SetEnabled] = useState(false);
 
-  const { data, error } = useQuery(
+  const { data, error, isFetching } = useQuery(
     'foundHikes',
     () =>
       findHikesWithinArea(createPointsFromPoint(point, radius)).finally(() =>
@@ -85,7 +84,7 @@ const Map = () => {
             point={point}
             setPoint={SetPoint}
           />
-          {data && slider && <Path data={data} />}
+          <Path data={data} sliderStatus={slider} IsFetching={isFetching} />
         </MapContainer>
         <MapBoard />
         {slider && (
@@ -94,6 +93,7 @@ const Map = () => {
             radius={radius}
             setRadius={SetRadius}
             setEnabled={SetEnabled}
+            IsLoading={isFetching}
           />
         )}
       </Box>
