@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import type { LatLngExpression } from 'leaflet';
-import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {
   MapContainer,
   TileLayer,
   ZoomControl,
   AttributionControl,
-  GeoJSON,
 } from 'react-leaflet';
 import { Box } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
@@ -16,6 +14,7 @@ import Page from '../components/Page';
 import InputSlider from '../components/InputSlider';
 import MapBoard from '../components/MapBoard';
 import LocationCircle from '../components/LocationCircle';
+import Path from '../components/Path';
 
 const createPointsFromPoint = (point: LatLngExpression, radius: number) => {
   const posString = point.toString();
@@ -86,26 +85,7 @@ const Map = () => {
             point={point}
             setPoint={SetPoint}
           />
-          {data && (
-            <GeoJSON
-              data={data}
-              style={() => {
-                return {
-                  stroke: true,
-                  color: '#3273DC',
-                  weight: 10,
-                  opacity: 0.75,
-                };
-              }}
-              coordsToLatLng={(coords) => {
-                /* 
-                  Reverses lat and lon coordinates as provided by the api
-                  to suit leaflet's draw methods
-                */
-                return new L.LatLng(coords[0], coords[1]);
-              }}
-            />
-          )}
+          {data && slider && <Path data={data} />}
         </MapContainer>
         <MapBoard />
         {slider && (
