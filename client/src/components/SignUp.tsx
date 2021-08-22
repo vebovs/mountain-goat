@@ -24,6 +24,7 @@ const SignUp = () => {
   const [password, setPassword] = useState<string>('');
   const [enabled, setEnabled] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(true);
+  const [showSuccess, setShowSuccess] = useState<boolean>(false);
 
   const { isError, error, isLoading, isSuccess } = useQuery(
     'signup',
@@ -36,6 +37,16 @@ const SignUp = () => {
   useEffect(() => {
     if (isError) setShowError(true);
   }, [isError]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setShowSuccess(true);
+      const interval = setInterval(() => {
+        setShowSuccess(false);
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [isSuccess]);
 
   return (
     <Box mr='12' ml='12'>
@@ -59,7 +70,7 @@ const SignUp = () => {
         <FormHelperText></FormHelperText>
         <FormErrorMessage></FormErrorMessage>
       </FormControl>
-      {isSuccess ? (
+      {showSuccess ? (
         <IconButton
           mt='8'
           w='100%'
