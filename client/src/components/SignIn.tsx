@@ -13,19 +13,19 @@ import { FaDoorClosed } from 'react-icons/fa';
 const SignIn = () => {
   return (
     <Box mr='12' ml='12'>
-      <FormControl>
+      <FormControl mt='2'>
         <FormLabel>Username</FormLabel>
         <Input />
         <FormHelperText></FormHelperText>
         <FormErrorMessage></FormErrorMessage>
       </FormControl>
-      <FormControl>
+      <FormControl mt='8'>
         <FormLabel>Password</FormLabel>
         <Input />
         <FormHelperText></FormHelperText>
         <FormErrorMessage></FormErrorMessage>
       </FormControl>
-      <Button mt='2' w='100%' colorScheme='blue' leftIcon={<FaDoorClosed />}>
+      <Button mt='8' w='100%' colorScheme='blue' leftIcon={<FaDoorClosed />}>
         Sign in
       </Button>
     </Box>

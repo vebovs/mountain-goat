@@ -13,19 +13,19 @@ import { FaUserPlus } from 'react-icons/fa';
 const SignUp = () => {
   return (
     <Box mr='12' ml='12'>
-      <FormControl>
+      <FormControl mt='2'>
         <FormLabel>Username</FormLabel>
         <Input />
         <FormHelperText></FormHelperText>
         <FormErrorMessage></FormErrorMessage>
       </FormControl>
-      <FormControl>
+      <FormControl mt='8'>
         <FormLabel>Password</FormLabel>
         <Input />
         <FormHelperText></FormHelperText>
         <FormErrorMessage></FormErrorMessage>
       </FormControl>
-      <Button mt='2' w='100%' colorScheme='blue' leftIcon={<FaUserPlus />}>
+      <Button mt='8' w='100%' colorScheme='blue' leftIcon={<FaUserPlus />}>
         Sign up
       </Button>
     </Box>
