@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {
@@ -15,6 +15,7 @@ import InputSlider from '../components/InputSlider';
 import MapBoard from '../components/MapBoard';
 import LocationCircle from '../components/LocationCircle';
 import Path from '../components/Path';
+import MapError from '../components/MapError';
 
 const createPointsFromPoint = (point: LatLngExpression, radius: number) => {
   const posString = point.toString();
@@ -45,8 +46,9 @@ const Map = () => {
   const [radius, SetRadius] = useState(1200); // Initial radius of circle
   const [point, SetPoint] = useState<LatLngExpression>([59.858264, 5.783487]);
   const [enabled, SetEnabled] = useState(false);
+  const [ErrorMessage, SetErrorMessage] = useState<string | null>(null);
 
-  const { data, error, isFetching } = useQuery(
+  const { data, isError, error, isFetching } = useQuery(
     'foundHikes',
     () =>
       findHikesWithinArea(createPointsFromPoint(point, radius)).finally(() =>
@@ -57,8 +59,10 @@ const Map = () => {
     },
   );
 
-  if (error) console.log(error);
-  if (data) console.log(data);
+  // Present to avoid re-render loop
+  useEffect(() => {
+    if (isError) SetErrorMessage((error as Error).message);
+  }, [isError]);
 
   return (
     <Page>
@@ -96,6 +100,7 @@ const Map = () => {
             IsLoading={isFetching}
           />
         )}
+        <MapError error={isError} errorMessage={ErrorMessage} />
       </Box>
     </Page>
   );
