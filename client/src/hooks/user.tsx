@@ -1,5 +1,6 @@
 import React, { useContext, createContext, useState } from 'react';
 
+// TODO: add user type
 const userContext = createContext<object | null>(null);
 
 // TODO: add correct children type
