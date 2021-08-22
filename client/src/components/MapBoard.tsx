@@ -18,7 +18,14 @@ const MapBoard = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Box position='absolute' zIndex='overlay' bottom='0' top='0' right='0'>
+    <Box
+      position='absolute'
+      zIndex='overlay'
+      bottom='0'
+      top='0'
+      right='0'
+      marginBottom='100%'
+    >
       <Button
         leftIcon={<FaClipboardList />}
         colorScheme='blue'
