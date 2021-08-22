@@ -8,6 +8,7 @@ import {
   Grid,
   GridItem,
 } from '@chakra-ui/react';
+import { ProvideUser } from './hooks/user';
 import Map from './pages/Map';
 import Profile from './pages/Profile';
 import Info from './pages/Info';
@@ -45,11 +46,13 @@ export const App = () => (
             </Grid>
           </Box>
           <Box flex='1' bg='yellow.400'>
-            <Switch>
-              <Route path='/' component={Map} exact />
-              <Route path='/profile' component={Profile} />
-              <Route path='/info' component={Info} />
-            </Switch>
+            <ProvideUser>
+              <Switch>
+                <Route path='/' component={Map} exact />
+                <Route path='/profile' component={Profile} />
+                <Route path='/info' component={Info} />
+              </Switch>
+            </ProvideUser>
           </Box>
         </Flex>
       </Box>
