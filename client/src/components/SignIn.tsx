@@ -17,6 +17,7 @@ import {
 import { FaDoorClosed, FaDoorOpen } from 'react-icons/fa';
 import { useQuery } from 'react-query';
 import { loginUser } from '../api/auth';
+import { useUser } from '../hooks/user';
 
 const SignIn = () => {
   const [username, setUserName] = useState<string>('');
@@ -25,7 +26,9 @@ const SignIn = () => {
   const [showError, setShowError] = useState<boolean>(true);
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
 
-  const { isError, error, isLoading, isSuccess } = useQuery(
+  const user = useUser();
+
+  const { data, isError, error, isLoading, isSuccess } = useQuery(
     'signin',
     () => loginUser(username, password).finally(() => setEnabled(false)),
     {
@@ -38,14 +41,14 @@ const SignIn = () => {
   }, [isError]);
 
   useEffect(() => {
-    if (isSuccess) {
-      setShowSuccess(true);
-      const interval = setInterval(() => {
-        setShowSuccess(false);
-      }, 5000);
-      return () => clearInterval(interval);
-    }
+    if (isSuccess) setShowSuccess(true);
   }, [isSuccess]);
+
+  useEffect(() => {
+    if (data) {
+      user.setUser(data);
+    }
+  }, [data]);
 
   return (
     <Box mr='12' ml='12'>
