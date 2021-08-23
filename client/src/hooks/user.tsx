@@ -5,8 +5,12 @@ const userContext = createContext<object | null>(null);
 
 // TODO: add correct children type
 export const ProvideUser = ({ children }: any) => {
-  const user = useProvideUser();
-  return <userContext.Provider value={user}>{children}</userContext.Provider>;
+  const { user, setUser } = useProvideUser();
+  return (
+    <userContext.Provider value={{ user, setUser }}>
+      {children}
+    </userContext.Provider>
+  );
 };
 
 export const useUser = () => {

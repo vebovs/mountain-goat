@@ -26,7 +26,7 @@ const SignIn = () => {
   const [showError, setShowError] = useState<boolean>(true);
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
 
-  const user = useUser();
+  const { setUser } = useUser();
 
   const { data, isError, error, isLoading, isSuccess } = useQuery(
     'signin',
@@ -46,7 +46,7 @@ const SignIn = () => {
 
   useEffect(() => {
     if (data) {
-      user.setUser(data);
+      setUser(data);
     }
   }, [data]);
 

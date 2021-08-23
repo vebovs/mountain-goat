@@ -15,8 +15,8 @@ import SignUp from '../components/SignUp';
 import Dashboard from '../components/Dashboard';
 
 const Profile = () => {
-  const user = useUser();
-  console.log(user);
+  const { user } = useUser();
+
   return (
     <Page>
       <Center bg='green.400' color='black' h='full'>
