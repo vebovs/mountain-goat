@@ -1,9 +1,27 @@
 import React, { useContext, createContext, useState } from 'react';
 
-// TODO: add user type
-const userContext = createContext<object | null>(null);
+type UserDetails = {
+  _id: string;
+  username: string;
+  password: string;
+  favourites: object;
+};
 
-// TODO: add correct children type
+type User = {
+  user: UserDetails | null;
+  setUser: (user: UserDetails) => void;
+};
+
+const initialUser: User = {
+  user: null,
+  setUser: (user: UserDetails) => {
+    return (initialUser.user = user);
+  },
+};
+
+const userContext = createContext<User>(initialUser);
+
+// TODO: add specific children type
 export const ProvideUser = ({ children }: any) => {
   const { user, setUser } = useProvideUser();
   return (
@@ -18,6 +36,6 @@ export const useUser = () => {
 };
 
 const useProvideUser = () => {
-  const [user, setUser] = useState<object | null>(null);
+  const [user, setUser] = useState<UserDetails | null>(null);
   return { user, setUser };
 };
