@@ -20,9 +20,7 @@ const Dashboard = () => {
   );
 
   useEffect(() => {
-    if (isSuccess) {
-      setUser(null);
-    }
+    if (isSuccess) setUser(null);
   }, [isSuccess]);
 
   if (data) console.log(data);
