@@ -33,6 +33,7 @@ const SignIn = () => {
     () => loginUser(username, password).finally(() => setEnabled(false)),
     {
       enabled: enabled,
+      cacheTime: 0,
     },
   );
 

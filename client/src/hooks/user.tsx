@@ -9,12 +9,12 @@ type UserDetails = {
 
 type User = {
   user: UserDetails | null;
-  setUser: (user: UserDetails) => void;
+  setUser: (user: UserDetails | null) => void;
 };
 
 const initialUser: User = {
   user: null,
-  setUser: (user: UserDetails) => {
+  setUser: (user: UserDetails | null) => {
     return (initialUser.user = user);
   },
 };

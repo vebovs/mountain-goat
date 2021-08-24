@@ -31,6 +31,7 @@ const SignUp = () => {
     () => registerUser(username, password).finally(() => setEnabled(false)),
     {
       enabled: enabled,
+      cacheTime: 0,
     },
   );
 
