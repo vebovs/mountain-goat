@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Flex, Spacer, Text, Button, Divider } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Spacer,
+  Text,
+  Button,
+  Divider,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  Collapse,
+  CloseButton,
+} from '@chakra-ui/react';
 import { FaDoorOpen } from 'react-icons/fa';
 import { useUser } from '../hooks/user';
 import Hike from './Hike';
@@ -9,8 +21,9 @@ import { logoutUser } from '../api/auth';
 const Dashboard = () => {
   const { user, setUser } = useUser();
   const [enabled, setEnabled] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(false);
 
-  const { data, error, isLoading, isSuccess } = useQuery(
+  const { isError, error, isLoading, isSuccess } = useQuery(
     'signout',
     () => logoutUser().finally(() => setEnabled(false)),
     {
@@ -20,11 +33,12 @@ const Dashboard = () => {
   );
 
   useEffect(() => {
+    if (isError) setShowError(true);
+  }, [isError]);
+
+  useEffect(() => {
     if (isSuccess) setUser(null);
   }, [isSuccess]);
-
-  if (data) console.log(data);
-  if (error) console.log(error);
 
   if (!user) return null;
 
@@ -45,6 +59,19 @@ const Dashboard = () => {
           Sign out
         </Button>
       </Flex>
+      <Collapse in={showError}>
+        <Alert status='error'>
+          <AlertIcon />
+          <AlertTitle>{error ? (error as Error).message : null}</AlertTitle>
+          <CloseButton
+            position='absolute'
+            right='8px'
+            top='8px'
+            aria-label='close user registration error'
+            onClick={() => setShowError(false)}
+          />
+        </Alert>
+      </Collapse>
       <Divider />
       <Text mt='2'>Favourites</Text>
       <Box
