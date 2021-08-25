@@ -43,7 +43,15 @@ const Dashboard = () => {
   if (!user) return null;
 
   return (
-    <Box bg='white' borderWidth='1px' borderRadius='lg' w='600px' maxH='400px'>
+    <Box
+      bg='white'
+      borderWidth='1px'
+      borderRadius='lg'
+      w='600px'
+      h='400px'
+      overflowX='hidden'
+      overflowY='scroll'
+    >
       <Flex m='2'>
         <Text>Dashboard</Text>
         <Spacer></Spacer>
@@ -74,13 +82,7 @@ const Dashboard = () => {
       </Collapse>
       <Divider />
       <Text mt='2'>Favourites</Text>
-      <Box
-        m='2'
-        paddingRight='2'
-        overflowY='scroll'
-        overflowX='hidden'
-        maxH='280px'
-      >
+      <Box m='2'>
         <Hike />
         <Hike />
         <Hike />
