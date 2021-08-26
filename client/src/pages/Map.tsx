@@ -16,6 +16,7 @@ import MapBoard from '../components/MapBoard';
 import LocationCircle from '../components/LocationCircle';
 import Path from '../components/Path';
 import MapError from '../components/MapError';
+import MapDropdown from '../components/MapDropdown';
 
 const createPointsFromPoint = (point: LatLngExpression, radius: number) => {
   const posString = point.toString();
@@ -99,7 +100,7 @@ const Map = () => {
           />
         </MapContainer>
         <MapBoard />
-        {slider && (
+        {slider && !pathing && (
           <InputSlider
             toggleSlider={SetSlider}
             radius={radius}
@@ -108,6 +109,7 @@ const Map = () => {
             IsLoading={isFetching}
           />
         )}
+        <MapDropdown />
         <MapError error={isError} errorMessage={ErrorMessage} />
       </Box>
     </Page>

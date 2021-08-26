@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { GeoJSON } from 'react-leaflet';
-import L, { GeoJSON as LeafletGeoJson } from 'leaflet';
+import L, { GeoJSON as LeafletGeoJson, LeafletMouseEvent } from 'leaflet';
 import { GeoJsonObject } from 'geojson';
 
 type PathProps = {
@@ -28,6 +28,12 @@ const Path = ({ data, sliderStatus, IsFetching, SetPathing }: PathProps) => {
 
   if (!data) return null;
 
+  const defineFavouriteHike = (event: LeafletMouseEvent) => {
+    SetPathing(true);
+    const lineString = event.target;
+    lineString.setStyle({ color: 'black' });
+  };
+
   return (
     <GeoJSON
       data={data}
@@ -49,9 +55,7 @@ const Path = ({ data, sliderStatus, IsFetching, SetPathing }: PathProps) => {
       }}
       onEachFeature={(feature, layer) => {
         layer.on({
-          click: () => {
-            SetPathing(true);
-          },
+          click: defineFavouriteHike,
         });
       }}
     />
