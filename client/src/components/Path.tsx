@@ -7,9 +7,10 @@ type PathProps = {
   data: GeoJsonObject;
   sliderStatus: boolean;
   IsFetching: boolean;
+  SetPathing: (pathing: boolean) => void;
 };
 
-const Path = ({ data, sliderStatus, IsFetching }: PathProps) => {
+const Path = ({ data, sliderStatus, IsFetching, SetPathing }: PathProps) => {
   const geoJsonLayerRef = useRef<LeafletGeoJson | null>(null);
 
   // Removes previous drawn paths and replaces them with newly fetched paths
@@ -45,6 +46,13 @@ const Path = ({ data, sliderStatus, IsFetching }: PathProps) => {
           to suit leaflet's draw methods
         */
         return new L.LatLng(coords[0], coords[1]);
+      }}
+      onEachFeature={(feature, layer) => {
+        layer.on({
+          click: () => {
+            SetPathing(true);
+          },
+        });
       }}
     />
   );

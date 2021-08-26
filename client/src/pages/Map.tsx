@@ -47,6 +47,7 @@ const Map = () => {
   const [point, SetPoint] = useState<LatLngExpression>([59.858264, 5.783487]);
   const [enabled, SetEnabled] = useState(false);
   const [ErrorMessage, SetErrorMessage] = useState<string | null>(null);
+  const [pathing, setPathing] = useState<boolean>(false);
 
   const { data, isError, error, isFetching } = useQuery(
     'foundHikes',
@@ -81,14 +82,21 @@ const Map = () => {
           />
           <AttributionControl position='bottomleft' />
           <ZoomControl position='topleft' />
-          <LocationCircle
-            toggle={slider}
-            toggleSlider={SetSlider}
-            radius={radius}
-            point={point}
-            setPoint={SetPoint}
+          {!pathing && (
+            <LocationCircle
+              toggle={slider}
+              toggleSlider={SetSlider}
+              radius={radius}
+              point={point}
+              setPoint={SetPoint}
+            />
+          )}
+          <Path
+            data={data}
+            sliderStatus={slider}
+            IsFetching={isFetching}
+            SetPathing={setPathing}
           />
-          <Path data={data} sliderStatus={slider} IsFetching={isFetching} />
         </MapContainer>
         <MapBoard />
         {slider && (
