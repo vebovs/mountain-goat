@@ -17,8 +17,12 @@ import {
   CloseIcon,
 } from '@chakra-ui/icons';
 
-const MapDropdown = () => {
-  const [showDropdown, setShowDropdown] = useState<boolean>(false);
+type MapDropdownProps = {
+  SetPathing: (pathing: boolean) => void;
+};
+
+const MapDropdown = ({ SetPathing }: MapDropdownProps) => {
+  const [showDropdown, setShowDropdown] = useState<boolean>(true);
 
   return (
     <Box
@@ -52,6 +56,7 @@ const MapDropdown = () => {
             />
             <IconButton
               aria-label='exit favorite hike creation dropdown'
+              onClick={() => SetPathing(false)}
               icon={<CloseIcon />}
             />
           </Flex>

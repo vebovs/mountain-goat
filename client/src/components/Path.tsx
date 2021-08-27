@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { GeoJSON } from 'react-leaflet';
 import L, { GeoJSON as LeafletGeoJson, LeafletMouseEvent } from 'leaflet';
+import type { Polyline } from 'leaflet';
 import { GeoJsonObject } from 'geojson';
 
 type PathProps = {
@@ -8,10 +9,20 @@ type PathProps = {
   sliderStatus: boolean;
   IsFetching: boolean;
   SetPathing: (pathing: boolean) => void;
+  Path: Polyline[];
+  SetPath: (path: Polyline[]) => void;
 };
 
-const Path = ({ data, sliderStatus, IsFetching, SetPathing }: PathProps) => {
+const Path = ({
+  data,
+  sliderStatus,
+  IsFetching,
+  SetPathing,
+  Path,
+  SetPath,
+}: PathProps) => {
   const geoJsonLayerRef = useRef<LeafletGeoJson | null>(null);
+  let temp: Polyline[] = [];
 
   // Removes previous drawn paths and replaces them with newly fetched paths
   useEffect(() => {
@@ -26,13 +37,20 @@ const Path = ({ data, sliderStatus, IsFetching, SetPathing }: PathProps) => {
     if (layer) layer.clearLayers();
   }
 
-  if (!data) return null;
-
   const defineFavouriteHike = (event: LeafletMouseEvent) => {
     SetPathing(true);
-    const lineString = event.target;
+    const lineString: Polyline = event.target;
     lineString.setStyle({ color: 'black' });
+    /* 
+      TODO: 
+      find a way to handle stale state data 
+      and use path directly instead of temp 
+    */
+    temp = [...temp, lineString];
+    SetPath(temp);
   };
+
+  if (!data) return null;
 
   return (
     <GeoJSON

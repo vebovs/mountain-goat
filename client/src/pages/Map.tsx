@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { LatLngExpression } from 'leaflet';
+import type { LatLngExpression, Polyline } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {
   MapContainer,
@@ -49,6 +49,7 @@ const Map = () => {
   const [enabled, SetEnabled] = useState(false);
   const [ErrorMessage, SetErrorMessage] = useState<string | null>(null);
   const [pathing, setPathing] = useState<boolean>(false);
+  const [path, setPath] = useState<Polyline[]>([]);
 
   const { data, isError, error, isFetching } = useQuery(
     'foundHikes',
@@ -65,6 +66,10 @@ const Map = () => {
   useEffect(() => {
     if (isError) SetErrorMessage((error as Error).message);
   }, [isError]);
+
+  useEffect(() => {
+    console.log(path);
+  }, [path]);
 
   return (
     <Page>
@@ -97,6 +102,8 @@ const Map = () => {
             sliderStatus={slider}
             IsFetching={isFetching}
             SetPathing={setPathing}
+            Path={path}
+            SetPath={setPath}
           />
         </MapContainer>
         <MapBoard />
@@ -109,7 +116,7 @@ const Map = () => {
             IsLoading={isFetching}
           />
         )}
-        <MapDropdown />
+        {pathing && <MapDropdown SetPathing={setPathing} />}
         <MapError error={isError} errorMessage={ErrorMessage} />
       </Box>
     </Page>
