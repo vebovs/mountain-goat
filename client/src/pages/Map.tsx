@@ -88,15 +88,14 @@ const Map = () => {
           />
           <AttributionControl position='bottomleft' />
           <ZoomControl position='topleft' />
-          {!pathing && (
-            <LocationCircle
-              toggle={slider}
-              toggleSlider={SetSlider}
-              radius={radius}
-              point={point}
-              setPoint={SetPoint}
-            />
-          )}
+          <LocationCircle
+            pathing={pathing}
+            toggle={slider}
+            toggleSlider={SetSlider}
+            radius={radius}
+            point={point}
+            setPoint={SetPoint}
+          />
           <Path
             data={data}
             sliderStatus={slider}
