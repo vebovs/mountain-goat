@@ -3,6 +3,7 @@ import { GeoJSON } from 'react-leaflet';
 import L, { GeoJSON as LeafletGeoJson, LeafletMouseEvent } from 'leaflet';
 import type { Polyline } from 'leaflet';
 import { GeoJsonObject } from 'geojson';
+import useStableCallback from '../hooks/useStableCallback';
 
 type PathProps = {
   data: GeoJsonObject;
@@ -22,7 +23,6 @@ const Path = ({
   SetPath,
 }: PathProps) => {
   const geoJsonLayerRef = useRef<LeafletGeoJson | null>(null);
-  let temp: Polyline[] = [];
 
   // Removes previous drawn paths and replaces them with newly fetched paths
   useEffect(() => {
@@ -41,14 +41,10 @@ const Path = ({
     SetPathing(true);
     const lineString: Polyline = event.target;
     lineString.setStyle({ color: 'black' });
-    /* 
-      TODO: 
-      find a way to handle stale state data 
-      and use path directly instead of temp 
-    */
-    temp = [...temp, lineString];
-    SetPath(temp);
+    SetPath([...Path, lineString]);
   };
+
+  const stableDefineFavouriteHike = useStableCallback(defineFavouriteHike);
 
   if (!data) return null;
 
@@ -73,7 +69,7 @@ const Path = ({
       }}
       onEachFeature={(feature, layer) => {
         layer.on({
-          click: defineFavouriteHike,
+          click: stableDefineFavouriteHike,
         });
       }}
     />

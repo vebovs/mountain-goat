@@ -16,12 +16,15 @@ import {
   StarIcon,
   CloseIcon,
 } from '@chakra-ui/icons';
+import type { Polyline } from 'leaflet';
 
 type MapDropdownProps = {
+  Path: Polyline[];
+  SetPath: (path: Polyline[]) => void;
   SetPathing: (pathing: boolean) => void;
 };
 
-const MapDropdown = ({ SetPathing }: MapDropdownProps) => {
+const MapDropdown = ({ SetPathing, Path, SetPath }: MapDropdownProps) => {
   const [showDropdown, setShowDropdown] = useState<boolean>(true);
 
   return (
@@ -56,7 +59,11 @@ const MapDropdown = ({ SetPathing }: MapDropdownProps) => {
             />
             <IconButton
               aria-label='exit favorite hike creation dropdown'
-              onClick={() => SetPathing(false)}
+              onClick={() => {
+                Path.map((p) => p.setStyle({ color: '#3273DC' }));
+                SetPath([]);
+                SetPathing(false);
+              }}
               icon={<CloseIcon />}
             />
           </Flex>
