@@ -67,10 +67,6 @@ const Map = () => {
     if (isError) SetErrorMessage((error as Error).message);
   }, [isError]);
 
-  useEffect(() => {
-    console.log(path);
-  }, [path]);
-
   return (
     <Page>
       <Box h='full'>

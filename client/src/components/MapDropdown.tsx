@@ -51,8 +51,11 @@ const MapDropdown = ({ SetPathing, Path, SetPath }: MapDropdownProps) => {
         setErrorStatus(true);
         setErrorMessage((error as Error).message);
       },
-      onSuccess: (data) => {
-        console.log(data);
+      onSuccess: () => {
+        setNickname('');
+        Path.map((p) => p.setStyle({ color: '#3273DC' }));
+        SetPath([]);
+        SetPathing(false);
       },
     },
   );
