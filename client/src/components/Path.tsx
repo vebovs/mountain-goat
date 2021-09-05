@@ -24,6 +24,11 @@ const Path = ({
 }: PathProps) => {
   const geoJsonLayerRef = useRef<LeafletGeoJson | null>(null);
 
+  useEffect(() => {
+    const layer = geoJsonLayerRef.current;
+    if (layer) layer.clearLayers();
+  }, []);
+
   // Removes previous drawn paths and replaces them with newly fetched paths
   useEffect(() => {
     if (!IsFetching && sliderStatus) {
