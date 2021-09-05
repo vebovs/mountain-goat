@@ -24,6 +24,7 @@ const Path = ({
 }: PathProps) => {
   const geoJsonLayerRef = useRef<LeafletGeoJson | null>(null);
 
+  // Removes drawn geojson from reappearing after menu navigation
   useEffect(() => {
     const layer = geoJsonLayerRef.current;
     if (layer) layer.clearLayers();
