@@ -19,6 +19,9 @@ import {
 import type { Polyline } from 'leaflet';
 import type { ObjectId } from 'mongodb';
 import { Geometry } from 'geojson';
+import { useMutation } from 'react-query';
+import { addHikeToFavourites, FavoriteHike } from '../api/user';
+import { useUser } from '../hooks/user';
 
 type CustomFeatureType = {
   _id: ObjectId;
@@ -38,6 +41,21 @@ const MapDropdown = ({ SetPathing, Path, SetPath }: MapDropdownProps) => {
   const [nickname, setNickname] = useState<string>('');
   const [errorStatus, setErrorStatus] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
+
+  const { user } = useUser();
+
+  const saveHikeMutation = useMutation(
+    (hike: FavoriteHike) => addHikeToFavourites(hike),
+    {
+      onError: (error) => {
+        setErrorStatus(true);
+        setErrorMessage((error as Error).message);
+      },
+      onSuccess: (data) => {
+        console.log(data);
+      },
+    },
+  );
 
   useEffect(() => {
     if (errorStatus) {
@@ -85,16 +103,24 @@ const MapDropdown = ({ SetPathing, Path, SetPath }: MapDropdownProps) => {
               icon={<StarIcon />}
               mr='2'
               onClick={() => {
-                if (!nickname) {
+                if (!user) {
+                  setErrorStatus(true);
+                  setErrorMessage('Login required.');
+                } else if (!nickname) {
                   setErrorStatus(true);
                   setErrorMessage('Nickname required.');
                 } else {
                   const Ids = Path.map(
                     (p) => (p.feature as CustomFeatureType)._id,
                   );
-                  console.log(Ids);
+                  saveHikeMutation.mutate({
+                    userId: user._id,
+                    pathIds: Ids,
+                    name: nickname,
+                  });
                 }
               }}
+              isLoading={saveHikeMutation.isLoading}
             />
             <IconButton
               aria-label='exit favorite hike creation dropdown'
