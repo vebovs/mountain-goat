@@ -1,7 +1,9 @@
 import React, { useContext, createContext, useState } from 'react';
+import { RouteProps } from 'react-router';
+import type { ObjectId } from 'mongodb';
 
 type UserDetails = {
-  _id: string;
+  _id: ObjectId;
   username: string;
   password: string;
   favourites: object;
@@ -21,8 +23,11 @@ const initialUser: User = {
 
 const userContext = createContext<User>(initialUser);
 
-// TODO: add specific children type
-export const ProvideUser = ({ children }: any) => {
+type ChildrenProps = {
+  children: RouteProps['children'];
+};
+
+export const ProvideUser = ({ children }: ChildrenProps) => {
   const { user, setUser } = useProvideUser();
   return (
     <userContext.Provider value={{ user, setUser }}>

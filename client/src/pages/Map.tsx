@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { LatLngExpression } from 'leaflet';
+import type { LatLngExpression, Polyline } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {
   MapContainer,
@@ -16,6 +16,7 @@ import MapBoard from '../components/MapBoard';
 import LocationCircle from '../components/LocationCircle';
 import Path from '../components/Path';
 import MapError from '../components/MapError';
+import MapDropdown from '../components/MapDropdown';
 
 const createPointsFromPoint = (point: LatLngExpression, radius: number) => {
   const posString = point.toString();
@@ -47,6 +48,8 @@ const Map = () => {
   const [point, SetPoint] = useState<LatLngExpression>([59.858264, 5.783487]);
   const [enabled, SetEnabled] = useState(false);
   const [ErrorMessage, SetErrorMessage] = useState<string | null>(null);
+  const [pathing, setPathing] = useState<boolean>(false);
+  const [path, setPath] = useState<Polyline[]>([]);
 
   const { data, isError, error, isFetching } = useQuery(
     'foundHikes',
@@ -82,16 +85,24 @@ const Map = () => {
           <AttributionControl position='bottomleft' />
           <ZoomControl position='topleft' />
           <LocationCircle
+            pathing={pathing}
             toggle={slider}
             toggleSlider={SetSlider}
             radius={radius}
             point={point}
             setPoint={SetPoint}
           />
-          <Path data={data} sliderStatus={slider} IsFetching={isFetching} />
+          <Path
+            data={data}
+            sliderStatus={slider}
+            IsFetching={isFetching}
+            SetPathing={setPathing}
+            Path={path}
+            SetPath={setPath}
+          />
         </MapContainer>
         <MapBoard />
-        {slider && (
+        {slider && !pathing && (
           <InputSlider
             toggleSlider={SetSlider}
             radius={radius}
@@ -99,6 +110,9 @@ const Map = () => {
             setEnabled={SetEnabled}
             IsLoading={isFetching}
           />
+        )}
+        {pathing && (
+          <MapDropdown SetPathing={setPathing} Path={path} SetPath={setPath} />
         )}
         <MapError error={isError} errorMessage={ErrorMessage} />
       </Box>

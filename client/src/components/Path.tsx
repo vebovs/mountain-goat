@@ -1,16 +1,34 @@
 import React, { useEffect, useRef } from 'react';
 import { GeoJSON } from 'react-leaflet';
-import L, { GeoJSON as LeafletGeoJson } from 'leaflet';
+import L, { GeoJSON as LeafletGeoJson, LeafletMouseEvent } from 'leaflet';
+import type { Polyline } from 'leaflet';
 import { GeoJsonObject } from 'geojson';
+import useStableCallback from '../hooks/useStableCallback';
 
 type PathProps = {
   data: GeoJsonObject;
   sliderStatus: boolean;
   IsFetching: boolean;
+  SetPathing: (pathing: boolean) => void;
+  Path: Polyline[];
+  SetPath: (path: Polyline[]) => void;
 };
 
-const Path = ({ data, sliderStatus, IsFetching }: PathProps) => {
+const Path = ({
+  data,
+  sliderStatus,
+  IsFetching,
+  SetPathing,
+  Path,
+  SetPath,
+}: PathProps) => {
   const geoJsonLayerRef = useRef<LeafletGeoJson | null>(null);
+
+  // Removes drawn geojson from reappearing after menu navigation
+  useEffect(() => {
+    const layer = geoJsonLayerRef.current;
+    if (layer) layer.clearLayers();
+  }, []);
 
   // Removes previous drawn paths and replaces them with newly fetched paths
   useEffect(() => {
@@ -24,6 +42,15 @@ const Path = ({ data, sliderStatus, IsFetching }: PathProps) => {
     const layer = geoJsonLayerRef.current;
     if (layer) layer.clearLayers();
   }
+
+  const defineFavouriteHike = (event: LeafletMouseEvent) => {
+    SetPathing(true);
+    const lineString: Polyline = event.target;
+    lineString.setStyle({ color: 'black' });
+    SetPath([...Path, lineString]);
+  };
+
+  const stableDefineFavouriteHike = useStableCallback(defineFavouriteHike);
 
   if (!data) return null;
 
@@ -45,6 +72,11 @@ const Path = ({ data, sliderStatus, IsFetching }: PathProps) => {
           to suit leaflet's draw methods
         */
         return new L.LatLng(coords[0], coords[1]);
+      }}
+      onEachFeature={(feature, layer) => {
+        layer.on({
+          click: stableDefineFavouriteHike,
+        });
       }}
     />
   );
