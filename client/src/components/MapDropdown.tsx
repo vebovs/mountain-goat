@@ -51,7 +51,18 @@ const MapDropdown = ({ SetPathing, Path, SetPath }: MapDropdownProps) => {
         setErrorStatus(true);
         setErrorMessage((error as Error).message);
       },
-      onSuccess: () => {
+      onSuccess: (data) => {
+        // Add new path to current state
+        const PathIds = Path.map((p) => (p.feature as CustomFeatureType)._id);
+        const hikeId: number = data.id;
+        if (user)
+          user.favourites.push({
+            id: hikeId,
+            nickname: nickname,
+            hike_ids: PathIds,
+          });
+
+        // Reset values to prepare for new path
         setNickname('');
         Path.map((p) => p.setStyle({ color: '#3273DC' }));
         SetPath([]);

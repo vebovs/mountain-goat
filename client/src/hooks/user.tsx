@@ -2,7 +2,7 @@ import React, { useContext, createContext, useState } from 'react';
 import { RouteProps } from 'react-router';
 import type { ObjectId } from 'mongodb';
 
-type Favourite = {
+export type Favourite = {
   id: number;
   hike_ids: ObjectId[];
   nickname: string;

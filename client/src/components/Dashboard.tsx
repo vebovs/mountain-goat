@@ -14,14 +14,16 @@ import {
 } from '@chakra-ui/react';
 import { FaDoorOpen } from 'react-icons/fa';
 import { useUser } from '../hooks/user';
-import Hike from './Hike';
+import DashboardHike from './DashboardHike';
 import { useQuery } from 'react-query';
 import { logoutUser } from '../api/auth';
+import { Favourite } from '../hooks/user';
 
 const Dashboard = () => {
   const { user, setUser } = useUser();
   const [enabled, setEnabled] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
+  const [favourites, setFavourites] = useState<Favourite[]>([]);
 
   const { isError, error, isLoading, isSuccess } = useQuery(
     'signout',
@@ -39,6 +41,10 @@ const Dashboard = () => {
   useEffect(() => {
     if (isSuccess) setUser(null);
   }, [isSuccess]);
+
+  useEffect(() => {
+    if (user?.favourites) setFavourites(user.favourites);
+  }, [user?.favourites]);
 
   if (!user) return null;
 
@@ -82,7 +88,17 @@ const Dashboard = () => {
       </Collapse>
       <Divider />
       <Text mt='2'>Favourites</Text>
-      <Box m='2'></Box>
+      <Box m='2'>
+        {favourites.map((fav) => (
+          <DashboardHike
+            key={fav.id}
+            nickname={fav.nickname}
+            hikeId={fav.id}
+            userId={user._id}
+            setFavourites={setFavourites}
+          />
+        ))}
+      </Box>
     </Box>
   );
 };

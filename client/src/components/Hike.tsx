@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Flex, Spacer, Text, IconButton, Center } from '@chakra-ui/react';
 import { SmallCloseIcon } from '@chakra-ui/icons';
 import { FaMap } from 'react-icons/fa';
