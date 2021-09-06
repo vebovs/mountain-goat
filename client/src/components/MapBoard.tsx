@@ -13,9 +13,13 @@ import {
 } from '@chakra-ui/react';
 import { FaClipboardList } from 'react-icons/fa';
 import Hike from './Hike';
+import { useUser } from '../hooks/user';
 
 const MapBoard = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { user } = useUser();
+
+  if (!user) return null;
 
   return (
     <Box
@@ -41,11 +45,13 @@ const MapBoard = () => {
           <DrawerCloseButton />
           <DrawerHeader borderBottomWidth='1px'>Hikes</DrawerHeader>
           <DrawerBody marginTop='4'>
-            <Hike />
-            <Hike />
-            <Hike />
-            <Hike />
-            <Hike />
+            {user.favourites.map((fav) => (
+              <Hike
+                key={fav.id}
+                nickname={fav.nickname}
+                hikeIds={fav.hike_ids}
+              />
+            ))}
           </DrawerBody>
           <DrawerFooter></DrawerFooter>
         </DrawerContent>

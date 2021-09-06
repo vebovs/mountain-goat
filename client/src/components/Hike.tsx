@@ -1,12 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Flex, Spacer, Text, IconButton, Center } from '@chakra-ui/react';
 import { FaTrashAlt, FaMap } from 'react-icons/fa';
+import { useQuery } from 'react-query';
+import { getFavouriteHikes } from '../api/user';
+import type { ObjectId } from 'mongodb';
 
-const Hike = () => {
+type HikeProps = {
+  nickname: string;
+  hikeIds: ObjectId[];
+};
+
+const Hike = ({ nickname, hikeIds }: HikeProps) => {
+  const [enabled, setEnabled] = useState<boolean>(false);
+  const { data } = useQuery(
+    'getHike',
+    () => getFavouriteHikes(hikeIds).finally(() => setEnabled(false)),
+    {
+      enabled: enabled,
+    },
+  );
+
+  console.log(data);
+
   return (
     <Flex marginBottom='2' borderBottomWidth='1px'>
       <Center>
-        <Text>Sample Text</Text>
+        <Text>{nickname}</Text>
       </Center>
       <Spacer />
       <Box>
@@ -15,6 +34,7 @@ const Hike = () => {
           colorScheme='blue'
           aria-label='Map hike'
           icon={<FaMap />}
+          onClick={() => setEnabled(true)}
         />
         <IconButton
           colorScheme='red'

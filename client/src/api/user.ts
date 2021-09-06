@@ -11,7 +11,7 @@ export type FavoriteHike = {
     name: string;
 }
 
-export const getFavouriteHikes = (hikeIds: string[]) => 
+export const getFavouriteHikes = (hikeIds: ObjectId[]) => 
     api.post('/user/hikes', {
         data: hikeIds
     }).then(res => res.data);
