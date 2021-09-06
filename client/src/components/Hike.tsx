@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Flex, Spacer, Text, IconButton, Center } from '@chakra-ui/react';
 import { SmallCloseIcon } from '@chakra-ui/icons';
-import { FaTrashAlt, FaMap } from 'react-icons/fa';
+import { FaMap } from 'react-icons/fa';
 import { useQuery } from 'react-query';
 import { getFavouriteHikes } from '../api/user';
 import type { ObjectId } from 'mongodb';
@@ -11,7 +11,6 @@ type HikeProps = {
   nickname: string;
   hikeIds: ObjectId[];
   setFavouriteHike: (data: GeoJsonObject | null) => void;
-  drawFavouriteHike: boolean;
   setDrawFavouriteHike: (draw: boolean) => void;
 };
 
@@ -19,13 +18,16 @@ const Hike = ({
   nickname,
   hikeIds,
   setFavouriteHike,
-  drawFavouriteHike,
   setDrawFavouriteHike,
 }: HikeProps) => {
   const [enabled, setEnabled] = useState<boolean>(false);
   const { data, isSuccess } = useQuery(
     'getFavouriteHike',
-    () => getFavouriteHikes(hikeIds).finally(() => setEnabled(false)),
+    () =>
+      getFavouriteHikes(hikeIds).finally(() => {
+        setEnabled(false);
+        setDrawFavouriteHike(true);
+      }),
     {
       enabled: enabled,
     },
@@ -49,7 +51,6 @@ const Hike = ({
           icon={<FaMap />}
           onClick={() => {
             setEnabled(true);
-            setDrawFavouriteHike(true);
           }}
         />
         <IconButton

@@ -18,13 +18,11 @@ import { GeoJsonObject } from 'geojson';
 
 type MapBoardProps = {
   setFavouriteHike: (data: GeoJsonObject | null) => void;
-  drawFavouriteHike: boolean;
   setDrawFavouriteHike: (draw: boolean) => void;
 };
 
 const MapBoard = ({
   setFavouriteHike,
-  drawFavouriteHike,
   setDrawFavouriteHike,
 }: MapBoardProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -62,7 +60,6 @@ const MapBoard = ({
                 nickname={fav.nickname}
                 hikeIds={fav.hike_ids}
                 setFavouriteHike={setFavouriteHike}
-                drawFavouriteHike={drawFavouriteHike}
                 setDrawFavouriteHike={setDrawFavouriteHike}
               />
             ))}

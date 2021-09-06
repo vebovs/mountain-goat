@@ -113,7 +113,6 @@ const Map = () => {
         </MapContainer>
         <MapBoard
           setFavouriteHike={setFavouritehike}
-          drawFavouriteHike={drawFavouriteHike}
           setDrawFavouriteHike={setDrawFavouriteHike}
         />
         {slider && !pathing && (
