@@ -5,37 +5,42 @@ import { FaMap } from 'react-icons/fa';
 import { useQuery } from 'react-query';
 import { getFavouriteHikes } from '../api/user';
 import type { ObjectId } from 'mongodb';
-import { GeoJsonObject } from 'geojson';
+import type { FavouriteHikeData } from '../pages/Map';
 
 type HikeProps = {
+  id: number;
   nickname: string;
   hikeIds: ObjectId[];
-  setFavouriteHike: (data: GeoJsonObject | null) => void;
+  favouriteHike: FavouriteHikeData | null;
+  setFavouriteHike: (data: FavouriteHikeData | null) => void;
   setDrawFavouriteHike: (draw: boolean) => void;
 };
 
 const Hike = ({
+  id,
   nickname,
   hikeIds,
+  favouriteHike,
   setFavouriteHike,
   setDrawFavouriteHike,
 }: HikeProps) => {
   const [enabled, setEnabled] = useState<boolean>(false);
-  const { data, isSuccess } = useQuery(
+
+  useQuery(
     'getFavouriteHike',
     () =>
-      getFavouriteHikes(hikeIds).finally(() => {
-        setEnabled(false);
-        setDrawFavouriteHike(true);
-      }),
+      getFavouriteHikes(hikeIds)
+        .then((data) => {
+          setFavouriteHike({ id: id, data: data });
+        })
+        .finally(() => {
+          setEnabled(false);
+          setDrawFavouriteHike(true);
+        }),
     {
       enabled: enabled,
     },
   );
-
-  useEffect(() => {
-    if (isSuccess) setFavouriteHike(data);
-  }, [isSuccess, data]);
 
   return (
     <Flex marginBottom='2' borderBottomWidth='1px'>
@@ -49,15 +54,18 @@ const Hike = ({
           colorScheme='blue'
           aria-label='Draw hike'
           icon={<FaMap />}
-          onClick={() => {
-            setEnabled(true);
-          }}
+          onClick={() => setEnabled(true)}
         />
         <IconButton
           colorScheme='gray'
           aria-label='Undraw hike'
           icon={<SmallCloseIcon />}
-          onClick={() => setDrawFavouriteHike(false)}
+          onClick={() => {
+            if (favouriteHike?.id === id) {
+              setFavouriteHike(null);
+              setDrawFavouriteHike(false);
+            }
+          }}
         />
       </Box>
     </Flex>

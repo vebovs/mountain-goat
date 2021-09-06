@@ -4,7 +4,7 @@ import { GeoJsonObject } from 'geojson';
 import L, { GeoJSON as LeafletGeoJson } from 'leaflet';
 
 type FavouritePathProps = {
-  data: GeoJsonObject | null;
+  data: GeoJsonObject | null | undefined;
   drawFavouritehike: boolean;
 };
 
@@ -32,9 +32,9 @@ const FavouritePath = ({ data, drawFavouritehike }: FavouritePathProps) => {
       }}
       coordsToLatLng={(coords) => {
         /* 
-      Reverses lat and lon coordinates as provided by the api
-      to suit leaflet's draw methods
-    */
+         Reverses lat and lon coordinates as provided by the api
+         to suit leaflet's draw methods
+        */
         return new L.LatLng(coords[0], coords[1]);
       }}
     />

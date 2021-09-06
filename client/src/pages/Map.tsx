@@ -43,6 +43,11 @@ const createPointsFromPoint = (point: LatLngExpression, radius: number) => {
   };
 };
 
+export type FavouriteHikeData = {
+  id: number;
+  data: GeoJsonObject;
+};
+
 const Map = () => {
   const zoom: number = 14;
   const [slider, SetSlider] = useState<boolean>(false); // Opens and closes the input slider
@@ -52,7 +57,7 @@ const Map = () => {
   const [ErrorMessage, SetErrorMessage] = useState<string | null>(null);
   const [pathing, setPathing] = useState<boolean>(false);
   const [path, setPath] = useState<Polyline[]>([]);
-  const [favouriteHike, setFavouritehike] = useState<GeoJsonObject | null>(
+  const [favouriteHike, setFavouritehike] = useState<FavouriteHikeData | null>(
     null,
   );
   const [drawFavouriteHike, setDrawFavouriteHike] = useState<boolean>(false);
@@ -99,7 +104,7 @@ const Map = () => {
             setPoint={SetPoint}
           />
           <FavouritePath
-            data={favouriteHike}
+            data={favouriteHike?.data}
             drawFavouritehike={drawFavouriteHike}
           />
           <Path
@@ -112,6 +117,7 @@ const Map = () => {
           />
         </MapContainer>
         <MapBoard
+          favouriteHike={favouriteHike}
           setFavouriteHike={setFavouritehike}
           setDrawFavouriteHike={setDrawFavouriteHike}
         />

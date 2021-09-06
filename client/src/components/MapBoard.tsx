@@ -14,14 +14,16 @@ import {
 import { FaClipboardList } from 'react-icons/fa';
 import Hike from './Hike';
 import { useUser } from '../hooks/user';
-import { GeoJsonObject } from 'geojson';
+import type { FavouriteHikeData } from '../pages/Map';
 
 type MapBoardProps = {
-  setFavouriteHike: (data: GeoJsonObject | null) => void;
+  favouriteHike: FavouriteHikeData | null;
+  setFavouriteHike: (data: FavouriteHikeData | null) => void;
   setDrawFavouriteHike: (draw: boolean) => void;
 };
 
 const MapBoard = ({
+  favouriteHike,
   setFavouriteHike,
   setDrawFavouriteHike,
 }: MapBoardProps) => {
@@ -57,8 +59,10 @@ const MapBoard = ({
             {user.favourites.map((fav) => (
               <Hike
                 key={fav.id}
+                id={fav.id}
                 nickname={fav.nickname}
                 hikeIds={fav.hike_ids}
+                favouriteHike={favouriteHike}
                 setFavouriteHike={setFavouriteHike}
                 setDrawFavouriteHike={setDrawFavouriteHike}
               />
