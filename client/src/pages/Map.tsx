@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { LatLngExpression, Polyline } from 'leaflet';
+import { GeoJsonObject } from 'geojson';
 import 'leaflet/dist/leaflet.css';
 import {
   MapContainer,
@@ -17,6 +18,7 @@ import LocationCircle from '../components/LocationCircle';
 import Path from '../components/Path';
 import MapError from '../components/MapError';
 import MapDropdown from '../components/MapDropdown';
+import FavouritePath from '../components/FavouritePath';
 
 const createPointsFromPoint = (point: LatLngExpression, radius: number) => {
   const posString = point.toString();
@@ -50,6 +52,9 @@ const Map = () => {
   const [ErrorMessage, SetErrorMessage] = useState<string | null>(null);
   const [pathing, setPathing] = useState<boolean>(false);
   const [path, setPath] = useState<Polyline[]>([]);
+  const [favouriteHike, setFavouritehike] = useState<GeoJsonObject | null>(
+    null,
+  );
 
   const { data, isError, error, isFetching } = useQuery(
     'foundHikes',
@@ -92,6 +97,7 @@ const Map = () => {
             point={point}
             setPoint={SetPoint}
           />
+          <FavouritePath data={favouriteHike} />
           <Path
             data={data}
             sliderStatus={slider}
@@ -101,7 +107,7 @@ const Map = () => {
             SetPath={setPath}
           />
         </MapContainer>
-        <MapBoard />
+        <MapBoard setFavouriteHike={setFavouritehike} />
         {slider && !pathing && (
           <InputSlider
             toggleSlider={SetSlider}
