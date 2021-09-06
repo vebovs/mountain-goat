@@ -55,6 +55,7 @@ const Map = () => {
   const [favouriteHike, setFavouritehike] = useState<GeoJsonObject | null>(
     null,
   );
+  const [drawFavouriteHike, setDrawFavouriteHike] = useState<boolean>(false);
 
   const { data, isError, error, isFetching } = useQuery(
     'foundHikes',
@@ -97,7 +98,10 @@ const Map = () => {
             point={point}
             setPoint={SetPoint}
           />
-          <FavouritePath data={favouriteHike} />
+          <FavouritePath
+            data={favouriteHike}
+            drawFavouritehike={drawFavouriteHike}
+          />
           <Path
             data={data}
             sliderStatus={slider}
@@ -107,7 +111,11 @@ const Map = () => {
             SetPath={setPath}
           />
         </MapContainer>
-        <MapBoard setFavouriteHike={setFavouritehike} />
+        <MapBoard
+          setFavouriteHike={setFavouritehike}
+          drawFavouriteHike={drawFavouriteHike}
+          setDrawFavouriteHike={setDrawFavouriteHike}
+        />
         {slider && !pathing && (
           <InputSlider
             toggleSlider={SetSlider}

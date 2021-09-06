@@ -5,9 +5,10 @@ import L, { GeoJSON as LeafletGeoJson } from 'leaflet';
 
 type FavouritePathProps = {
   data: GeoJsonObject | null;
+  drawFavouritehike: boolean;
 };
 
-const FavouritePath = ({ data }: FavouritePathProps) => {
+const FavouritePath = ({ data, drawFavouritehike }: FavouritePathProps) => {
   const geoJsonLayerRef = useRef<LeafletGeoJson | null>(null);
 
   useEffect(() => {
@@ -15,7 +16,7 @@ const FavouritePath = ({ data }: FavouritePathProps) => {
     if (layer && data) layer.clearLayers().addData(data);
   }, [data, geoJsonLayerRef]);
 
-  if (!data) return null;
+  if (!data || !drawFavouritehike) return null;
 
   return (
     <GeoJSON

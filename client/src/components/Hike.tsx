@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Flex, Spacer, Text, IconButton, Center } from '@chakra-ui/react';
+import { SmallCloseIcon } from '@chakra-ui/icons';
 import { FaTrashAlt, FaMap } from 'react-icons/fa';
 import { useQuery } from 'react-query';
 import { getFavouriteHikes } from '../api/user';
@@ -9,13 +10,21 @@ import { GeoJsonObject } from 'geojson';
 type HikeProps = {
   nickname: string;
   hikeIds: ObjectId[];
-  setFavouriteHike: (data: GeoJsonObject) => void;
+  setFavouriteHike: (data: GeoJsonObject | null) => void;
+  drawFavouriteHike: boolean;
+  setDrawFavouriteHike: (draw: boolean) => void;
 };
 
-const Hike = ({ nickname, hikeIds, setFavouriteHike }: HikeProps) => {
+const Hike = ({
+  nickname,
+  hikeIds,
+  setFavouriteHike,
+  drawFavouriteHike,
+  setDrawFavouriteHike,
+}: HikeProps) => {
   const [enabled, setEnabled] = useState<boolean>(false);
   const { data, isSuccess } = useQuery(
-    'getHike',
+    'getFavouriteHike',
     () => getFavouriteHikes(hikeIds).finally(() => setEnabled(false)),
     {
       enabled: enabled,
@@ -36,14 +45,18 @@ const Hike = ({ nickname, hikeIds, setFavouriteHike }: HikeProps) => {
         <IconButton
           m='2'
           colorScheme='blue'
-          aria-label='Map hike'
+          aria-label='Draw hike'
           icon={<FaMap />}
-          onClick={() => setEnabled(true)}
+          onClick={() => {
+            setEnabled(true);
+            setDrawFavouriteHike(true);
+          }}
         />
         <IconButton
-          colorScheme='red'
-          aria-label='Delete hike'
-          icon={<FaTrashAlt />}
+          colorScheme='gray'
+          aria-label='Undraw hike'
+          icon={<SmallCloseIcon />}
+          onClick={() => setDrawFavouriteHike(false)}
         />
       </Box>
     </Flex>
