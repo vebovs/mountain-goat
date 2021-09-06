@@ -82,24 +82,7 @@ const Dashboard = () => {
       </Collapse>
       <Divider />
       <Text mt='2'>Favourites</Text>
-      <Box m='2'>
-        <Hike />
-        <Hike />
-        <Hike />
-        <Hike />
-        <Hike />
-        <Hike />
-        <Hike />
-        <Hike />
-        <Hike />
-        <Hike />
-        <Hike />
-        <Hike />
-        <Hike />
-        <Hike />
-        <Hike />
-        <Hike />
-      </Box>
+      <Box m='2'></Box>
     </Box>
   );
 };
