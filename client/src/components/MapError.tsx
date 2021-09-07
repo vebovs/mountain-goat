@@ -9,32 +9,39 @@ import {
 } from '@chakra-ui/react';
 
 type MapErrorProps = {
-  error: boolean;
   errorMessage: string | null;
+  setErrorMessage: (errorMessage: string) => void;
 };
 
-const MapError = ({ error, errorMessage }: MapErrorProps) => {
+const MapError = ({ errorMessage, setErrorMessage }: MapErrorProps) => {
   const [showError, SetShowError] = useState(false);
 
   useEffect(() => {
-    if (error) SetShowError(true);
-  }, [error]);
+    if (errorMessage) SetShowError(true);
+  }, [errorMessage]);
 
   return (
     <Box
       position='absolute'
       zIndex='overlay'
       bottom='0'
-      left='45%'
-      right='35%'
+      left='40%'
+      right='40%'
       marginBottom='4'
       color='black'
+      minW={160}
+      maxW={200}
     >
       <SlideFade in={showError}>
         <Alert status='error'>
           <AlertIcon />
           <AlertTitle>{errorMessage}</AlertTitle>
-          <CloseButton onClick={() => SetShowError(false)} />
+          <CloseButton
+            onClick={() => {
+              SetShowError(false);
+              setErrorMessage('');
+            }}
+          />
         </Alert>
       </SlideFade>
     </Box>
