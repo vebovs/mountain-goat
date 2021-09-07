@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Flex, Spacer, Text, IconButton, Center } from '@chakra-ui/react';
 import { SmallCloseIcon } from '@chakra-ui/icons';
 import { FaMap } from 'react-icons/fa';
@@ -25,9 +25,10 @@ const Hike = ({
   setDrawFavouriteHike,
 }: HikeProps) => {
   const [enabled, setEnabled] = useState<boolean>(false);
+  const [errorText, setErrorText] = useState<string>('');
 
-  useQuery(
-    'getFavouriteHike',
+  const { error, isError, isFetching } = useQuery(
+    `getFavouriteHike${id}`,
     () =>
       getFavouriteHikes(hikeIds)
         .then((data) => {
@@ -42,12 +43,25 @@ const Hike = ({
     },
   );
 
+  useEffect(() => {
+    if (isError && error) {
+      setErrorText((error as Error).message);
+      const interval = setInterval(() => {
+        setErrorText('');
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [error, isError]);
+
   return (
     <Flex marginBottom='2' borderBottomWidth='1px'>
       <Center>
         <Text>{nickname}</Text>
       </Center>
       <Spacer />
+      <Center>
+        <Text color='red'>{errorText}</Text>
+      </Center>
       <Box>
         <IconButton
           m='2'
@@ -55,6 +69,7 @@ const Hike = ({
           aria-label='Draw hike'
           icon={<FaMap />}
           onClick={() => setEnabled(true)}
+          isLoading={isFetching}
         />
         <IconButton
           colorScheme='gray'

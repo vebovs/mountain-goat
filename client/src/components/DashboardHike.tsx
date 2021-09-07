@@ -41,7 +41,7 @@ const DashboardHike = ({
     if (errorText) {
       const interval = setInterval(() => {
         setErrorText('');
-      }, 2500);
+      }, 5000);
       return () => clearInterval(interval);
     }
   }, [errorText, setErrorText]);
