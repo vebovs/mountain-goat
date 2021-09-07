@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   IconButton,
@@ -16,6 +16,7 @@ import {
   StarIcon,
   CloseIcon,
 } from '@chakra-ui/icons';
+import { DomEvent } from 'leaflet';
 import type { Polyline } from 'leaflet';
 import type { ObjectId } from 'mongodb';
 import { Geometry } from 'geojson';
@@ -37,6 +38,7 @@ type MapDropdownProps = {
 };
 
 const MapDropdown = ({ SetPathing, Path, SetPath }: MapDropdownProps) => {
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [showDropdown, setShowDropdown] = useState<boolean>(true);
   const [nickname, setNickname] = useState<string>('');
   const [errorStatus, setErrorStatus] = useState<boolean>(false);
@@ -72,6 +74,11 @@ const MapDropdown = ({ SetPathing, Path, SetPath }: MapDropdownProps) => {
   );
 
   useEffect(() => {
+    if (dropdownRef.current)
+      DomEvent.disableClickPropagation(dropdownRef.current);
+  });
+
+  useEffect(() => {
     if (errorStatus) {
       const interval = setInterval(() => {
         setErrorStatus(false);
@@ -83,13 +90,16 @@ const MapDropdown = ({ SetPathing, Path, SetPath }: MapDropdownProps) => {
 
   return (
     <Box
+      ref={dropdownRef}
       position='absolute'
       zIndex='overlay'
       top='0'
-      left='50%'
-      right='35%'
+      left='40%'
+      right='40%'
       marginTop='4'
       color='black'
+      minW={160}
+      maxW={220}
     >
       <IconButton
         aria-label='Toggle create favourite hike button'

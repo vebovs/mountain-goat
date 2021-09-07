@@ -117,6 +117,13 @@ const Map = () => {
             Path={path}
             SetPath={setPath}
           />
+          {pathing && (
+            <MapDropdown
+              SetPathing={setPathing}
+              Path={path}
+              SetPath={setPath}
+            />
+          )}
           <MapError
             errorMessage={errorMessage}
             setErrorMessage={setErrorMessage}
@@ -135,9 +142,6 @@ const Map = () => {
             setEnabled={SetEnabled}
             IsLoading={isFetching}
           />
-        )}
-        {pathing && (
-          <MapDropdown SetPathing={setPathing} Path={path} SetPath={setPath} />
         )}
       </Box>
     </Page>
