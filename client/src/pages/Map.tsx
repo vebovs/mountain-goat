@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { LatLngExpression, Polyline } from 'leaflet';
+import { GeoJsonObject } from 'geojson';
 import 'leaflet/dist/leaflet.css';
 import {
   MapContainer,
@@ -17,6 +18,7 @@ import LocationCircle from '../components/LocationCircle';
 import Path from '../components/Path';
 import MapError from '../components/MapError';
 import MapDropdown from '../components/MapDropdown';
+import FavouritePath from '../components/FavouritePath';
 
 const createPointsFromPoint = (point: LatLngExpression, radius: number) => {
   const posString = point.toString();
@@ -41,15 +43,24 @@ const createPointsFromPoint = (point: LatLngExpression, radius: number) => {
   };
 };
 
+export type FavouriteHikeData = {
+  id: number;
+  data: GeoJsonObject;
+};
+
 const Map = () => {
   const zoom: number = 14;
-  const [slider, SetSlider] = useState(false); // Opens and closes the input slider
-  const [radius, SetRadius] = useState(1200); // Initial radius of circle
-  const [point, SetPoint] = useState<LatLngExpression>([59.858264, 5.783487]);
-  const [enabled, SetEnabled] = useState(false);
+  const [slider, SetSlider] = useState<boolean>(false); // Opens and closes the input slider
+  const [radius, SetRadius] = useState<number>(1200); // Initial radius of circle
+  const [point, SetPoint] = useState<LatLngExpression>([59.858264, 5.783487]); // Center of the circle
+  const [enabled, SetEnabled] = useState<boolean>(false);
   const [ErrorMessage, SetErrorMessage] = useState<string | null>(null);
-  const [pathing, setPathing] = useState<boolean>(false);
-  const [path, setPath] = useState<Polyline[]>([]);
+  const [pathing, setPathing] = useState<boolean>(false); // Toggles creating favourite hike mode
+  const [path, setPath] = useState<Polyline[]>([]); // Stores the new favourite hike being made
+  const [favouriteHike, setFavouritehike] = useState<FavouriteHikeData | null>(
+    null,
+  ); // Current favourite hike to be drawn
+  const [drawFavouriteHike, setDrawFavouriteHike] = useState<boolean>(false); // Toggle the curren favourite hike to be drawn or not
 
   const { data, isError, error, isFetching } = useQuery(
     'foundHikes',
@@ -92,6 +103,10 @@ const Map = () => {
             point={point}
             setPoint={SetPoint}
           />
+          <FavouritePath
+            data={favouriteHike?.data}
+            drawFavouritehike={drawFavouriteHike}
+          />
           <Path
             data={data}
             sliderStatus={slider}
@@ -101,7 +116,11 @@ const Map = () => {
             SetPath={setPath}
           />
         </MapContainer>
-        <MapBoard />
+        <MapBoard
+          favouriteHike={favouriteHike}
+          setFavouriteHike={setFavouritehike}
+          setDrawFavouriteHike={setDrawFavouriteHike}
+        />
         {slider && !pathing && (
           <InputSlider
             toggleSlider={SetSlider}

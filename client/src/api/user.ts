@@ -11,7 +11,12 @@ export type FavoriteHike = {
     name: string;
 }
 
-export const getFavouriteHikes = (hikeIds: string[]) => 
+export type hikeToRemove = {
+    userId: ObjectId;
+    hikeId: number;
+}
+
+export const getFavouriteHikes = (hikeIds: ObjectId[]) => 
     api.post('/user/hikes', {
         data: hikeIds
     }).then(res => res.data);
@@ -23,10 +28,10 @@ export const addHikeToFavourites = (hike: FavoriteHike) =>
         nickname: hike.name
     }).then(res => res.data);
 
-export const removeHikeFromFavorites = (userId: string, hikeId: string) => 
+export const removeHikeFromFavorites = (data: hikeToRemove) => 
     api.delete('/user/hike/delete', {
         data: {
-            user_id: userId,
-            hike_id: hikeId
+            user_id: data.userId,
+            hike_id: data.hikeId
         }
     }).then(res => res.data);

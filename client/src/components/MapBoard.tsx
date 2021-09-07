@@ -13,9 +13,24 @@ import {
 } from '@chakra-ui/react';
 import { FaClipboardList } from 'react-icons/fa';
 import Hike from './Hike';
+import { useUser } from '../hooks/user';
+import type { FavouriteHikeData } from '../pages/Map';
 
-const MapBoard = () => {
+type MapBoardProps = {
+  favouriteHike: FavouriteHikeData | null;
+  setFavouriteHike: (data: FavouriteHikeData | null) => void;
+  setDrawFavouriteHike: (draw: boolean) => void;
+};
+
+const MapBoard = ({
+  favouriteHike,
+  setFavouriteHike,
+  setDrawFavouriteHike,
+}: MapBoardProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { user } = useUser();
+
+  if (!user) return null;
 
   return (
     <Box
@@ -41,11 +56,17 @@ const MapBoard = () => {
           <DrawerCloseButton />
           <DrawerHeader borderBottomWidth='1px'>Hikes</DrawerHeader>
           <DrawerBody marginTop='4'>
-            <Hike />
-            <Hike />
-            <Hike />
-            <Hike />
-            <Hike />
+            {user.favourites.map((fav) => (
+              <Hike
+                key={fav.id}
+                id={fav.id}
+                nickname={fav.nickname}
+                hikeIds={fav.hike_ids}
+                favouriteHike={favouriteHike}
+                setFavouriteHike={setFavouriteHike}
+                setDrawFavouriteHike={setDrawFavouriteHike}
+              />
+            ))}
           </DrawerBody>
           <DrawerFooter></DrawerFooter>
         </DrawerContent>

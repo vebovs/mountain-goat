@@ -4,6 +4,7 @@ import L, { GeoJSON as LeafletGeoJson, LeafletMouseEvent } from 'leaflet';
 import type { Polyline } from 'leaflet';
 import { GeoJsonObject } from 'geojson';
 import useStableCallback from '../hooks/useStableCallback';
+import { useUser } from '../hooks/user';
 
 type PathProps = {
   data: GeoJsonObject;
@@ -23,6 +24,8 @@ const Path = ({
   SetPath,
 }: PathProps) => {
   const geoJsonLayerRef = useRef<LeafletGeoJson | null>(null);
+
+  const { user } = useUser();
 
   // Removes drawn geojson from reappearing after menu navigation
   useEffect(() => {
@@ -44,10 +47,14 @@ const Path = ({
   }
 
   const defineFavouriteHike = (event: LeafletMouseEvent) => {
-    SetPathing(true);
     const lineString: Polyline = event.target;
-    lineString.setStyle({ color: 'black' });
-    SetPath([...Path, lineString]);
+    if (!user) {
+      lineString.setStyle({ interactive: false });
+    } else {
+      SetPathing(true);
+      lineString.setStyle({ color: 'black' });
+      SetPath([...Path, lineString]);
+    }
   };
 
   const stableDefineFavouriteHike = useStableCallback(defineFavouriteHike);
