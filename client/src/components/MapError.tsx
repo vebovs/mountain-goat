@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { DomEvent } from 'leaflet';
 import {
   Box,
   SlideFade,
@@ -15,6 +16,11 @@ type MapErrorProps = {
 
 const MapError = ({ errorMessage, setErrorMessage }: MapErrorProps) => {
   const [showError, SetShowError] = useState(false);
+  const errorRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (errorRef.current) DomEvent.disableClickPropagation(errorRef.current);
+  });
 
   useEffect(() => {
     if (errorMessage) SetShowError(true);
@@ -22,6 +28,7 @@ const MapError = ({ errorMessage, setErrorMessage }: MapErrorProps) => {
 
   return (
     <Box
+      ref={errorRef}
       position='absolute'
       zIndex='overlay'
       bottom='0'
