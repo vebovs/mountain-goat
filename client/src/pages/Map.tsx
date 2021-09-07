@@ -52,15 +52,15 @@ const Map = () => {
   const zoom: number = 14;
   const [slider, SetSlider] = useState<boolean>(false); // Opens and closes the input slider
   const [radius, SetRadius] = useState<number>(1200); // Initial radius of circle
-  const [point, SetPoint] = useState<LatLngExpression>([59.858264, 5.783487]);
+  const [point, SetPoint] = useState<LatLngExpression>([59.858264, 5.783487]); // Center of the circle
   const [enabled, SetEnabled] = useState<boolean>(false);
   const [ErrorMessage, SetErrorMessage] = useState<string | null>(null);
-  const [pathing, setPathing] = useState<boolean>(false);
-  const [path, setPath] = useState<Polyline[]>([]);
+  const [pathing, setPathing] = useState<boolean>(false); // Toggles creating favourite hike mode
+  const [path, setPath] = useState<Polyline[]>([]); // Stores the new favourite hike being made
   const [favouriteHike, setFavouritehike] = useState<FavouriteHikeData | null>(
     null,
-  );
-  const [drawFavouriteHike, setDrawFavouriteHike] = useState<boolean>(false);
+  ); // Current favourite hike to be drawn
+  const [drawFavouriteHike, setDrawFavouriteHike] = useState<boolean>(false); // Toggle the curren favourite hike to be drawn or not
 
   const { data, isError, error, isFetching } = useQuery(
     'foundHikes',
