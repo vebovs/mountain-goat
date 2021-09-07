@@ -73,6 +73,7 @@ const MapDropdown = ({ SetPathing, Path, SetPath }: MapDropdownProps) => {
     },
   );
 
+  // Stops map click event from triggering when click on the dropdown element
   useEffect(() => {
     if (dropdownRef.current)
       DomEvent.disableClickPropagation(dropdownRef.current);
