@@ -49,14 +49,13 @@ const Dashboard = () => {
   if (!user) return null;
 
   return (
-    <Box
+    <Flex
+      direction='column'
       bg='white'
       borderWidth='1px'
       borderRadius='lg'
       w='600px'
       h='400px'
-      overflowX='hidden'
-      overflowY='scroll'
     >
       <Flex m='2'>
         <Text>Dashboard</Text>
@@ -88,7 +87,7 @@ const Dashboard = () => {
       </Collapse>
       <Divider />
       <Text mt='2'>Favourites</Text>
-      <Box m='2'>
+      <Box m='2' overflowY='auto'>
         {favourites.map((fav) => (
           <DashboardHike
             key={fav.id}
@@ -99,7 +98,7 @@ const Dashboard = () => {
           />
         ))}
       </Box>
-    </Box>
+    </Flex>
   );
 };
 

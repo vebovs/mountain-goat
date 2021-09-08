@@ -21,7 +21,13 @@ export const App = () => (
     <BrowserRouter>
       <Box textAlign='center' fontSize='xl' minH='100vh'>
         <Flex color='white' minH='100vh'>
-          <Box w={200} bg='tomato' overflow='hidden'>
+          <Box
+            w={200}
+            bg='tomato'
+            overflow='hidden'
+            borderRight='2px'
+            borderColor='green.600'
+          >
             <Grid
               h='full'
               templateRows='repeat(4, 1fr)'

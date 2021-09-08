@@ -19,7 +19,7 @@ const Profile = () => {
 
   return (
     <Page>
-      <Center bg='green.400' color='black' h='full'>
+      <Center bg='green.300' color='black' h='full'>
         {user ? (
           <Dashboard />
         ) : (
