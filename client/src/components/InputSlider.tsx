@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
 import { FaSearch } from 'react-icons/fa';
+import { useUser } from '../hooks/user';
 
 type InputSliderProps = {
   toggleSlider: (toggle: boolean) => void;
@@ -26,6 +27,8 @@ const InputSlider = ({
   setEnabled,
   IsLoading,
 }: InputSliderProps) => {
+  const { user } = useUser();
+
   return (
     <Box
       position='absolute'
@@ -35,7 +38,7 @@ const InputSlider = ({
       right='0'
       marginRight='9'
       marginBottom='4'
-      marginTop='14'
+      marginTop={user ? '14' : '2'}
     >
       <VStack h='full'>
         <Slider
