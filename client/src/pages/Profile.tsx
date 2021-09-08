@@ -19,14 +19,15 @@ const Profile = () => {
 
   return (
     <Page>
-      <Center bg='green.300' color='black' h='full'>
+      <Center bg='green.50' color='black' h='full'>
         {user ? (
           <Dashboard />
         ) : (
           <Box
             bg='white'
-            borderWidth='1px'
+            borderWidth='2px'
             borderRadius='lg'
+            borderColor='gray.200'
             w='600px'
             h='400px'
           >
