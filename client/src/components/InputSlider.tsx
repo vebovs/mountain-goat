@@ -8,7 +8,8 @@ import {
   IconButton,
   VStack,
 } from '@chakra-ui/react';
-import { FaSearch, FaRegWindowClose } from 'react-icons/fa';
+import { CloseIcon } from '@chakra-ui/icons';
+import { FaSearch } from 'react-icons/fa';
 
 type InputSliderProps = {
   toggleSlider: (toggle: boolean) => void;
@@ -61,7 +62,7 @@ const InputSlider = ({
         <IconButton
           colorScheme='red'
           aria-label='Close slider'
-          icon={<FaRegWindowClose />}
+          icon={<CloseIcon />}
           marginBottom='4'
           onClick={() => toggleSlider(false)} // Closes slider
         />
