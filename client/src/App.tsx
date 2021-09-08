@@ -9,11 +9,12 @@ import {
   GridItem,
 } from '@chakra-ui/react';
 import { ProvideUser } from './hooks/user';
+import FrontPage from './pages/FrontPage';
 import Map from './pages/Map';
 import Profile from './pages/Profile';
 import Info from './pages/Info';
-import Logo from './components/Logo';
 import { FaMapMarkedAlt, FaUserAlt, FaInfoCircle } from 'react-icons/fa';
+import { GiGoat } from 'react-icons/gi';
 import PageButton from './components/PageButton';
 
 export const App = () => (
@@ -34,10 +35,10 @@ export const App = () => (
               templateColumns='repeat(1, 1fr)'
             >
               <GridItem bg='blue.500'>
-                <Logo />
+                <PageButton link='/' title='gg' IconProp={GiGoat} />
               </GridItem>
               <GridItem>
-                <PageButton link='/' title='Map' IconProp={FaMapMarkedAlt} />
+                <PageButton link='/map' title='Map' IconProp={FaMapMarkedAlt} />
               </GridItem>
               <GridItem>
                 <PageButton
@@ -54,7 +55,8 @@ export const App = () => (
           <Box flex='1' bg='yellow.400'>
             <ProvideUser>
               <Switch>
-                <Route path='/' component={Map} exact />
+                <Route path='/' component={FrontPage} exact />
+                <Route path='/map' component={Map} />
                 <Route path='/profile' component={Profile} />
                 <Route path='/info' component={Info} />
               </Switch>
