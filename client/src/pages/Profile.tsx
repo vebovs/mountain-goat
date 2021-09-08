@@ -27,7 +27,7 @@ const Profile = () => {
             bg='white'
             borderWidth='2px'
             borderRadius='lg'
-            borderColor='green.600'
+            borderColor='gray.200'
             w='600px'
             h='400px'
           >
