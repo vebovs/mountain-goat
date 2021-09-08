@@ -54,7 +54,7 @@ const Map = () => {
   const [radius, SetRadius] = useState<number>(1200); // Initial radius of circle
   const [point, SetPoint] = useState<LatLngExpression>([59.858264, 5.783487]); // Center of the circle
   const [enabled, SetEnabled] = useState<boolean>(false);
-  const [ErrorMessage, SetErrorMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [pathing, setPathing] = useState<boolean>(false); // Toggles creating favourite hike mode
   const [path, setPath] = useState<Polyline[]>([]); // Stores the new favourite hike being made
   const [favouriteHike, setFavouritehike] = useState<FavouriteHikeData | null>(
@@ -62,21 +62,23 @@ const Map = () => {
   ); // Current favourite hike to be drawn
   const [drawFavouriteHike, setDrawFavouriteHike] = useState<boolean>(false); // Toggle the curren favourite hike to be drawn or not
 
-  const { data, isError, error, isFetching } = useQuery(
+  const { data, isFetching } = useQuery(
     'foundHikes',
     () =>
-      findHikesWithinArea(createPointsFromPoint(point, radius)).finally(() =>
-        SetEnabled(false),
-      ),
+      findHikesWithinArea(createPointsFromPoint(point, radius))
+        .catch((error) => {
+          setErrorMessage((error as Error).message);
+        })
+        .finally(() => SetEnabled(false)),
     {
       enabled: enabled,
     },
   );
 
-  // Present to avoid re-render loop
+  // Initialize error as empty in case a previous error persist
   useEffect(() => {
-    if (isError) SetErrorMessage((error as Error).message);
-  }, [isError]);
+    if (errorMessage) setErrorMessage('');
+  }, []);
 
   return (
     <Page>
@@ -115,6 +117,17 @@ const Map = () => {
             Path={path}
             SetPath={setPath}
           />
+          {pathing && (
+            <MapDropdown
+              SetPathing={setPathing}
+              Path={path}
+              SetPath={setPath}
+            />
+          )}
+          <MapError
+            errorMessage={errorMessage}
+            setErrorMessage={setErrorMessage}
+          />
         </MapContainer>
         <MapBoard
           favouriteHike={favouriteHike}
@@ -130,10 +143,6 @@ const Map = () => {
             IsLoading={isFetching}
           />
         )}
-        {pathing && (
-          <MapDropdown SetPathing={setPathing} Path={path} SetPath={setPath} />
-        )}
-        <MapError error={isError} errorMessage={ErrorMessage} />
       </Box>
     </Page>
   );

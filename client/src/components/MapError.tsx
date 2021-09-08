@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { DomEvent } from 'leaflet';
 import {
   Box,
   SlideFade,
@@ -9,32 +10,46 @@ import {
 } from '@chakra-ui/react';
 
 type MapErrorProps = {
-  error: boolean;
   errorMessage: string | null;
+  setErrorMessage: (errorMessage: string) => void;
 };
 
-const MapError = ({ error, errorMessage }: MapErrorProps) => {
+const MapError = ({ errorMessage, setErrorMessage }: MapErrorProps) => {
   const [showError, SetShowError] = useState(false);
+  const errorRef = useRef<HTMLDivElement | null>(null);
+
+  // Stops map click event from triggering when click on the error element
+  useEffect(() => {
+    if (errorRef.current) DomEvent.disableClickPropagation(errorRef.current);
+  });
 
   useEffect(() => {
-    if (error) SetShowError(true);
-  }, [error]);
+    if (errorMessage) SetShowError(true);
+  }, [errorMessage]);
 
   return (
     <Box
+      ref={errorRef}
       position='absolute'
       zIndex='overlay'
       bottom='0'
-      left='45%'
-      right='35%'
+      left='40%'
+      right='40%'
       marginBottom='4'
       color='black'
+      minW={160}
+      maxW={200}
     >
       <SlideFade in={showError}>
         <Alert status='error'>
           <AlertIcon />
           <AlertTitle>{errorMessage}</AlertTitle>
-          <CloseButton onClick={() => SetShowError(false)} />
+          <CloseButton
+            onClick={() => {
+              SetShowError(false);
+              setErrorMessage('');
+            }}
+          />
         </Alert>
       </SlideFade>
     </Box>
