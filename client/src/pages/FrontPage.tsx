@@ -1,11 +1,13 @@
 import React from 'react';
+import { Center, Text } from '@chakra-ui/react';
 import Page from '../components/Page';
-import Logo from '../components/Logo';
 
 const FrontPage = () => {
   return (
     <Page>
-      <Logo />
+      <Center bg='white' color='black' h='full'>
+        <Text>Mountain Goat</Text>
+      </Center>
     </Page>
   );
 };

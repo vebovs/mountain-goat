@@ -35,7 +35,7 @@ export const App = () => (
               templateColumns='repeat(1, 1fr)'
             >
               <GridItem bg='blue.500'>
-                <PageButton link='/' title='gg' IconProp={GiGoat} />
+                <PageButton link='/' title='Home' IconProp={GiGoat} />
               </GridItem>
               <GridItem>
                 <PageButton link='/map' title='Map' IconProp={FaMapMarkedAlt} />
