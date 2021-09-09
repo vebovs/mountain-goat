@@ -35,7 +35,8 @@ export const App = () => {
               w={isMobileSize ? '' : 200}
               bg='tomato'
               overflow='hidden'
-              borderRight='2px'
+              borderRight={isMobileSize ? 0 : '2px'}
+              borderTop={isMobileSize ? '2px' : 0}
               borderColor='green.600'
             >
               <Grid
