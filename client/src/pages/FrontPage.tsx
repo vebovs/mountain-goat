@@ -6,7 +6,7 @@ import Page from '../components/Page';
 const FrontPage = () => {
   return (
     <Page>
-      <Center bg='green.50' color='black' h='full'>
+      <Center bg='green.50' color='black' flex='1' h='full'>
         <Flex direction='column'>
           <Text fontSize='6xl' as='abbr' color='green.700'>
             Mountain Goat

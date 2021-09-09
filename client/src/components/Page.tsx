@@ -6,7 +6,14 @@ type PageProps = {
 };
 
 const Page = ({ children }: PageProps) => (
-  <Box bg='pink.200' h='full'>
+  <Box
+    bg='pink.200'
+    flex='1'
+    display='flex'
+    justifyContent='center'
+    flexDir='column'
+    h='full'
+  >
     {children}
   </Box>
 );

@@ -21,9 +21,9 @@ export const App = () => (
   <ChakraProvider theme={theme}>
     <BrowserRouter>
       <Box textAlign='center' fontSize='xl' minH='100vh'>
-        <Flex color='white' minH='100vh'>
+        <Flex color='white' minH='100vh' direction='column-reverse'>
           <Box
-            w={200}
+            h={180}
             bg='tomato'
             overflow='hidden'
             borderRight='2px'
@@ -31,8 +31,8 @@ export const App = () => (
           >
             <Grid
               h='full'
-              templateRows='repeat(4, 1fr)'
-              templateColumns='repeat(1, 1fr)'
+              templateRows='repeat(1, 1fr)'
+              templateColumns='repeat(4, 1fr)'
             >
               <GridItem bg='blue.500'>
                 <PageButton link='/' title='Home' IconProp={GiGoat} />
@@ -52,7 +52,13 @@ export const App = () => (
               </GridItem>
             </Grid>
           </Box>
-          <Box flex='1' bg='yellow.400'>
+          <Box
+            flex='1'
+            display='flex'
+            justifyContent='center'
+            flexDir='column'
+            bg='yellow.400'
+          >
             <ProvideUser>
               <Switch>
                 <Route path='/' component={FrontPage} exact />
