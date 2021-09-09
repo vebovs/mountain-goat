@@ -8,6 +8,7 @@ import {
   SliderThumb,
   IconButton,
   VStack,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
 import { FaSearch } from 'react-icons/fa';
@@ -28,6 +29,7 @@ const InputSlider = ({
   setEnabled,
   IsLoading,
 }: InputSliderProps) => {
+  const [isMobile] = useMediaQuery('(max-width: 868px)');
   const { user } = useUser();
   const sliderRef = useRef<HTMLDivElement | null>(null);
 
@@ -44,7 +46,7 @@ const InputSlider = ({
       bottom='0'
       top='0'
       right='0'
-      marginRight='9'
+      marginRight={isMobile ? '4' : '9'}
       marginBottom='4'
       marginTop={user ? '14' : '2'}
     >

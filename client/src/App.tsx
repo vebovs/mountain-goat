@@ -19,7 +19,7 @@ import { GiGoat } from 'react-icons/gi';
 import PageButton from './components/PageButton';
 
 export const App = () => {
-  const [isMobileSize] = useMediaQuery('(max-width: 868px)');
+  const [isMobile] = useMediaQuery('(max-width: 868px)');
 
   return (
     <ChakraProvider theme={theme}>
@@ -28,25 +28,21 @@ export const App = () => {
           <Flex
             color='white'
             minH='100vh'
-            direction={isMobileSize ? 'column-reverse' : 'row'}
+            direction={isMobile ? 'column-reverse' : 'row'}
           >
             <Box
-              h={isMobileSize ? 100 : ''}
-              w={isMobileSize ? '' : 200}
+              h={isMobile ? 100 : ''}
+              w={isMobile ? '' : 200}
               bg='tomato'
               overflow='hidden'
-              borderRight={isMobileSize ? 0 : '2px'}
-              borderTop={isMobileSize ? '2px' : 0}
+              borderRight={isMobile ? 0 : '2px'}
+              borderTop={isMobile ? '2px' : 0}
               borderColor='green.600'
             >
               <Grid
                 h='full'
-                templateRows={
-                  isMobileSize ? 'repeat(1, 1fr)' : 'repeat(4, 1fr)'
-                }
-                templateColumns={
-                  isMobileSize ? 'repeat(4, 1fr)' : 'repeat(1, 1fr)'
-                }
+                templateRows={isMobile ? 'repeat(1, 1fr)' : 'repeat(4, 1fr)'}
+                templateColumns={isMobile ? 'repeat(4, 1fr)' : 'repeat(1, 1fr)'}
               >
                 <GridItem bg='blue.500'>
                   <PageButton link='/' title='Home' IconProp={GiGoat} />
