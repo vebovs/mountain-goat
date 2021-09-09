@@ -8,7 +8,7 @@ import {
   ZoomControl,
   AttributionControl,
 } from 'react-leaflet';
-import { Box, Center } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { findHikesWithinArea } from '../api/hike';
 import Page from '../components/Page';
@@ -124,6 +124,15 @@ const Map = () => {
               SetPath={setPath}
             />
           )}
+          {slider && !pathing && (
+            <InputSlider
+              toggleSlider={SetSlider}
+              radius={radius}
+              setRadius={SetRadius}
+              setEnabled={SetEnabled}
+              IsLoading={isFetching}
+            />
+          )}
           <MapError
             errorMessage={errorMessage}
             setErrorMessage={setErrorMessage}
@@ -134,15 +143,6 @@ const Map = () => {
           setFavouriteHike={setFavouritehike}
           setDrawFavouriteHike={setDrawFavouriteHike}
         />
-        {slider && !pathing && (
-          <InputSlider
-            toggleSlider={SetSlider}
-            radius={radius}
-            setRadius={SetRadius}
-            setEnabled={SetEnabled}
-            IsLoading={isFetching}
-          />
-        )}
       </Box>
     </Page>
   );

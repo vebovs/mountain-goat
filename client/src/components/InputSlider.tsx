@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
+import { DomEvent } from 'leaflet';
 import {
   Box,
   Slider,
@@ -28,9 +29,15 @@ const InputSlider = ({
   IsLoading,
 }: InputSliderProps) => {
   const { user } = useUser();
+  const sliderRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (sliderRef.current) DomEvent.disableClickPropagation(sliderRef.current);
+  });
 
   return (
     <Box
+      ref={sliderRef}
       position='absolute'
       zIndex='overlay'
       bottom='0'
