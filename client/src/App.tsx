@@ -31,7 +31,7 @@ export const App = () => {
             direction={isMobileSize ? 'column-reverse' : 'row'}
           >
             <Box
-              h={isMobileSize ? 180 : ''}
+              h={isMobileSize ? 100 : ''}
               w={isMobileSize ? '' : 200}
               bg='tomato'
               overflow='hidden'
