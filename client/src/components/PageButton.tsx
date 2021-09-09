@@ -1,6 +1,13 @@
 import * as React from 'react';
 import { Link as ReactRouterLink, useLocation } from 'react-router-dom';
-import { Center, Link, SimpleGrid, Text, Icon } from '@chakra-ui/react';
+import {
+  Center,
+  Link,
+  SimpleGrid,
+  Text,
+  Icon,
+  useMediaQuery,
+} from '@chakra-ui/react';
 import { IconType } from 'react-icons';
 
 type PageButtonProps = {
@@ -10,6 +17,8 @@ type PageButtonProps = {
 };
 
 const PageButton = ({ link, title, IconProp }: PageButtonProps) => {
+  const [isMobile] = useMediaQuery('(max-width: 520px)');
+
   const location = useLocation();
   const { pathname } = location;
 
@@ -22,7 +31,7 @@ const PageButton = ({ link, title, IconProp }: PageButtonProps) => {
         _hover={{ background: 'green.400' }}
       >
         <SimpleGrid columns={2} spacing={2}>
-          <Text>{title}</Text>
+          <Text fontSize={isMobile ? 'xs' : 'xl'}>{title}</Text>
           <Icon as={IconProp} h='full' />
         </SimpleGrid>
       </Center>
