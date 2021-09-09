@@ -18,7 +18,7 @@ const MapError = ({ errorMessage, setErrorMessage }: MapErrorProps) => {
   const [showError, SetShowError] = useState(false);
   const errorRef = useRef<HTMLDivElement | null>(null);
 
-  // Stops map click event from triggering when click on the error element
+  // Stops map click event from triggering when clicking on the error element
   useEffect(() => {
     if (errorRef.current) DomEvent.disableClickPropagation(errorRef.current);
   });

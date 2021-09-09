@@ -31,6 +31,7 @@ const InputSlider = ({
   const { user } = useUser();
   const sliderRef = useRef<HTMLDivElement | null>(null);
 
+  // Stops map click event from triggering when clicking on the error element
   useEffect(() => {
     if (sliderRef.current) DomEvent.disableClickPropagation(sliderRef.current);
   });
