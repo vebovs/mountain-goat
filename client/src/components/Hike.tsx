@@ -8,7 +8,7 @@ import type { ObjectId } from 'mongodb';
 import type { FavouriteHikeData } from '../pages/Map';
 
 type HikeProps = {
-  id: number;
+  id: string;
   nickname: string;
   hikeIds: ObjectId[];
   favouriteHike: FavouriteHikeData | null;

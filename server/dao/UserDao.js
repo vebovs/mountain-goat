@@ -1,6 +1,7 @@
 const Dao = require('./Dao.js');
 const bcrypt = require('bcryptjs');
 const mongo = require('mongodb');
+const uuid = require('uuid');
 
 module.exports = class UserDao extends Dao {
     constructor(collection) {
@@ -42,6 +43,8 @@ module.exports = class UserDao extends Dao {
 
         const ids  = hike_ids.map(e => e = new mongo.ObjectID(e));
 
+        const hike_id = uuid.v4();
+
         await this.collection.updateOne(
             { 
                 _id: new mongo.ObjectID(user_id) 
@@ -49,7 +52,7 @@ module.exports = class UserDao extends Dao {
             {
                 $push: {
                     favourites: {
-                        id: (res.favourites.length + 1),
+                        id: hike_id,
                         hike_ids: ids,
                         nickname: nickname
                     }
@@ -57,7 +60,7 @@ module.exports = class UserDao extends Dao {
             }
         );
 
-        return res.favourites.length + 1;
+        return hike_id;
     }
 
     async delete_hike(user_id, hike_id) {

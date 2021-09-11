@@ -44,7 +44,7 @@ const createPointsFromPoint = (point: LatLngExpression, radius: number) => {
 };
 
 export type FavouriteHikeData = {
-  id: number;
+  id: string;
   data: GeoJsonObject;
 };
 
