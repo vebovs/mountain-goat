@@ -5,8 +5,6 @@ const cors = require('cors');
 const passport = require('passport');
 const session = require('express-session');
 const mongodbstore = require('connect-mongodb-session')(session);
-const path = require('path');
-
 require('./config/passport')(passport);
 
 const store = new mongodbstore({
@@ -164,13 +162,6 @@ app.delete('/user/hike/delete', async (req, res) => {
         res.json('An internal server error occurred');
     }
 });
-
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../build')));
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, '../', 'build', 'index.html'));
-    });
-}
 
 const port = process.env.PORT || 5000;
 
