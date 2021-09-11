@@ -39,7 +39,7 @@ const Path = ({
       const layer = geoJsonLayerRef.current;
       if (layer) layer.clearLayers().addData(data);
     }
-  }, [isFetching]);
+  }, [isFetching, data]);
 
   if (!sliderStatus) {
     const layer = geoJsonLayerRef.current;
