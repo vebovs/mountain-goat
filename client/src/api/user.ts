@@ -13,7 +13,7 @@ export type FavoriteHike = {
 
 export type hikeToRemove = {
     userId: ObjectId;
-    hikeId: number;
+    hikeId: string;
 }
 
 export const getFavouriteHikes = (hikeIds: ObjectId[]) => 

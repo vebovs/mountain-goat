@@ -7,7 +7,7 @@ import type { ObjectId } from 'mongodb';
 import { useUser, Favourite } from '../hooks/user';
 
 type DashboardHikeProps = {
-  hikeId: number;
+  hikeId: string;
   userId: ObjectId;
   nickname: string;
   setFavourites: (favourites: Favourite[]) => void;

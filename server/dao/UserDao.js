@@ -1,6 +1,7 @@
 const Dao = require('./Dao.js');
 const bcrypt = require('bcryptjs');
 const mongo = require('mongodb');
+const uuid = require('uuid');
 
 module.exports = class UserDao extends Dao {
     constructor(collection) {
@@ -49,7 +50,7 @@ module.exports = class UserDao extends Dao {
             {
                 $push: {
                     favourites: {
-                        id: (res.favourites.length + 1),
+                        id: uuid.v4(),
                         hike_ids: ids,
                         nickname: nickname
                     }

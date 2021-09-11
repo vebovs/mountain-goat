@@ -3,7 +3,7 @@ import { RouteProps } from 'react-router';
 import type { ObjectId } from 'mongodb';
 
 export type Favourite = {
-  id: number;
+  id: string;
   hike_ids: ObjectId[];
   nickname: string;
 };
