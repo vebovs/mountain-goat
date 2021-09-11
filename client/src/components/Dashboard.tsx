@@ -40,7 +40,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (isSuccess) setUser(null);
-  }, [isSuccess]);
+  }, [isSuccess, setUser]);
 
   useEffect(() => {
     if (user?.favourites) setFavourites(user.favourites);

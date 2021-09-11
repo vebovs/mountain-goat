@@ -49,7 +49,7 @@ const SignIn = () => {
     if (data) {
       setUser(data);
     }
-  }, [data]);
+  }, [data, setUser]);
 
   return (
     <Box mr='12' ml='12'>

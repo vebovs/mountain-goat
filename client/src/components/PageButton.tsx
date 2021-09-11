@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Link as ReactRouterLink, useLocation } from 'react-router-dom';
 import {
   Center,

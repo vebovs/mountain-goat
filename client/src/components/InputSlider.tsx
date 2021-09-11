@@ -19,7 +19,7 @@ type InputSliderProps = {
   radius: number;
   setRadius: (radius: number) => void;
   setEnabled: (searching: boolean) => void;
-  IsLoading: boolean;
+  loading: boolean;
 };
 
 const InputSlider = ({
@@ -27,7 +27,7 @@ const InputSlider = ({
   radius,
   setRadius,
   setEnabled,
-  IsLoading,
+  loading,
 }: InputSliderProps) => {
   const [isMobile] = useMediaQuery('(max-width: 868px)');
   const { user } = useUser();
@@ -70,7 +70,7 @@ const InputSlider = ({
           aria-label='Search for hikes'
           icon={<FaSearch />}
           onClick={() => setEnabled(true)}
-          isLoading={IsLoading}
+          isLoading={loading}
         />
         <IconButton
           colorScheme='red'
