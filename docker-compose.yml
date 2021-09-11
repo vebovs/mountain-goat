@@ -19,6 +19,7 @@ api:
     ports:
       - "5000:5000"
 client:
+  restart: always
   build:
     dockerfile: Dockerfile
     context: ./client
