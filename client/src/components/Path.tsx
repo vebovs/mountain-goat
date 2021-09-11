@@ -9,19 +9,19 @@ import { useUser } from '../hooks/user';
 type PathProps = {
   data: GeoJsonObject;
   sliderStatus: boolean;
-  IsFetching: boolean;
-  SetPathing: (pathing: boolean) => void;
-  Path: Polyline[];
-  SetPath: (path: Polyline[]) => void;
+  isFetching: boolean;
+  setPathing: (pathing: boolean) => void;
+  path: Polyline[];
+  setPath: (path: Polyline[]) => void;
 };
 
 const Path = ({
   data,
   sliderStatus,
-  IsFetching,
-  SetPathing,
-  Path,
-  SetPath,
+  isFetching,
+  setPathing,
+  path,
+  setPath,
 }: PathProps) => {
   const geoJsonLayerRef = useRef<LeafletGeoJson | null>(null);
 
@@ -35,11 +35,11 @@ const Path = ({
 
   // Removes previous drawn paths and replaces them with newly fetched paths
   useEffect(() => {
-    if (!IsFetching && sliderStatus) {
+    if (!isFetching && sliderStatus) {
       const layer = geoJsonLayerRef.current;
       if (layer) layer.clearLayers().addData(data);
     }
-  }, [IsFetching]);
+  }, [isFetching]);
 
   if (!sliderStatus) {
     const layer = geoJsonLayerRef.current;
@@ -51,9 +51,9 @@ const Path = ({
     if (!user) {
       lineString.setStyle({ interactive: false });
     } else {
-      SetPathing(true);
+      setPathing(true);
       lineString.setStyle({ color: 'black' });
-      SetPath([...Path, lineString]);
+      setPath([...path, lineString]);
     }
   };
 

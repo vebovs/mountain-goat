@@ -112,16 +112,16 @@ const Map = () => {
           <Path
             data={data}
             sliderStatus={slider}
-            IsFetching={isFetching}
-            SetPathing={setPathing}
-            Path={path}
-            SetPath={setPath}
+            isFetching={isFetching}
+            setPathing={setPathing}
+            path={path}
+            setPath={setPath}
           />
           {pathing && (
             <MapDropdown
-              SetPathing={setPathing}
-              Path={path}
-              SetPath={setPath}
+              setPathing={setPathing}
+              path={path}
+              setPath={setPath}
             />
           )}
           {slider && !pathing && (
@@ -130,7 +130,7 @@ const Map = () => {
               radius={radius}
               setRadius={SetRadius}
               setEnabled={SetEnabled}
-              IsLoading={isFetching}
+              loading={isFetching}
             />
           )}
           <MapError

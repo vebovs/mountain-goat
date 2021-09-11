@@ -32,12 +32,12 @@ type CustomFeatureType = {
 };
 
 type MapDropdownProps = {
-  Path: Polyline[];
-  SetPath: (path: Polyline[]) => void;
-  SetPathing: (pathing: boolean) => void;
+  path: Polyline[];
+  setPath: (path: Polyline[]) => void;
+  setPathing: (pathing: boolean) => void;
 };
 
-const MapDropdown = ({ SetPathing, Path, SetPath }: MapDropdownProps) => {
+const MapDropdown = ({ setPathing, path, setPath }: MapDropdownProps) => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [showDropdown, setShowDropdown] = useState<boolean>(true);
   const [nickname, setNickname] = useState<string>('');
@@ -55,7 +55,7 @@ const MapDropdown = ({ SetPathing, Path, SetPath }: MapDropdownProps) => {
       },
       onSuccess: (data) => {
         // Add new path to current state
-        const PathIds = Path.map((p) => (p.feature as CustomFeatureType)._id);
+        const PathIds = path.map((p) => (p.feature as CustomFeatureType)._id);
         const hikeId: number = data.id;
         if (user)
           user.favourites.push({
@@ -66,9 +66,9 @@ const MapDropdown = ({ SetPathing, Path, SetPath }: MapDropdownProps) => {
 
         // Reset values to prepare for new path
         setNickname('');
-        Path.map((p) => p.setStyle({ color: '#3273DC' }));
-        SetPath([]);
-        SetPathing(false);
+        path.map((p) => p.setStyle({ color: '#3273DC' }));
+        setPath([]);
+        setPathing(false);
       },
     },
   );
@@ -135,7 +135,7 @@ const MapDropdown = ({ SetPathing, Path, SetPath }: MapDropdownProps) => {
                   setErrorStatus(true);
                   setErrorMessage('Nickname required.');
                 } else {
-                  const Ids = Path.map(
+                  const Ids = path.map(
                     (p) => (p.feature as CustomFeatureType)._id,
                   );
                   saveHikeMutation.mutate({
@@ -150,9 +150,9 @@ const MapDropdown = ({ SetPathing, Path, SetPath }: MapDropdownProps) => {
             <IconButton
               aria-label='exit favorite hike creation dropdown'
               onClick={() => {
-                Path.map((p) => p.setStyle({ color: '#3273DC' }));
-                SetPath([]);
-                SetPathing(false);
+                path.map((p) => p.setStyle({ color: '#3273DC' }));
+                setPath([]);
+                setPathing(false);
               }}
               icon={<CloseIcon />}
             />

@@ -1,5 +1,5 @@
 import { ColorModeScript } from '@chakra-ui/react';
-import * as React from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
