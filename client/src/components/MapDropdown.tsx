@@ -57,6 +57,7 @@ const MapDropdown = ({ setPathing, path, setPath }: MapDropdownProps) => {
         // Add new path to current state
         const PathIds = path.map((p) => (p.feature as CustomFeatureType)._id);
         const hikeId: string = data.id;
+
         if (user)
           user.favourites.push({
             id: hikeId,
