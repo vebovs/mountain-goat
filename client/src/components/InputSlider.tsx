@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
+import { DomEvent } from 'leaflet';
 import {
   Box,
   Slider,
@@ -7,6 +8,7 @@ import {
   SliderThumb,
   IconButton,
   VStack,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
 import { FaSearch } from 'react-icons/fa';
@@ -27,16 +29,24 @@ const InputSlider = ({
   setEnabled,
   IsLoading,
 }: InputSliderProps) => {
+  const [isMobile] = useMediaQuery('(max-width: 868px)');
   const { user } = useUser();
+  const sliderRef = useRef<HTMLDivElement | null>(null);
+
+  // Stops map click event from triggering when clicking on the error element
+  useEffect(() => {
+    if (sliderRef.current) DomEvent.disableClickPropagation(sliderRef.current);
+  });
 
   return (
     <Box
+      ref={sliderRef}
       position='absolute'
       zIndex='overlay'
       bottom='0'
       top='0'
       right='0'
-      marginRight='9'
+      marginRight={isMobile ? '4' : '9'}
       marginBottom='4'
       marginTop={user ? '14' : '2'}
     >

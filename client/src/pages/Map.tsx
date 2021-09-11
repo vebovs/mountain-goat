@@ -82,9 +82,9 @@ const Map = () => {
 
   return (
     <Page>
-      <Box h='full'>
+      <Box flexGrow={1} display='flex' flexDir='column' h='full'>
         <MapContainer
-          style={{ height: '100%' }}
+          style={{ flexGrow: 1, height: '100%' }}
           center={[59.858264, 5.783487]}
           zoom={zoom}
           zoomControl={false}
@@ -124,6 +124,15 @@ const Map = () => {
               SetPath={setPath}
             />
           )}
+          {slider && !pathing && (
+            <InputSlider
+              toggleSlider={SetSlider}
+              radius={radius}
+              setRadius={SetRadius}
+              setEnabled={SetEnabled}
+              IsLoading={isFetching}
+            />
+          )}
           <MapError
             errorMessage={errorMessage}
             setErrorMessage={setErrorMessage}
@@ -134,15 +143,6 @@ const Map = () => {
           setFavouriteHike={setFavouritehike}
           setDrawFavouriteHike={setDrawFavouriteHike}
         />
-        {slider && !pathing && (
-          <InputSlider
-            toggleSlider={SetSlider}
-            radius={radius}
-            setRadius={SetRadius}
-            setEnabled={SetEnabled}
-            IsLoading={isFetching}
-          />
-        )}
       </Box>
     </Page>
   );

@@ -91,7 +91,7 @@ const SignIn = () => {
           onClick={() => setEnabled(true)}
           isLoading={isLoading}
         >
-          Sign up
+          Sign in
         </Button>
       )}
       <Box mt='2'>
