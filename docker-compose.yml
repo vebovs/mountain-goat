@@ -12,6 +12,12 @@ services:
     ports:
       - "80:80"
   api:
+    environment:
+      - MONGODB_CONNECTION_STRING=${MONGODB_CONNECTION_STRING}
+      - DATABASE=${DATABASE}
+      - SECRET=${SECRET}
+      - HIKE_COLLECTION=${HIKE_COLLECTION}
+      - USER_COLLECTION=${USER_COLLECTION}
     restart: always
     build:
       dockerfile: Dockerfile
