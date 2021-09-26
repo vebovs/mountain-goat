@@ -32,12 +32,12 @@ jobs:
         run: >
           docker build 
           -f Dockerfile.prod 
+          --build-arg MONGODB_CONNECTION_STRING=${{ secrets.MONGODB_CONNECTION_STRING }} 
           --build-arg DATABASE=${{ secrets.DATABASE }} 
           --build-arg SECRET=${{ secrets.SECRET }} 
           --build-arg HIKE_COLLECTION=${{ secrets.HIKE_COLLECTION }} 
           --build-arg USER_COLLECTION=${{ secrets.USER_COLLECTION }} 
           --build-arg SERVER_PORT=${{ secrets.SERVER_PORT }} 
-          --build-arg MONGODB_CONNECTION_STRING=${{ secrets.MONGODB_CONNECTION_STRING }} 
           -t ${{ secrets.REGISTRY_SERVER }}/mountain-goat-server:${{ github.sha }} 
           .
 
