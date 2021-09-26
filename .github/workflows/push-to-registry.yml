@@ -29,6 +29,14 @@ jobs:
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Build and push container image to registry
-        run: |
-          docker build -f Dockerfile.prod --build-arg SERVER_PORT=${{secrets.SERVER_PORT}} . -t ${{ secrets.REGISTRY_SERVER }}/demo-app-server:${{ github.sha }}
+        run: >
+          docker build -f Dockerfile.prod --build-arg 
+          MONGODB_CONNECTION_STRING=${{secrets.MONGODB_CONNECTION_STRING}} 
+          DATABASE=${{secrets.DATABASE}} 
+          SECRET=${{secrets.SECRET}} 
+          HIKE_COLLECTION=${{secrets.HIKE_COLLECTION}} 
+          USER_COLLECTION=${{secrets.USER_COLLECTION}} 
+          SERVER_PORT=${{secrets.SERVER_PORT}} 
+          . -t ${{ secrets.REGISTRY_SERVER }}/demo-app-server:${{ github.sha }}
+
           docker push ${{ secrets.REGISTRY_SERVER }}/demo-app-server:${{ github.sha }}
