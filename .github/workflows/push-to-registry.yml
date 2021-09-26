@@ -37,6 +37,6 @@ jobs:
           HIKE_COLLECTION=${{secrets.HIKE_COLLECTION}} 
           USER_COLLECTION=${{secrets.USER_COLLECTION}} 
           SERVER_PORT=${{secrets.SERVER_PORT}} 
-          . -t ${{ secrets.REGISTRY_SERVER }}/demo-app-server:${{ github.sha }}
+          -t ${{ secrets.REGISTRY_SERVER }}/demo-app-server:${{ github.sha }} .
 
           docker push ${{ secrets.REGISTRY_SERVER }}/demo-app-server:${{ github.sha }}
