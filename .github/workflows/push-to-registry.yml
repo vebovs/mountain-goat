@@ -42,3 +42,35 @@ jobs:
           .
 
           docker push ${{ secrets.REGISTRY_SERVER }}/mountain-goat-server:${{ github.sha }}
+
+  build-and-deploy-client:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+
+    steps:
+      - name: Checkout GitHub Actions
+        uses: actions/checkout@main
+
+      - name: Login via Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push container image to registry
+        run: >
+          docker build 
+          -f Dockerfile.prod 
+          --build-arg REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }} 
+          -t ${{ secrets.REGISTRY_SERVER }}/mountain-goat-client:${{ github.sha }} 
+          .
+
+          docker push ${{ secrets.REGISTRY_SERVER }}/mountain-goat-client:${{ github.sha }}
