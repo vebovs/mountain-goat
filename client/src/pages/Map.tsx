@@ -133,16 +133,16 @@ const Map = () => {
               loading={isFetching}
             />
           )}
+          <MapBoard
+            favouriteHike={favouriteHike}
+            setFavouriteHike={setFavouritehike}
+            setDrawFavouriteHike={setDrawFavouriteHike}
+          />
           <MapError
             errorMessage={errorMessage}
             setErrorMessage={setErrorMessage}
           />
         </MapContainer>
-        <MapBoard
-          favouriteHike={favouriteHike}
-          setFavouriteHike={setFavouritehike}
-          setDrawFavouriteHike={setDrawFavouriteHike}
-        />
       </Box>
     </Page>
   );
