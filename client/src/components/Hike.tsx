@@ -6,6 +6,7 @@ import { useQuery } from 'react-query';
 import { getFavouriteHikes } from '../api/user';
 import type { ObjectId } from 'mongodb';
 import type { FavouriteHikeData } from '../pages/Map';
+import { useMap, useMapEvent } from 'react-leaflet';
 
 type HikeProps = {
   id: string;
@@ -27,12 +28,15 @@ const Hike = ({
   const [enabled, setEnabled] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>('');
 
+  const map = useMap();
+
   const { error, isError, isFetching } = useQuery(
     `getFavouriteHike${id}`,
     () =>
       getFavouriteHikes(hikeIds)
         .then((data) => {
           setFavouriteHike({ id: id, data: data });
+          map.flyTo(data[0].geometry.coordinates[0]);
         })
         .finally(() => {
           setEnabled(false);
