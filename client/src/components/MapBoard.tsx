@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   Drawer,
   DrawerBody,
@@ -15,6 +15,7 @@ import { FaClipboardList } from 'react-icons/fa';
 import Hike from './Hike';
 import { useUser } from '../hooks/user';
 import type { FavouriteHikeData } from '../pages/Map';
+import { DomEvent } from 'leaflet';
 
 type MapBoardProps = {
   favouriteHike: FavouriteHikeData | null;
@@ -29,11 +30,18 @@ const MapBoard = ({
 }: MapBoardProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useUser();
+  const mapBoardRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (mapBoardRef.current)
+      DomEvent.disableClickPropagation(mapBoardRef.current);
+  });
 
   if (!user) return null;
 
   return (
     <Box
+      ref={mapBoardRef}
       position='absolute'
       zIndex='overlay'
       bottom='0'
