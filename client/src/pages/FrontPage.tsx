@@ -2,11 +2,8 @@ import React from 'react';
 import { Center, Text, Link, Flex } from '@chakra-ui/react';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import Page from '../components/Page';
-import { getUser } from '../api/user';
 
 const FrontPage = () => {
-  getUser();
-
   return (
     <Page>
       <Center bg='green.50' color='black' flex='1' h='full'>

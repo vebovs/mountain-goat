@@ -8,7 +8,7 @@ export type Favourite = {
   nickname: string;
 };
 
-type UserDetails = {
+export type UserDetails = {
   _id: ObjectId;
   username: string;
   password: string;

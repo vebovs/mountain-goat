@@ -6,6 +6,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { App } from './App';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
+import { ProvideUser } from './hooks/user';
 
 const queryClient = new QueryClient();
 
@@ -13,7 +14,9 @@ ReactDOM.render(
   <React.StrictMode>
     <ColorModeScript />
     <QueryClientProvider client={queryClient}>
-      <App />
+      <ProvideUser>
+        <App />
+      </ProvideUser>
       <ReactQueryDevtools />
     </QueryClientProvider>
   </React.StrictMode>,

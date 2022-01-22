@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import {
   ChakraProvider,
@@ -9,7 +9,7 @@ import {
   GridItem,
   useMediaQuery,
 } from '@chakra-ui/react';
-import { ProvideUser } from './hooks/user';
+import { useUser, UserDetails } from './hooks/user';
 import FrontPage from './pages/FrontPage';
 import Map from './pages/Map';
 import Profile from './pages/Profile';
@@ -17,9 +17,25 @@ import Info from './pages/Info';
 import { FaMapMarkedAlt, FaUserAlt, FaInfoCircle } from 'react-icons/fa';
 import { GiGoat } from 'react-icons/gi';
 import PageButton from './components/PageButton';
+import { useQuery } from 'react-query';
+import { getUser } from './api/user';
 
 export const App = () => {
   const [isMobile] = useMediaQuery('(max-width: 868px)');
+
+  const { user, setUser } = useUser();
+
+  useQuery(
+    'getuser',
+    () =>
+      getUser().then((data: UserDetails) => {
+        setUser(data);
+      }),
+    {
+      enabled: !user,
+      cacheTime: 0,
+    },
+  );
 
   return (
     <ChakraProvider theme={theme}>
@@ -77,14 +93,12 @@ export const App = () => {
               flexDir='column'
               bg='yellow.400'
             >
-              <ProvideUser>
-                <Switch>
-                  <Route path='/' component={FrontPage} exact />
-                  <Route path='/map' component={Map} />
-                  <Route path='/profile' component={Profile} />
-                  <Route path='/info' component={Info} />
-                </Switch>
-              </ProvideUser>
+              <Switch>
+                <Route path='/' component={FrontPage} exact />
+                <Route path='/map' component={Map} />
+                <Route path='/profile' component={Profile} />
+                <Route path='/info' component={Info} />
+              </Switch>
             </Box>
           </Flex>
         </Box>

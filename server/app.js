@@ -95,12 +95,15 @@ app.post('/register', async (req, res) => {
 app.post("/login", (req, res, next) => {
     passport.authenticate("local", (err, user, info) => {
         if (err) throw err;
-        if (!user) res.send("No User Exists");
+        if (!user) {
+            res.status(401);
+            res.json('Wrong username or password');
+        }
         else {
         req.logIn(user, (err) => {
             if (err) throw err;
-            res.send("Successfully Authenticated");
-            console.log(req.user);
+            res.status(200);
+            res.json(req.user);
         });
         }
     })(req, res, next);

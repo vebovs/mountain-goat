@@ -16,13 +16,10 @@ export type hikeToRemove = {
     hikeId: string;
 }
 
-export const getUser = () => {
+export const getUser = () => 
     api.get('/user', {
         withCredentials: true
-    }).then(res => {
-        console.log(res.data);
-    })
-}
+    }).then(res => res.data);
 
 export const getFavouriteHikes = (hikeIds: ObjectId[]) => 
     api.post('/user/hikes', {
