@@ -22,12 +22,12 @@ module.exports = class UserDao extends Dao {
         return (await this.collection.insertOne(new_user)).result.ok;
     }
 
-    find_user_by_username(username) {
-        return this.collection.findOne({ username: username });
+    async find_user_by_username(username) {
+        return await this.collection.findOne({ username: username });
     }
 
-    find_user_by_id(id) {
-        return this.collection.findOne({_id: new mongo.ObjectID(id)});
+    async find_user_by_id(id) {
+        return await this.collection.findOne({_id: new mongo.ObjectID(id)});
     }
 
     async save_hike(user_id, hike_ids, nickname) {

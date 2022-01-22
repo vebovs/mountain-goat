@@ -17,7 +17,7 @@ export const findHikesWithinArea = (points: Points) =>
         bottom: points.bottom,
         left: points.left,
         right: points.right
-    }).then(res => res.data);
+    }, { withCredentials: true }).then(res => res.data);
 
 export const getHike = (id: string) => 
-    api.get(`/hike/${id}`).then(res => res.data);
+    api.get(`/hike/${id}`, { withCredentials: true }).then(res => res.data);

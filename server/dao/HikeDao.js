@@ -6,8 +6,8 @@ module.exports = class HikeDao extends Dao {
         super(collection);
     }
     
-    getHikes(points) {
-        return this.collection.find({
+    async getHikes(points) {
+        return await this.collection.find({
             "geometry": {
                 "$geoWithin": {
                         "$geometry": {
@@ -43,9 +43,9 @@ module.exports = class HikeDao extends Dao {
         ).toArray();
     }
 
-    findHikesByIds(data) {
+    async findHikesByIds(data) {
         const ids  = data.map(e => e = new mongo.ObjectID(e));
-        return this.collection.find({
+        return await this.collection.find({
             _id: {
                 $in: ids
             }
