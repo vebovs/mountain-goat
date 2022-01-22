@@ -3,9 +3,11 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const passport = require('passport');
+const passportLocal = require('passport-local').Strategy;
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const session = require('express-session');
 const mongodbstore = require('connect-mongodb-session')(session);
-require('./config/passport')(passport);
 
 const store = new mongodbstore({
     uri: process.env.MONGODB_CONNECTION_STRING,
@@ -16,17 +18,24 @@ store.on('error', () => {
     console.log(error);
 });
 
-app.use(cors({allowedHeaders: '*'}));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(
+    cors({
+        credentials: true,
+        origin: true
+    })
+);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
     secret: process.env.SECRET,
     resave: true,
     saveUninitialized: true,
     store: store
 }));
+app.use(cookieParser(process.env.SECRET));
 app.use(passport.initialize());
 app.use(passport.session());
+require('./config/passport')(passport);
 
 const HikeDao = require('./dao/HikeDao');
 const hikedao = new HikeDao(process.env.HIKE_COLLECTION);
@@ -83,33 +92,36 @@ app.post('/register', async (req, res) => {
     }
 });
 
-app.post('/login', async (req, res, next) => {
-    try {
-        passport.authenticate('local', (err, user, info) => {
-            if (err) { return next(err); }
-            if (user) {
-                res.status(200);
-                res.json(user);
-            } else {
-                res.status(401);
-                res.json('Wrong username or password');
-            }
-        })(req, res, next);
-    } catch (error) {
-        res.status(500);
-        res.json('An internal server error occurred');
-    }
+app.post("/login", (req, res, next) => {
+    passport.authenticate("local", (err, user, info) => {
+        if (err) throw err;
+        if (!user) {
+            res.status(401);
+            res.json('Wrong username or password');
+        }
+        else {
+        req.logIn(user, (err) => {
+            if (err) throw err;
+            res.status(200);
+            res.json(req.user);
+        });
+        }
+    })(req, res, next);
 });
 
 app.get('/logout', async (req, res) => {
     try {
-        req.logout();
+        req.logOut();
         res.status(200);
         res.json('Logout successful');
     } catch (error) {
         res.status(500);
         res.json('An internal server error occurred');
     }
+});
+
+app.get('/user', (req, res) => {
+    res.send(req.user);
 });
 
 app.post('/user/hikes', async (req, res) => {
