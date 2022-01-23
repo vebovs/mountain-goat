@@ -17,7 +17,8 @@ import {
 import { FaDoorClosed, FaDoorOpen } from 'react-icons/fa';
 import { useQuery } from 'react-query';
 import { loginUser } from '../api/auth';
-import { useUser } from '../hooks/user';
+import { useUser, UserDetails } from '../hooks/user';
+import type { AxiosError } from 'axios';
 
 const SignIn = () => {
   const [username, setUserName] = useState<string>('');
@@ -28,7 +29,10 @@ const SignIn = () => {
 
   const { setUser } = useUser();
 
-  const { data, isError, error, isLoading, isSuccess } = useQuery(
+  const { data, isError, error, isLoading, isSuccess } = useQuery<
+    UserDetails,
+    AxiosError
+  >(
     'signin',
     () => loginUser(username, password).finally(() => setEnabled(false)),
     {
@@ -51,27 +55,27 @@ const SignIn = () => {
     }
   }, [data, setUser]);
 
+  console.log(error?.response?.data.user);
+
   return (
     <Box mr='12' ml='12'>
-      <FormControl mt='2'>
+      <FormControl mt='2' isInvalid={isError && error?.response?.data.user}>
         <FormLabel>Username</FormLabel>
         <Input
           type='text'
           value={username}
           onChange={(event) => setUserName(event.target.value)}
         />
-        <FormHelperText></FormHelperText>
-        <FormErrorMessage></FormErrorMessage>
+        <FormErrorMessage>{error?.response?.data.user}</FormErrorMessage>
       </FormControl>
-      <FormControl mt='8'>
+      <FormControl mt='8' isInvalid={isError && error?.response?.data.password}>
         <FormLabel>Password</FormLabel>
         <Input
           type='password'
           value={password}
           onChange={(event) => setPassword(event.target.value)}
         />
-        <FormHelperText></FormHelperText>
-        <FormErrorMessage></FormErrorMessage>
+        <FormErrorMessage>{error?.response?.data.password}</FormErrorMessage>
       </FormControl>
       {showSuccess ? (
         <IconButton

@@ -10,13 +10,13 @@ module.exports = function (passport) {
     new localStrategy((username, password, done) => {
       userdao.find_user_by_username(username)
         .then(user => {
-          if (!user) return done(null, false);
+          if (!user) return done(null, false, { user: 'Wrong username' });
           bcrypt.compare(password, user.password, (err, result) => {
             if (err) throw err;
             if (result === true) {
               return done(null, user);
             } else {
-              return done(null, false);
+              return done(null, false, { password: 'Wrong password' });
             }
           });
         })

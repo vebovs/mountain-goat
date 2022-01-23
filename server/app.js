@@ -93,20 +93,25 @@ app.post('/register', async (req, res) => {
 });
 
 app.post("/login", (req, res, next) => {
-    passport.authenticate("local", (err, user, info) => {
-        if (err) throw err;
-        if (!user) {
-            res.status(401);
-            res.json('Wrong username or password');
-        }
-        else {
-        req.logIn(user, (err) => {
+    try {
+        passport.authenticate("local", (err, user, errorMessage) => {
             if (err) throw err;
-            res.status(200);
-            res.json(req.user);
-        });
-        }
-    })(req, res, next);
+            if (!user) {
+                res.status(401).json(errorMessage);
+            }
+            else {
+            req.logIn(user, (err) => {
+                if (err) throw err;
+                res.status(200);
+                res.json(req.user);
+            });
+            }
+        })(req, res, next);
+    }
+    catch(error) {
+        res.status(500);
+        res.json('An internal server error occurred');
+    }
 });
 
 app.get('/logout', async (req, res) => {
