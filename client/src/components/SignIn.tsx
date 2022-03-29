@@ -55,8 +55,6 @@ const SignIn = () => {
     }
   }, [data, setUser]);
 
-  console.log(error?.response?.data.user);
-
   return (
     <Box mr='12' ml='12'>
       <FormControl mt='2' isInvalid={isError && error?.response?.data.user}>
