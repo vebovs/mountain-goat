@@ -3,7 +3,6 @@ import {
   FormControl,
   FormLabel,
   FormErrorMessage,
-  FormHelperText,
   Input,
   Box,
   Button,
@@ -19,6 +18,8 @@ import { useQuery } from 'react-query';
 import { loginUser } from '../api/auth';
 import { useUser, UserDetails } from '../hooks/user';
 import type { AxiosError } from 'axios';
+import { useErrorHandler } from 'react-error-boundary';
+import ErrorPopup from './ErrorPopup';
 
 const SignIn = () => {
   const [username, setUserName] = useState<string>('');
@@ -26,6 +27,8 @@ const SignIn = () => {
   const [enabled, setEnabled] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(true);
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
+
+  const handleError = useErrorHandler();
 
   const { setUser } = useUser();
 
@@ -38,11 +41,15 @@ const SignIn = () => {
     {
       enabled: enabled,
       cacheTime: 0,
+      retry: false,
     },
   );
 
   useEffect(() => {
-    if (isError) setShowError(true);
+    if (isError) {
+      setShowError(true);
+      handleError(error);
+    }
   }, [isError]);
 
   useEffect(() => {
@@ -111,6 +118,7 @@ const SignIn = () => {
           </Alert>
         </ScaleFade>
       </Box>
+      <ErrorPopup />
     </Box>
   );
 };
