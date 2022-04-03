@@ -105,14 +105,12 @@ app.post('/login', (req, res, next) => {
       } else {
         req.logIn(user, (err) => {
           if (err) throw err;
-          res.status(200);
-          res.json(req.user);
+          res.status(200).json(req.user);
         });
       }
     })(req, res, next);
   } catch (error) {
-    res.status(500);
-    res.json('An internal server error occurred');
+    res.status(500).json('Internal Server Error server');
   }
 });
 

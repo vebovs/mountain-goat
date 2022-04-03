@@ -6,11 +6,6 @@ import {
   Input,
   Box,
   Button,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  ScaleFade,
-  CloseButton,
   IconButton,
 } from '@chakra-ui/react';
 import { FaDoorClosed, FaDoorOpen } from 'react-icons/fa';
@@ -19,13 +14,11 @@ import { loginUser } from '../api/auth';
 import { useUser, UserDetails } from '../hooks/user';
 import type { AxiosError } from 'axios';
 import { useErrorHandler } from 'react-error-boundary';
-import ErrorPopup from './ErrorPopup';
 
 const SignIn = () => {
   const [username, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [enabled, setEnabled] = useState<boolean>(false);
-  const [showError, setShowError] = useState<boolean>(true);
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
 
   const handleError = useErrorHandler();
@@ -47,7 +40,6 @@ const SignIn = () => {
 
   useEffect(() => {
     if (isError) {
-      setShowError(true);
       handleError(error);
     }
   }, [isError]);
@@ -103,22 +95,6 @@ const SignIn = () => {
           Sign in
         </Button>
       )}
-      <Box mt='2'>
-        <ScaleFade in={isError && showError}>
-          <Alert status='error'>
-            <AlertIcon />
-            <AlertTitle>{error ? (error as Error).message : null}</AlertTitle>
-            <CloseButton
-              position='absolute'
-              right='8px'
-              top='8px'
-              aria-label='close user registration error'
-              onClick={() => setShowError(false)}
-            />
-          </Alert>
-        </ScaleFade>
-      </Box>
-      <ErrorPopup />
     </Box>
   );
 };

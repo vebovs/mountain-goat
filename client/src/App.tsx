@@ -20,14 +20,7 @@ import PageButton from './components/PageButton';
 import { useQuery } from 'react-query';
 import { getUser } from './api/user';
 import { ErrorBoundary } from 'react-error-boundary';
-import Fallback from './components/Fallback';
-
-const myErrorHandler = (error: Error, info: { componentStack: string }) => {
-  // Do something with the error
-  // E.g. log to an error logging client here
-  console.log(error);
-  console.log(info);
-};
+import Fallback from './pages/Fallback';
 
 export const App = () => {
   const [isMobile] = useMediaQuery('(max-width: 868px)');
@@ -109,8 +102,7 @@ export const App = () => {
                   path='/profile'
                   render={() => (
                     <ErrorBoundary
-                      FallbackComponent={Fallback}
-                      onError={myErrorHandler}
+                      fallbackRender={({ error }) => <Fallback error={error} />}
                     >
                       <Profile />
                     </ErrorBoundary>
