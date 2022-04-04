@@ -84,15 +84,12 @@ app.post('/register', async (req, res) => {
       req.body.password,
     );
     if (success) {
-      res.status(200);
-      res.json('success');
+      res.status(200).json('success');
     } else {
-      res.status(409);
-      res.json('Username taken');
+      res.status(409).json('Username taken');
     }
   } catch (error) {
-    res.status(500);
-    res.json('An internal server error occurred');
+    res.status(500).json('An internal server error occurred');
   }
 });
 

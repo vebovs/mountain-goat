@@ -34,13 +34,12 @@ const SignIn = () => {
     {
       enabled: enabled,
       cacheTime: 0,
-      retry: false,
     },
   );
 
   useEffect(() => {
     if (isError) {
-      handleError(error);
+      if (!error.response?.data) handleError(error);
     }
   }, [isError]);
 

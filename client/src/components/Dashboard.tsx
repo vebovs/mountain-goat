@@ -23,7 +23,7 @@ const Dashboard = () => {
   const { user, setUser } = useUser();
   const [enabled, setEnabled] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
-  const [favourites, setFavourites] = useState<Favourite[]>([]); // Place favourites in hook for trigger rerender on update
+  const [favourites, setFavourites] = useState<Favourite[]>([]); // Place favourites in hook to trigger re-render on update
 
   const { isError, error, isLoading, isSuccess } = useQuery(
     'signout',

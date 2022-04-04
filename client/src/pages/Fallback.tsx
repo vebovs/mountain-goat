@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { AxiosError } from 'axios';
-import { Center, Text, Link, Flex } from '@chakra-ui/react';
+import { Center, Text, Flex } from '@chakra-ui/react';
 import Page from '../components/Page';
 
 const Fallback = ({ error }: { error: Error }) => {
