@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import type { LatLngExpression, Circle as LeafletCircle } from 'leaflet';
 import { Circle, useMapEvent } from 'react-leaflet';
+
+import type { LatLngExpression, Circle as LeafletCircle } from 'leaflet';
 
 type LocationCircleProps = {
   pathing: boolean;

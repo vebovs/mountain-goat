@@ -11,9 +11,11 @@ import {
 import { FaDoorClosed, FaDoorOpen } from 'react-icons/fa';
 import { useQuery } from 'react-query';
 import { loginUser } from '../api/auth';
-import { useUser, UserDetails } from '../hooks/user';
-import type { AxiosError } from 'axios';
+import { useUser } from '../hooks/user';
 import { useErrorHandler } from 'react-error-boundary';
+
+import type { AxiosError } from 'axios';
+import type { UserDetails } from '../types';
 
 const SignIn = () => {
   const [username, setUserName] = useState<string>('');

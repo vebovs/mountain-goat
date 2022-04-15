@@ -4,11 +4,12 @@ import { SmallCloseIcon } from '@chakra-ui/icons';
 import { FaMap } from 'react-icons/fa';
 import { useQuery } from 'react-query';
 import { getFavouriteHikes } from '../api/user';
-import type { ObjectId } from 'mongodb';
-import type { FavouriteHikeData } from '../pages/Map';
 import { useMap } from 'react-leaflet';
 import { AxiosError } from 'axios';
 import { useErrorHandler } from 'react-error-boundary';
+
+import type { ObjectId } from 'mongodb';
+import type { FavouriteHikeData } from '../pages/Map';
 
 type HikeProps = {
   id: string;

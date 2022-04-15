@@ -1,24 +1,6 @@
 import React, { useContext, createContext, useState } from 'react';
 import { RouteProps } from 'react-router';
-import type { ObjectId } from 'mongodb';
-
-export type Favourite = {
-  id: string;
-  hike_ids: ObjectId[];
-  nickname: string;
-};
-
-export type UserDetails = {
-  _id: ObjectId;
-  username: string;
-  password: string;
-  favourites: Favourite[];
-};
-
-type User = {
-  user: UserDetails | null;
-  setUser: (user: UserDetails | null) => void;
-};
+import { User, UserDetails } from '../types';
 
 const initialUser: User = {
   user: null,

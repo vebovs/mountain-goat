@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { GeoJSON } from 'react-leaflet';
 import L, { GeoJSON as LeafletGeoJson, LeafletMouseEvent } from 'leaflet';
-import type { Polyline } from 'leaflet';
-import { GeoJsonObject } from 'geojson';
 import useStableCallback from '../hooks/useStableCallback';
 import { useUser } from '../hooks/user';
+
+import type { Polyline } from 'leaflet';
+import type { GeoJsonObject } from 'geojson';
 
 type PathProps = {
   data: GeoJsonObject;

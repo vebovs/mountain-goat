@@ -9,7 +9,7 @@ import {
   GridItem,
   useMediaQuery,
 } from '@chakra-ui/react';
-import { useUser, UserDetails } from './hooks/user';
+import { useUser } from './hooks/user';
 import FrontPage from './pages/FrontPage';
 import Map from './pages/Map';
 import Profile from './pages/Profile';
@@ -21,6 +21,8 @@ import { useQuery } from 'react-query';
 import { getUser } from './api/user';
 import { ErrorBoundary } from 'react-error-boundary';
 import Fallback from './pages/Fallback';
+
+import { UserDetails } from './types';
 
 export const App = () => {
   const [isMobile] = useMediaQuery('(max-width: 868px)');

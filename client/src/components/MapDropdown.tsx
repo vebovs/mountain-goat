@@ -17,14 +17,15 @@ import {
   CloseIcon,
 } from '@chakra-ui/icons';
 import { DomEvent } from 'leaflet';
-import type { Polyline } from 'leaflet';
-import type { ObjectId } from 'mongodb';
 import { Geometry } from 'geojson';
 import { useMutation } from 'react-query';
 import { addHikeToFavourites, FavoriteHike } from '../api/user';
 import { useUser } from '../hooks/user';
 import { AxiosError } from 'axios';
 import { useErrorHandler } from 'react-error-boundary';
+
+import type { Polyline } from 'leaflet';
+import type { ObjectId } from 'mongodb';
 
 type CustomFeatureType = {
   _id: ObjectId;
