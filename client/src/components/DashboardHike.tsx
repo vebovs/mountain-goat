@@ -3,10 +3,12 @@ import { Flex, Spacer, Text, IconButton, Center } from '@chakra-ui/react';
 import { FaTrashAlt } from 'react-icons/fa';
 import { useMutation } from 'react-query';
 import { removeHikeFromFavorites, hikeToRemove } from '../api/user';
-import type { ObjectId } from 'mongodb';
-import { useUser, Favourite } from '../hooks/user';
-import type { AxiosError } from 'axios';
+import { useUser } from '../hooks/user';
 import { useErrorHandler } from 'react-error-boundary';
+
+import type { AxiosError } from 'axios';
+import type { ObjectId } from 'mongodb';
+import type { Favourite } from '../types';
 
 type DashboardHikeProps = {
   hikeId: string;

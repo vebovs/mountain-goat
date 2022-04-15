@@ -14,8 +14,9 @@ import {
 import { FaClipboardList } from 'react-icons/fa';
 import Hike from './Hike';
 import { useUser } from '../hooks/user';
-import type { FavouriteHikeData } from '../pages/Map';
 import { DomEvent } from 'leaflet';
+
+import type { FavouriteHikeData } from '../pages/Map';
 
 type MapBoardProps = {
   favouriteHike: FavouriteHikeData | null;

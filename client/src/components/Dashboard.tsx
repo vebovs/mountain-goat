@@ -5,8 +5,9 @@ import { useUser } from '../hooks/user';
 import DashboardHike from './DashboardHike';
 import { useQuery } from 'react-query';
 import { logoutUser } from '../api/auth';
-import { Favourite } from '../hooks/user';
 import { useErrorHandler } from 'react-error-boundary';
+
+import type { Favourite } from '../types';
 
 const Dashboard = () => {
   const { user, setUser } = useUser();

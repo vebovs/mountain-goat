@@ -14,6 +14,7 @@ import { FaUserPlus } from 'react-icons/fa';
 import { useQuery } from 'react-query';
 import { registerUser } from '../api/auth';
 import { useErrorHandler } from 'react-error-boundary';
+
 import type { AxiosError } from 'axios';
 
 const SignUp = () => {
