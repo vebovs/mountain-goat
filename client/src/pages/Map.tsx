@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { LatLngExpression, Polyline } from 'leaflet';
 import { GeoJsonObject } from 'geojson';
 import 'leaflet/dist/leaflet.css';
@@ -16,9 +16,9 @@ import InputSlider from '../components/InputSlider';
 import MapBoard from '../components/MapBoard';
 import LocationCircle from '../components/LocationCircle';
 import Path from '../components/Path';
-import MapError from '../components/MapError';
 import MapDropdown from '../components/MapDropdown';
 import FavouritePath from '../components/FavouritePath';
+import { useErrorHandler } from 'react-error-boundary';
 
 const createPointsFromPoint = (point: LatLngExpression, radius: number) => {
   const posString = point.toString();
@@ -54,7 +54,6 @@ const Map = () => {
   const [radius, SetRadius] = useState<number>(1200); // Initial radius of circle
   const [point, SetPoint] = useState<LatLngExpression>([59.858264, 5.783487]); // Center of the circle
   const [enabled, SetEnabled] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [pathing, setPathing] = useState<boolean>(false); // Toggles creating favourite hike mode
   const [path, setPath] = useState<Polyline[]>([]); // Stores the new favourite hike being made
   const [favouriteHike, setFavouritehike] = useState<FavouriteHikeData | null>(
@@ -62,23 +61,20 @@ const Map = () => {
   ); // Current favourite hike to be drawn
   const [drawFavouriteHike, setDrawFavouriteHike] = useState<boolean>(false); // Toggle the curren favourite hike to be drawn or not
 
+  const handleError = useErrorHandler();
+
   const { data, isFetching } = useQuery(
     'foundHikes',
     () =>
       findHikesWithinArea(createPointsFromPoint(point, radius))
         .catch((error) => {
-          setErrorMessage((error as Error).message);
+          handleError(error);
         })
         .finally(() => SetEnabled(false)),
     {
       enabled: enabled,
     },
   );
-
-  // Initialize error as empty in case a previous error persist
-  useEffect(() => {
-    if (errorMessage) setErrorMessage('');
-  }, []);
 
   return (
     <Page>
@@ -137,10 +133,6 @@ const Map = () => {
             favouriteHike={favouriteHike}
             setFavouriteHike={setFavouritehike}
             setDrawFavouriteHike={setDrawFavouriteHike}
-          />
-          <MapError
-            errorMessage={errorMessage}
-            setErrorMessage={setErrorMessage}
           />
         </MapContainer>
       </Box>

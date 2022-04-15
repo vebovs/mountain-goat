@@ -21,7 +21,6 @@ const Dashboard = () => {
     {
       enabled: enabled,
       cacheTime: 0,
-      retry: false,
     },
   );
 

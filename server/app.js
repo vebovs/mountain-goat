@@ -48,16 +48,9 @@ const userdao = new UserDao(process.env.USER_COLLECTION);
 app.post('/hikes', async (req, res) => {
   try {
     const hikes = await hikedao.getHikes(req.body);
-    if (hikes) {
-      res.status(200);
-      res.json(hikes);
-    } else {
-      res.status(400);
-      res.json('Nothing found');
-    }
+    res.status(200).json(hikes);
   } catch (error) {
-    res.status(500);
-    res.json('An internal server error has occurred');
+    res.status(500).json('An internal server error has occurred');
   }
 });
 
@@ -128,15 +121,12 @@ app.post('/user/hikes', async (req, res) => {
   try {
     const success = await hikedao.findHikesByIds(req.body.data);
     if (success) {
-      res.status(200);
-      res.json(success);
+      res.status(200).json(success);
     } else {
-      res.status(404);
-      res.json('Nothing found');
+      res.status(404).json('No such hike found');
     }
   } catch (error) {
-    res.status(500);
-    res.json('An internal server error occurred');
+    res.status(500).json('An internal server error occurred');
   }
 });
 
@@ -148,23 +138,19 @@ app.post('/user/hike/save', async (req, res) => {
       req.body.nickname,
     );
     if (success) {
-      res.status(200);
-      res.json({
+      res.status(200).json({
         status: 'success',
         id: success,
       });
     } else {
-      res.status(400);
-      res.json('Nickname already in use');
+      res.status(409).json('Nickname already in use');
     }
   } catch (error) {
-    res.status(500);
-    res.json('An internal server error occurred');
+    res.status(500).json('An internal server error occurred');
   }
 });
 
 app.delete('/user/hike/delete', async (req, res) => {
-  //res.status(500).json('An internal server error occurred');
   try {
     const success = await userdao.delete_hike(
       req.body.user_id,

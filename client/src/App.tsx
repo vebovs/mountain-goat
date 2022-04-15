@@ -97,7 +97,16 @@ export const App = () => {
             >
               <Switch>
                 <Route path='/' component={FrontPage} exact />
-                <Route path='/map' component={Map} />
+                <Route
+                  path='/map'
+                  render={() => (
+                    <ErrorBoundary
+                      fallbackRender={({ error }) => <Fallback error={error} />}
+                    >
+                      <Map />
+                    </ErrorBoundary>
+                  )}
+                />
                 <Route
                   path='/profile'
                   render={() => (
