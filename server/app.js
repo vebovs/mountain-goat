@@ -54,22 +54,6 @@ app.post('/hikes', async (req, res) => {
   }
 });
 
-app.get('/hike/:id', async (req, res) => {
-  try {
-    const success = await hikedao.getHike(req.params.id);
-    if (success) {
-      res.status(200);
-      res.json(success);
-    } else {
-      res.status(400);
-      res.json('Nothing found');
-    }
-  } catch (error) {
-    res.status(500);
-    res.json('An internal server error has occurred');
-  }
-});
-
 app.post('/register', async (req, res) => {
   try {
     const success = await userdao.create_user(
