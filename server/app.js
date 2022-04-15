@@ -114,11 +114,9 @@ app.post('/login', (req, res, next) => {
 app.get('/logout', async (req, res) => {
   try {
     req.logOut();
-    res.status(200);
-    res.json('Logout successful');
+    res.status(200).json('Logout successful');
   } catch (error) {
-    res.status(500);
-    res.json('An internal server error occurred');
+    res.status(500).json('An internal server error occurred');
   }
 });
 
@@ -166,21 +164,19 @@ app.post('/user/hike/save', async (req, res) => {
 });
 
 app.delete('/user/hike/delete', async (req, res) => {
+  //res.status(500).json('An internal server error occurred');
   try {
     const success = await userdao.delete_hike(
       req.body.user_id,
       req.body.hike_id,
     );
-    if (success) {
-      res.status(200);
-      res.json('success');
+    if (success.modifiedCount) {
+      res.status(200).json('success');
     } else {
-      res.status(400);
-      res.json('Nothing to delete');
+      res.status(404).json('Hike not found');
     }
   } catch (error) {
-    res.status(500);
-    res.json('An internal server error occurred');
+    res.status(500).json('An internal server error occurred');
   }
 });
 

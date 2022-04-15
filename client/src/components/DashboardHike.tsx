@@ -5,6 +5,8 @@ import { useMutation } from 'react-query';
 import { removeHikeFromFavorites, hikeToRemove } from '../api/user';
 import type { ObjectId } from 'mongodb';
 import { useUser, Favourite } from '../hooks/user';
+import type { AxiosError } from 'axios';
+import { useErrorHandler } from 'react-error-boundary';
 
 type DashboardHikeProps = {
   hikeId: string;
@@ -22,6 +24,8 @@ const DashboardHike = ({
   const [errorText, setErrorText] = useState<string>('');
   const { user } = useUser();
 
+  const handleError = useErrorHandler();
+
   const deleteMutation = useMutation(
     (data: hikeToRemove) => removeHikeFromFavorites(data),
     {
@@ -31,8 +35,9 @@ const DashboardHike = ({
           setFavourites(user?.favourites);
         }
       },
-      onError: (error) => {
-        setErrorText((error as Error).message);
+      onError: (error: AxiosError) => {
+        if (error.response?.status === 500) handleError(error);
+        setErrorText(error.response?.data);
       },
     },
   );
