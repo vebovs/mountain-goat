@@ -6,7 +6,9 @@ import { useQuery } from 'react-query';
 import { getFavouriteHikes } from '../api/user';
 import type { ObjectId } from 'mongodb';
 import type { FavouriteHikeData } from '../pages/Map';
-import { useMap, useMapEvent } from 'react-leaflet';
+import { useMap } from 'react-leaflet';
+import { AxiosError } from 'axios';
+import { useErrorHandler } from 'react-error-boundary';
 
 type HikeProps = {
   id: string;
@@ -30,6 +32,8 @@ const Hike = ({
 
   const map = useMap();
 
+  const handleError = useErrorHandler();
+
   const { error, isError, isFetching } = useQuery(
     `getFavouriteHike${id}`,
     () =>
@@ -49,7 +53,8 @@ const Hike = ({
 
   useEffect(() => {
     if (isError && error) {
-      setErrorText((error as Error).message);
+      if ((error as AxiosError).response?.status === 500) handleError(error);
+      setErrorText((error as AxiosError).response?.data);
       const interval = setInterval(() => {
         setErrorText('');
       }, 5000);

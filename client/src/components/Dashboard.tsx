@@ -1,29 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Flex,
-  Spacer,
-  Text,
-  Button,
-  Divider,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  Collapse,
-  CloseButton,
-} from '@chakra-ui/react';
+import { Box, Flex, Spacer, Text, Button, Divider } from '@chakra-ui/react';
 import { FaDoorOpen } from 'react-icons/fa';
 import { useUser } from '../hooks/user';
 import DashboardHike from './DashboardHike';
 import { useQuery } from 'react-query';
 import { logoutUser } from '../api/auth';
 import { Favourite } from '../hooks/user';
+import { useErrorHandler } from 'react-error-boundary';
 
 const Dashboard = () => {
   const { user, setUser } = useUser();
   const [enabled, setEnabled] = useState<boolean>(false);
-  const [showError, setShowError] = useState<boolean>(false);
-  const [favourites, setFavourites] = useState<Favourite[]>([]); // Place favourites in hook for trigger rerender on update
+  const [favourites, setFavourites] = useState<Favourite[]>([]); // Place favourites in hook to trigger re-render on update
+
+  const handleError = useErrorHandler();
 
   const { isError, error, isLoading, isSuccess } = useQuery(
     'signout',
@@ -35,7 +25,7 @@ const Dashboard = () => {
   );
 
   useEffect(() => {
-    if (isError) setShowError(true);
+    if (isError) handleError(error);
   }, [isError]);
 
   useEffect(() => {
@@ -72,19 +62,6 @@ const Dashboard = () => {
           Sign out
         </Button>
       </Flex>
-      <Collapse in={showError}>
-        <Alert status='error'>
-          <AlertIcon />
-          <AlertTitle>{error ? (error as Error).message : null}</AlertTitle>
-          <CloseButton
-            position='absolute'
-            right='8px'
-            top='8px'
-            aria-label='close user registration error'
-            onClick={() => setShowError(false)}
-          />
-        </Alert>
-      </Collapse>
       <Divider />
       <Text mt='2'>Favourites</Text>
       <Box m='2' overflowY='auto'>

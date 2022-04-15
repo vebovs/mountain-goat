@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import {
   ChakraProvider,
@@ -19,6 +19,8 @@ import { GiGoat } from 'react-icons/gi';
 import PageButton from './components/PageButton';
 import { useQuery } from 'react-query';
 import { getUser } from './api/user';
+import { ErrorBoundary } from 'react-error-boundary';
+import Fallback from './pages/Fallback';
 
 export const App = () => {
   const [isMobile] = useMediaQuery('(max-width: 868px)');
@@ -95,8 +97,26 @@ export const App = () => {
             >
               <Switch>
                 <Route path='/' component={FrontPage} exact />
-                <Route path='/map' component={Map} />
-                <Route path='/profile' component={Profile} />
+                <Route
+                  path='/map'
+                  render={() => (
+                    <ErrorBoundary
+                      fallbackRender={({ error }) => <Fallback error={error} />}
+                    >
+                      <Map />
+                    </ErrorBoundary>
+                  )}
+                />
+                <Route
+                  path='/profile'
+                  render={() => (
+                    <ErrorBoundary
+                      fallbackRender={({ error }) => <Fallback error={error} />}
+                    >
+                      <Profile />
+                    </ErrorBoundary>
+                  )}
+                />
                 <Route path='/info' component={Info} />
               </Switch>
             </Box>

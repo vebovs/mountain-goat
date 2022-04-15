@@ -23,6 +23,8 @@ import { Geometry } from 'geojson';
 import { useMutation } from 'react-query';
 import { addHikeToFavourites, FavoriteHike } from '../api/user';
 import { useUser } from '../hooks/user';
+import { AxiosError } from 'axios';
+import { useErrorHandler } from 'react-error-boundary';
 
 type CustomFeatureType = {
   _id: ObjectId;
@@ -44,14 +46,17 @@ const MapDropdown = ({ setPathing, path, setPath }: MapDropdownProps) => {
   const [errorStatus, setErrorStatus] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
+  const handleError = useErrorHandler();
+
   const { user } = useUser();
 
   const saveHikeMutation = useMutation(
     (hike: FavoriteHike) => addHikeToFavourites(hike),
     {
-      onError: (error) => {
+      onError: (error: AxiosError) => {
         setErrorStatus(true);
-        setErrorMessage((error as Error).message);
+        if (error.response?.status === 500) handleError(error);
+        setErrorMessage(error.response?.data);
       },
       onSuccess: (data) => {
         // Add new path to current state
@@ -85,7 +90,7 @@ const MapDropdown = ({ setPathing, path, setPath }: MapDropdownProps) => {
       const interval = setInterval(() => {
         setErrorStatus(false);
         setErrorMessage('');
-      }, 2500);
+      }, 5000);
       return () => clearInterval(interval);
     }
   }, [errorStatus, setErrorStatus, errorMessage, setErrorMessage]);
