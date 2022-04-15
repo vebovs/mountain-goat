@@ -13,8 +13,7 @@ import { useUser } from './hooks/user';
 import FrontPage from './pages/FrontPage';
 import Map from './pages/Map';
 import Profile from './pages/Profile';
-import Info from './pages/Info';
-import { FaMapMarkedAlt, FaUserAlt, FaInfoCircle } from 'react-icons/fa';
+import { FaMapMarkedAlt, FaUserAlt } from 'react-icons/fa';
 import { GiGoat } from 'react-icons/gi';
 import PageButton from './components/PageButton';
 import { useQuery } from 'react-query';
@@ -22,7 +21,7 @@ import { getUser } from './api/user';
 import { ErrorBoundary } from 'react-error-boundary';
 import Fallback from './pages/Fallback';
 
-import { UserDetails } from './types';
+import type { UserDetails } from './types';
 
 export const App = () => {
   const [isMobile] = useMediaQuery('(max-width: 868px)');
@@ -61,8 +60,8 @@ export const App = () => {
             >
               <Grid
                 h='full'
-                templateRows={isMobile ? 'repeat(1, 1fr)' : 'repeat(4, 1fr)'}
-                templateColumns={isMobile ? 'repeat(4, 1fr)' : 'repeat(1, 1fr)'}
+                templateRows={isMobile ? 'repeat(1, 1fr)' : 'repeat(3, 1fr)'}
+                templateColumns={isMobile ? 'repeat(3, 1fr)' : 'repeat(1, 1fr)'}
               >
                 <GridItem bg='blue.500'>
                   <PageButton link='/' title='Home' IconProp={GiGoat} />
@@ -79,13 +78,6 @@ export const App = () => {
                     link='/profile'
                     title='Profile'
                     IconProp={FaUserAlt}
-                  />
-                </GridItem>
-                <GridItem>
-                  <PageButton
-                    link='/info'
-                    title='Info'
-                    IconProp={FaInfoCircle}
                   />
                 </GridItem>
               </Grid>
@@ -119,7 +111,6 @@ export const App = () => {
                     </ErrorBoundary>
                   )}
                 />
-                <Route path='/info' component={Info} />
               </Switch>
             </Box>
           </Flex>
